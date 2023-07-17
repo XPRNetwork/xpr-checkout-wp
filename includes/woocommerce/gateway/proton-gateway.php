@@ -170,10 +170,6 @@ function woow_init_gateway_class()
       return parent::is_available();
     }
 
-
-
-
-
     /**
      * Process the payment and return the result.
      *
@@ -182,6 +178,7 @@ function woow_init_gateway_class()
      */
     public function process_payment($order_id)
     {
+
       $order = wc_get_order($order_id);
 
       if ($order->get_total() > 0) {
@@ -225,8 +222,9 @@ function woow_init_gateway_class()
      */
     public function thankyou_page()
     {
+      echo "Et mon cul c'est du poulet";
       if ($this->instructions) {
-        echo wp_kses_post(wpautop(wptexturize($this->instructions)));
+        //echo wp_kses_post(wpautop(wptexturize($this->instructions)));
       }
     }
 
