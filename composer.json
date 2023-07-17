@@ -1,0 +1,5 @@
+{
+    "require": {
+        "manamine/php-eos-rpc-sdk": "^1.5"
+    }
+}
