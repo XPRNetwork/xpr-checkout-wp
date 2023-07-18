@@ -56,6 +56,9 @@ function woow_init_gateway_class()
       add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
       add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
       add_filter('woocommerce_payment_complete_order_status', array($this, 'change_payment_complete_order_status'), 10, 3);
+      add_action('woocommerce_checkout_create_order', array($this, 'custom_meta_to_order'), 20, 1);
+      add_filter('woocommerce_locate_template', array($this, 'relocate_plugin_template'), 1, 3);
+      add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
 
       // Customer Emails.
       add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
@@ -218,15 +221,73 @@ function woow_init_gateway_class()
     }
 
     /**
+     * Add scripts
+     * 
+     */
+
+    public function payment_scripts()
+    {
+
+      if ('no' === $this->enabled) {
+        return;
+      };
+
+      if (!isset($_GET['order-received'])) {
+        return;
+      };
+      $orderId = $_GET['order-received'];
+
+      $order = wc_get_order($orderId);
+      $orderData = $order->get_data();
+      $paymentKey = $order->get_meta('_paymentKey');
+
+      // and this is our custom JS in your plugin directory that works with token.js
+      wp_register_script('woow_public', PWG_ROOT_URL . 'dist/public/js/proton-wc-app.iife.js?v=' . uniqid(), [], time(), true);
+
+      wp_enqueue_style('woow_public_style', PWG_ROOT_URL . 'dist/public/js/proton-wc-app.css?v=' . uniqid());
+      // in most payment processors you have to use PUBLIC KEY to obtain a token
+      wp_localize_script('woow_public', 'woowParams', array(
+        "mainwallet" => $this->get_option('mainwallet'),
+        "testwallet" => $this->get_option('testwallet'),
+        "testnet" => 'yes' === $this->get_option('testnet'),
+        "appName" => $this->get_option('appName'),
+        "appLogo" => $this->get_option('appLogo'),
+        "allowedTokens" => $this->get_option('allowedTokens'),
+        "wooCurrency" => "EUR",
+        "cartAmount" => 20,
+        "order" => $orderData,
+        "paymentKey" => $paymentKey
+
+      ));
+
+      wp_enqueue_script('woow_public');
+    }
+
+    /**
+     * Register the payment reconciliation key
+     */
+
+    public function custom_meta_to_order($order)
+    {
+
+      $orderData = $order->get_data();
+      $serializedOrder  = serialize($orderData);
+      $hashedOrder = hash('haval256,5', $serializedOrder);
+      $order->update_meta_data('_paymentKey', $hashedOrder);
+      $order->save();
+    }
+
+    /**
      * Output for the order received page.
      */
     public function thankyou_page()
     {
-      echo "Et mon cul c'est du poulet";
-      if ($this->instructions) {
+
+      if (isset($this->instructions)) {
         //echo wp_kses_post(wpautop(wptexturize($this->instructions)));
       }
     }
+
 
     /**
      * Change payment complete order status to completed for COD orders.
@@ -257,6 +318,35 @@ function woow_init_gateway_class()
       if ($this->instructions && !$sent_to_admin && $this->id === $order->get_payment_method()) {
         echo wp_kses_post(wpautop(wptexturize($this->instructions)) . PHP_EOL);
       }
+    }
+
+    /**
+     * Allow override template
+     */
+    function relocate_plugin_template($template, $template_name, $template_path)
+    {
+      global $woocommerce;
+      $_template = $template;
+      if (!$template_path)
+        $template_path = $woocommerce->template_url;
+
+      $plugin_path  = untrailingslashit(PWG_ROOT_DIR)  . '/includes/woocommerce/templates/';
+
+      // Look within passed path within the theme - this is priority
+      $template = locate_template(
+        array(
+          $template_path . $template_name,
+          $template_name
+        )
+      );
+
+      if (!$template && file_exists($plugin_path . $template_name))
+        $template = $plugin_path . $template_name;
+
+      if (!$template)
+        $template = $_template;
+
+      return $template;
     }
   }
 }
