@@ -1,6 +1,6 @@
 export function generateTransferAction(contract:string,fromActor:string,fromPermission:string,toActor:string,amount: number, symbol: string,memo='') {
   
-  return [{
+  return {
     account: contract,
     name: 'transfer',
     authorization: [{
@@ -13,5 +13,5 @@ export function generateTransferAction(contract:string,fromActor:string,fromPerm
         quantity: `${amount} ${symbol}` ,
         memo: memo
     }
-  }];
+  };
 }

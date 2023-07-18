@@ -20,6 +20,7 @@
 
   onMount(async ()=>{
 
+    console.log(cartAmount,'cartAmount')
     const tokenRatesRequest:AxiosRequestConfig = {url:'https://proton.alcor.exchange/api/v2/tokens'}
     const tokenRatesResult = await axios<TokenRate[]>(tokenRatesRequest);
     if (tokenRatesResult.status == 200){
@@ -40,9 +41,13 @@
     const rate = getTokenRateBySymbol(symbol)
     if (rate){
 
+      console.log (truncateToPrecision(fiatAmount/rate.usd_price,rate.decimals),'truncateToPrecision(fiatAmount/rate.usd_price,rate.decimals)')
       return truncateToPrecision(fiatAmount/rate.usd_price,rate.decimals)
 
     }
+    return 0
+
+    
 
   }
 
@@ -58,11 +63,11 @@
     <p>Fetch token rate</p>
   {:else}
   <ul class="token_rates__list">
-    {#each allowedTokensArray as token }
+    {#each allowedTokenRates as token }
     <li >
-      <button class="token_rates__list__render_item" on:click={()=>selectPayToken(getTokenRateBySymbol(token),convertFiatPriceToToken(parseFloat(cartAmount),token))}>
+      <button class="token_rates__list__render_item" on:click={()=>selectPayToken(getTokenRateBySymbol(token.symbol),convertFiatPriceToToken(parseFloat(cartAmount),token.symbol))}>
         <h5 class="token_rates__list__render_item__token_price">
-          Pay {convertFiatPriceToToken(parseFloat(cartAmount),token).toLocaleString()} {token}
+          Pay {convertFiatPriceToToken(parseFloat(cartAmount),token.symbol).toLocaleString()} {token.symbol}
         </h5>
         <div class="token_rates__list__render_item__drill_icon">
 
@@ -101,7 +106,6 @@
   .token_rates__list__render_item:hover {
 
     background-color: blueviolet;
-    
 
   }
 

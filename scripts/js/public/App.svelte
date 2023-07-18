@@ -10,11 +10,12 @@
 </script>
 <script lang="ts">
   import { onMount } from 'svelte';
-  import ProtonWeb, { LinkSession, type TransactResult } from '@proton/web-sdk';
+  import ProtonWeb, { type LinkSession, type TransactResult } from '@proton/web-sdk';
   import {truncateToPrecision} from './utils/price'
   import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS, WOO_CHECKOUT_FORM_SELECTOR} from './constants';
-  import {generateTransferAction} from './proton/actions/transfer'
   import PayTokenSelector from './PayTokenSelector.svelte';
+  import {generateTransferAction,generateRegisterPaymentAction} from './proton/actions/'
+  
   interface ProtonWCControllerOption {
 
     mainwallet?:string;
@@ -24,7 +25,10 @@
     appLogo?:string;
     allowedTokens?:string;
     wooCurrency?:string;
-    cartAmount?:string;
+    paymentKey:string;
+    order:{
+      total:number
+    }
 
   }
 
@@ -37,25 +41,16 @@
 
   }
 
+  
   let wooCheckForm:HTMLElement | null = null
-  let pluginOptions: ProtonWCControllerOption = window.selector_options! as ProtonWCControllerOption;
+  let pluginOptions: ProtonWCControllerOption = window.woowParams! as ProtonWCControllerOption;
   let txId: string | undefined = undefined;
   let protonCheckoutState:ProtonCheckOutState = {isRunning:false};
 
   onMount(()=>{
-    wooCheckForm = document.body.querySelector(WOO_CHECKOUT_FORM_SELECTOR);
-    console.log (pluginOptions)
-    if (!wooCheckForm)return;
-    wooCheckForm.addEventListener('submit',(e)=>{
 
-      if (!txId){
+    console.log(pluginOptions)
 
-        e.preventDefault();
-        connectProton()
-
-      }
-
-    })
   })
 
   async function  connectProton() {
@@ -102,19 +97,31 @@
   async function initTransfer (token:TokenRate,amount:number){
 
     if (!protonCheckoutState || !protonCheckoutState.session || !protonCheckoutState.isRunning) return 
-    const transfer = generateTransferAction(
+    const registerPaymentAction = generateRegisterPaymentAction(
+      pluginOptions.testnet ? pluginOptions.testwallet : pluginOptions.mainwallet ,
+      protonCheckoutState.session.auth.actor.toString(),
+      protonCheckoutState.session.auth.permission.toString(),
+      pluginOptions.paymentKey,
+      truncateToPrecision(amount,token.decimals),
+      token.symbol,
+      
+    )
+    const transferAction = generateTransferAction(
       token.contract,
       protonCheckoutState.session.auth.actor.toString(),
       protonCheckoutState.session.auth.permission.toString(),
-      pluginOptions.testnet ? pluginOptions.testwallet : pluginOptions.mainwallet ,
+      "woow",
       truncateToPrecision(amount,token.decimals),
       token.symbol,
-      "Hooray payment is made form Proton WC gateway"
+      pluginOptions.paymentKey
     )
+
+    console.log([registerPaymentAction,transferAction])
+
     protonCheckoutState.isRunning = false;
     const tx:TransactResult = await protonCheckoutState.session.transact(
       {
-        actions:transfer
+        actions:[registerPaymentAction,transferAction]
       },
       {
         broadcast:true
@@ -132,6 +139,11 @@
 
 </script>
 <main id="proton_wc_checkout">
+  <div class="process_starter">
+    <h3 class="process_typography">Pay with webauth</h3>
+    <p class="process_typography">Connect your webauth wallet to start the payment flow. </p>
+    <button on:click={connectProton}>Connect webauth</button>
+  </div>
   {#if protonCheckoutState.isRunning}
   <div class="process_wrapper">
     <div class="process_modal__backdrop"></div>
@@ -143,7 +155,7 @@
       </div>
       <div class="process_modal__content__body">
         <span class="modal_detail">Choose the token you want to pay with through webauth.</span>
-        <PayTokenSelector cartAmount={pluginOptions.cartAmount} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()} on:chan/>
+        <PayTokenSelector cartAmount={pluginOptions.order.total} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()} on:chan/>
       </div>
     </div>
     {/if}
@@ -170,6 +182,22 @@
 </main>
 
 <style>
+
+.process_typography {
+
+    padding: 0;
+    margin: 0;
+
+  }
+  .process_starter {
+
+    border: 1px solid;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+
+  }
   .process_wrapper {
 
     display: block;
