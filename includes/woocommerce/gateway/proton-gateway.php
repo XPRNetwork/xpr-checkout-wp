@@ -232,11 +232,11 @@ function woow_init_gateway_class()
         return;
       };
 
-      if (!isset($_GET['order-received'])) {
+      if (!isset($_GET['key'])) {
         return;
       };
-      $orderId = $_GET['order-received'];
-
+      $orderKey = $_GET['key'];
+      $orderId = wc_get_order_id_by_order_key($orderKey);
       $order = wc_get_order($orderId);
       $orderData = $order->get_data();
       $paymentKey = $order->get_meta('_paymentKey');
@@ -272,7 +272,7 @@ function woow_init_gateway_class()
 
       $orderData = $order->get_data();
       $serializedOrder  = serialize($orderData);
-      $hashedOrder = hash('haval256,5', $serializedOrder);
+      $hashedOrder = hash('haval256,5', $serializedOrder . time());
       $order->update_meta_data('_paymentKey', $hashedOrder);
       $order->save();
     }

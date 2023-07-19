@@ -35,18 +35,43 @@ function handle_payment_check($request)
     $orderData  = null;
     if (!empty($ordersQuery)) {
       $order = $ordersQuery[0]; // Return the first order found
-      $orderData = $order->get_data();
+
+      $rpc = new ProtonRPC("https://proton-public-testnet.neftyblocks.com");
+      $rpcResults = $rpc->verifyPaymentStatusByKey("woow", "woow", "payment", $params['paymentKey'], 100);
+      if ($rpcResults) {
+        $order->update_status('completed');
+        $order->save();
+        $orderData = $order->get_data();
+        $returnResult = new WP_REST_Response([
+          'status' => 200,
+          'response' => "order validated",
+          'body_response' => $orderData
+        ]);
+      } else {
+        $returnResult = new WP_Error([
+          'status' => 404,
+          'response' => "order not validated",
+          'body_response' => null
+        ]);
+      }
+    } else {
+
+      $returnResult = new WP_REST_Response([
+        'status' => 404,
+        'response' => "order not found",
+        'body_response' => null
+      ]);
     }
-    $returnResult = new WP_REST_Response([
-      'status' => 200,
-      'response' => "order validated",
-      'body_response' => $orderData
-    ]);
   } else {
 
-    $returnResult = new WP_Error();
+    $returnResult = new WP_REST_Response([
+      'status' => 403,
+      'response' => "Unauthorized",
+      'body_response' => null
+    ]);
   }
 
-  $rpc = new ProtonRPC("https://api-protontest.saltant.io");
+
+
   return rest_ensure_response($returnResult);
 }
