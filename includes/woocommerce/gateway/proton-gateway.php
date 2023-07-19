@@ -272,7 +272,7 @@ function woow_init_gateway_class()
 
       $orderData = $order->get_data();
       $serializedOrder  = serialize($orderData);
-      $hashedOrder = hash('haval256,5', $serializedOrder . time());
+      $hashedOrder = hash('sha256', $serializedOrder . time());
       $order->update_meta_data('_paymentKey', $hashedOrder);
       $order->save();
     }

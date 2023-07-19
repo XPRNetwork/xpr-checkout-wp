@@ -18,12 +18,22 @@ class ProtonRPC
       'code' => $contract,
       'table' => $table,
       'json' => true,
-      'index_position' => 'secondary',
+      'index_position' => 2,
       'key_type' => 'sha256',
       'limit' => 100,
       'lower_bound' => $paymentKey,
+      'upper_bound' => $paymentKey,
 
     );
+
+    $formattedKey = '';
+    for ($i = 0; $i < strlen($paymentKey); $i += 2) {
+      $formattedKey .= substr($paymentKey, $i, 2);
+    }
+
+    error_log(print_r($formattedKey, 1));
+    error_log(print_r($paymentKey, 1));
+    error_log(print_r($this->encodeSha256($paymentKey), 1));
     error_log(print_r($data, 1));
     $ch = curl_init($endpoint);
     curl_setopt($ch, CURLOPT_POST, 1);
@@ -58,5 +68,20 @@ class ProtonRPC
       $hex .= str_pad($byte, 2, '0', STR_PAD_LEFT);
     }
     return $hex;
+  }
+
+  private function encodeSha256($sha256Key)
+  {
+
+
+    $bytes = pack("H*", $sha256Key);
+
+    // Inversion de l'ordre des octets
+    $reversedBytes = strrev($bytes);
+
+    // Conversion des octets en représentation hexadécimale
+    $formattedKey = bin2hex($reversedBytes);
+
+    return $formattedKey;
   }
 }
