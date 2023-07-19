@@ -1,4 +1,4 @@
-export function generateRegisterPaymentAction(storeAccout:string,buyer: string,buyerPermission:string, paymentKey:string,amount:number,symbol:string) {
+export function generateRegisterPaymentAction(storeAccout:string,buyer: string,buyerPermission:string, paymentKey:string,amount:number | string,symbol:string,tokenContract:string) {
   
   return {
     account: "woow",
@@ -12,7 +12,7 @@ export function generateRegisterPaymentAction(storeAccout:string,buyer: string,b
       buyer: buyer,
       paymentKey: paymentKey,
       amount: `${amount} ${symbol}`,
-      tokenContract: symbol
+      tokenContract: tokenContract
     }
   };
 }

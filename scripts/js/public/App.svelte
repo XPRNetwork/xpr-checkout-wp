@@ -1,49 +1,53 @@
 <script lang="ts" context="module">
-  export interface TokenRate{
-  contract: string
-  decimals: number
-  symbol: string
-  id: string
-  system_price: number
-  usd_price: number
+
+
+interface ProtonWCControllerOption {
+
+mainwallet?:string;
+testwallet?:string;
+testnet?:boolean;
+appName?:string;
+appLogo?:string;
+allowedTokens?:string;
+wooCurrency?:string;
+paymentKey:string;
+order:{
+  total:number,
+  status:string
 }
+
+}
+
+interface ProtonCheckOutState {
+
+appState?:string;
+isRunning:boolean,
+session?:LinkSession
+tx?:TransactResult,
+order?:any
+
+}
+
 </script>
 <script lang="ts">
   import { onMount } from 'svelte';
   import ProtonWeb, { type LinkSession, type TransactResult } from '@proton/web-sdk';
   import {truncateToPrecision} from './utils/price'
-  import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS, WOO_CHECKOUT_FORM_SELECTOR} from './constants';
-  import PayTokenSelector from './PayTokenSelector.svelte';
-  import {generateTransferAction,generateRegisterPaymentAction} from './proton/actions/'
+  import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, APP_STATE_TRANSFER_VERIFICATION_FAILURE, APP_STATE_TRANSFER_VERIFICATION_SUCCESS, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS, WOO_CHECKOUT_FORM_SELECTOR} from './constants';
+  import PayTokenSelector from './components/dialogs/content/PayTokenSelector.svelte';
+  import {generateTransferAction,generateRegisterPaymentAction} from './proton/actions/';
+  import {verifyPayment} from './services/VerifyPayment'
+  import Dialog from './components/dialogs/Dialog.svelte';
+  import type { TokenRate } from './type';
+  import PaymentVerification from './components/dialogs/content/PaymentVerify.svelte';
+  import PaymentSucceed from './components/dialogs/content/PaymentSucceed.svelte';
+  import PaymentVerify from './components/dialogs/content/PaymentVerify.svelte';
   
-  interface ProtonWCControllerOption {
-
-    mainwallet?:string;
-    testwallet?:string;
-    testnet?:boolean;
-    appName?:string;
-    appLogo?:string;
-    allowedTokens?:string;
-    wooCurrency?:string;
-    paymentKey:string;
-    order:{
-      total:number
-    }
-
-  }
-
-  interface ProtonCheckOutState {
-
-    appState?:string;
-    isRunning:boolean,
-    session?:LinkSession
-    tx?:TransactResult
-
-  }
-
   
+
+  //if (!window['woowParams']) return;
   let wooCheckForm:HTMLElement | null = null
-  let pluginOptions: ProtonWCControllerOption = window.woowParams! as ProtonWCControllerOption;
+  let pluginOptions: ProtonWCControllerOption = window['woowParams'] as ProtonWCControllerOption;
   let txId: string | undefined = undefined;
   let protonCheckoutState:ProtonCheckOutState = {isRunning:false};
 
@@ -94,7 +98,25 @@
 
   }
 
-  async function initTransfer (token:TokenRate,amount:number){
+  function onPaymentVerify (verifyResult:any){
+
+    console.log(verifyResult)
+    if(verifyResult && verifyResult.status==200){
+
+      if (verifyResult.data.status == 200){
+      if(verifyResult.data.body_response != null){
+        protonCheckoutState.order = verifyResult.data.body_response;
+        protonCheckoutState.appState = APP_STATE_TRANSFER_VERIFICATION_SUCCESS;
+      }
+    }else {
+      protonCheckoutState.appState = APP_STATE_TRANSFER_VERIFICATION_FAILURE;
+    }
+
+    }
+
+  }
+
+  async function initTransfer (token:TokenRate,amount:number | string){
 
     if (!protonCheckoutState || !protonCheckoutState.session || !protonCheckoutState.isRunning) return 
     const registerPaymentAction = generateRegisterPaymentAction(
@@ -104,6 +126,7 @@
       pluginOptions.paymentKey,
       truncateToPrecision(amount,token.decimals),
       token.symbol,
+      token.contract
       
     )
     const transferAction = generateTransferAction(
@@ -131,53 +154,68 @@
     protonCheckoutState.tx = tx;
     protonCheckoutState.appState = APP_STATE_TRANSFER_VERIFICATION;
     protonCheckoutState.isRunning = true;
-
-
+    
   }
 
 
 
 </script>
-<main id="proton_wc_checkout">
+<main id="woow_payment_process">
+  <Dialog>
+    <div slot="head">
+      <h3 class="modal_title">Thank you!</h3>
+    </div>
+    <div slot="content">
+      <PaymentSucceed></PaymentSucceed>
+      <!-- <PayTokenSelector cartAmount={pluginOptions.order.total.toString()} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()} on:chan/> -->
+    </div>
+  </Dialog>
+
+  {#if pluginOptions.order.status !== "completed"}
   <div class="process_starter">
     <h3 class="process_typography">Pay with webauth</h3>
     <p class="process_typography">Connect your webauth wallet to start the payment flow. </p>
-    <button on:click={connectProton}>Connect webauth</button>
+    <a class="checkout-button button alt wc-forward wp-element-button" on:click={connectProton}>Connect webauth</a>
   </div>
+  {:else}
+  <div class="process_starter">
+    <h3 class="process_typography">Payment succesfull</h3>
+    <p class="process_typography">This order is marked as complete</p>
+  </div>
+  {/if}
   {#if protonCheckoutState.isRunning}
-  <div class="process_wrapper">
-    <div class="process_modal__backdrop"></div>
-    {#if protonCheckoutState.appState == APP_STATE_TOKEN_SELECT}
-    <div class="process_modal__content">
-      <div class="process_modal__content__head">
-        <h3 class="modal_title">Select checkout token</h3>
-        <button on:click={closeCheckoutModal} class="modal_close"></button>
+    <Dialog open={protonCheckoutState.appState == APP_STATE_TOKEN_SELECT}>
+      <div slot="head">
+        <h3 class="modal_title">Select token</h3>
       </div>
-      <div class="process_modal__content__body">
-        <span class="modal_detail">Choose the token you want to pay with through webauth.</span>
-        <PayTokenSelector cartAmount={pluginOptions.order.total} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()} on:chan/>
+      <div slot="content">
+        <PayTokenSelector cartAmount={pluginOptions.order.total.toString()} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()}/>
       </div>
-    </div>
-    {/if}
-    {#if protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION}
-    <div class="process_modal__content">
-      <div class="process_modal__content__head">
-        <h3 class="modal_title">Processing payment</h3>
-        <button on:click={closeCheckoutModal} class="modal_close"></button>
+    </Dialog>
+    <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION}>
+      <div slot="head">
+        <h3 class="modal_title">Select token</h3>
       </div>
-      <div class="process_modal__content__body">
-        <span class="modal_detail">Please wait while we check payment information.</span>
+      <div slot="content">
+        <PaymentVerify paymentKey={pluginOptions.paymentKey} onVerify={onPaymentVerify}></PaymentVerify>
       </div>
-      <div class="process_modal__content__body">
-          <div class="processing">
-            <div class="processing__icon"></div>
-          </div>
+    </Dialog>
+    <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_SUCCESS}>
+      <div slot="head">
+        <h3 class="modal_title">Select token</h3>
       </div>
-    </div>
-    {/if}
-  </div>
-  
-  
+      <div slot="content">
+        <PaymentSucceed></PaymentSucceed>
+      </div>
+    </Dialog>
+    <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_FAILURE}>
+      <div slot="head">
+        <h3 class="modal_title">Select token</h3>
+      </div>
+      <div slot="content">
+        
+      </div>
+    </Dialog>
   {/if}
 </main>
 
@@ -198,87 +236,6 @@
     gap: 20px;
 
   }
-  .process_wrapper {
-
-    display: block;
-    position:fixed;
-    top: 0;
-    left: 0;
-    right:0;
-    bottom:0;
-    z-index: 2000;
-    
-  }
-
-  .process_modal__backdrop {
-    position:absolute;
-    top: 0;
-    left: 0;
-    right:0;
-    bottom:0;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 1;
-  }
-
-  .process_modal__content {
-    position:absolute;
-    left:50%;
-    top: 50%;
-    max-height: 80vh;
-    width: 30%;
-    transform: translate(-50%,-50%);
-    background-color: white;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 10px;
-    
-  }
-
-  .process_modal__content__head {
-
-    display: grid;
-    grid-template-columns: 1fr min-content;
-    gap: 10px;
-    padding: 10px;
-    align-items: center;
-    
-  }
-  
-  .process_modal__content__body {
-
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 10px;
-
-  }
-
-  .processing {
-
-    width: 100%;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-
-  }
-  
-  .processing__icon {
-
-    width:80px;
-    height:80px;
-    background-image: url('../../public/img/process_icon.png');
-    background-position: center center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    animation: process 1s infinite;
-
-
-  }
 
   .modal_title {
 
@@ -286,42 +243,5 @@
     margin: 0;
 
   }
-  
-  .modal_detail {
-
-    padding: 0;
-    margin: 0;
-
-  }
-
-  .modal_close {
-
-    width: 30px;
-    height: 30px;
-    background-image: url('../../public/img/close_icon.png');
-    background-position: center center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    background-color: transparent;
-
-  }
-
-  @keyframes process {
-
-    from{
-      transform:rotate(0deg)
-    }
-    
-    to{
-      transform:rotate(360deg)
-    }
-
-
-  }
-
-
 
 </style>

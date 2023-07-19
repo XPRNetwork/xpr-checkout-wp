@@ -1,4 +1,4 @@
-export function generateTransferAction(contract:string,fromActor:string,fromPermission:string,toActor:string,amount: number, symbol: string,memo='') {
+export function generateTransferAction(contract:string,fromActor:string,fromPermission:string,toActor:string,amount: number | string, symbol: string,memo='') {
   
   return {
     account: contract,
