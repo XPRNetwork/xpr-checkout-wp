@@ -10,6 +10,8 @@
 
   const paymentVerifyResult = await verifyPayment(paymentKey);
   onVerify(paymentVerifyResult.data);
+  console.log('we will verify');
+  console.log(paymentVerifyResult.data)
 
 
  })

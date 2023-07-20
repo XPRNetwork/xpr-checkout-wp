@@ -100,12 +100,12 @@ order?:any
 
   function onPaymentVerify (verifyResult:any){
 
-    console.log(verifyResult)
+    console.log(verifyResult,verifyResult.status)
     if(verifyResult && verifyResult.status==200){
 
-      if (verifyResult.data.status == 200){
-      if(verifyResult.data.body_response != null){
-        protonCheckoutState.order = verifyResult.data.body_response;
+      if (verifyResult.status == 200){
+      if(verifyResult.body_response != null){
+        pluginOptions.order = verifyResult.body_response;
         protonCheckoutState.appState = APP_STATE_TRANSFER_VERIFICATION_SUCCESS;
       }
     }else {
