@@ -21,8 +21,8 @@ class ProtonRPC
       'index_position' => 2,
       'key_type' => 'sha256',
       'limit' => 100,
-      'lower_bound' => $paymentKey,
-      'upper_bound' => $paymentKey,
+      'lower_bound' => $this->toEOSIOSha256($paymentKey),
+      'upper_bound' => $this->toEOSIOSha256($paymentKey),
 
     );
 
@@ -33,7 +33,7 @@ class ProtonRPC
 
     error_log(print_r($formattedKey, 1));
     error_log(print_r($paymentKey, 1));
-    error_log(print_r($this->encodeSha256($paymentKey), 1));
+    error_log(print_r($this->toEOSIOSha256($paymentKey), 1));
     error_log(print_r($data, 1));
     $ch = curl_init($endpoint);
     curl_setopt($ch, CURLOPT_POST, 1);
@@ -60,28 +60,21 @@ class ProtonRPC
     return false;
   }
 
-  private  function u256ToHex($u256)
+
+  private function toEOSIOSha256($sha256Key)
   {
-    $hex = '0x';
-    for ($i = 0; $i < 32; $i++) {
-      $byte = hexdec(substr($u256, $i * 2, 2));
-      $hex .= str_pad($byte, 2, '0', STR_PAD_LEFT);
-    }
-    return $hex;
-  }
+    $part1 = substr($sha256Key, 0, 32);
+    $part2 = substr($sha256Key, 32);
 
-  private function encodeSha256($sha256Key)
-  {
+    // Inverser les bytes de chaque partie
+    $reversedPart1 = strrev(pack("H*", $part1));
+    $reversedPart2 = strrev(pack("H*", $part2));
 
+    // Reconvertir les parties en strings
+    $reversedString1 = unpack("H*", $reversedPart1)[1];
+    $reversedString2 = unpack("H*", $reversedPart2)[1];
 
-    $bytes = pack("H*", $sha256Key);
-
-    // Inversion de l'ordre des octets
-    $reversedBytes = strrev($bytes);
-
-    // Conversion des octets en représentation hexadécimale
-    $formattedKey = bin2hex($reversedBytes);
-
-    return $formattedKey;
+    // Rassembler les deux parties
+    return  $reversedString1 . $reversedString2;
   }
 }
