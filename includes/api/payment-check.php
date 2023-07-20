@@ -11,6 +11,7 @@ function woow_register_payment_verification_routes()
   register_rest_route('woow/v1', '/verify-payment', array(
     'methods'  => 'POST',
     'callback' => 'handle_payment_check',
+    'permission_callback' => '__return_true'
 
   ));
 }
