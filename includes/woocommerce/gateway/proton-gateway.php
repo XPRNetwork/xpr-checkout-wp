@@ -375,6 +375,14 @@ function woow_init_gateway_class()
     function relocate_plugin_template($template, $template_name, $template_path)
     {
       global $woocommerce;
+      if (!is_wc_endpoint_url('order-received') || empty($_GET['key'])) {
+        return $template;
+      }
+      $order_id = wc_get_order_id_by_order_key($_GET['key']);
+      $order = wc_get_order($order_id);
+
+      if ($order->get_payment_method() !== "woow") return $template;
+
       $_template = $template;
       if (!$template_path)
         $template_path = $woocommerce->template_url;
