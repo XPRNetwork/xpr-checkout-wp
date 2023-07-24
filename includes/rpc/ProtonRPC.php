@@ -8,6 +8,31 @@ class ProtonRPC
     $this->endpoint = $endpoint;
   }
 
+  public function verifyTransaction($transactionId, $paymentKey)
+  {
+
+    $endpoint = $this->endpoint . '/v1/history/get_transaction';
+    $data = array(
+      'id' => $transactionId,
+    );
+
+    $ch = curl_init($endpoint);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if ($response !== false) {
+      $responseData = json_decode($response, true);
+      $memo = $this->findValueByKey($responseData, "memo");
+      return $memo == $paymentKey;
+    }
+
+    return false;
+  }
+
   public function verifyPaymentStatusByKey($contract, $scope, $table, $paymentKey, $limit = 10)
   {
 
@@ -26,15 +51,6 @@ class ProtonRPC
 
     );
 
-    $formattedKey = '';
-    for ($i = 0; $i < strlen($paymentKey); $i += 2) {
-      $formattedKey .= substr($paymentKey, $i, 2);
-    }
-
-    error_log(print_r($formattedKey, 1));
-    error_log(print_r($paymentKey, 1));
-    error_log(print_r($this->toEOSIOSha256($paymentKey), 1));
-    error_log(print_r($data, 1));
     $ch = curl_init($endpoint);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -43,21 +59,18 @@ class ProtonRPC
 
     $response = curl_exec($ch);
     curl_close($ch);
-    error_log(print_r($response, 1));
     if ($response !== false) {
       $responseData = json_decode($response, true);
 
       foreach ($responseData['rows'] as $row) {
-        error_log("Row key " . print_r($row['paymentKey'], 1));
-        error_log("provided key " . print_r($paymentKey, 1));
         if ($row['paymentKey'] == $paymentKey && $row['status'] == 1) return true;
       }
-      return false;
+      return null;
     } else {
 
-      return false;
+      return null;
     }
-    return false;
+    return null;
   }
 
 
@@ -76,5 +89,23 @@ class ProtonRPC
 
     // Rassembler les deux parties
     return  $reversedString1 . $reversedString2;
+  }
+
+  function findValueByKey(array $array, $keyToFind)
+  {
+    foreach ($array as $key => $value) {
+      if ($key === $keyToFind) {
+        return $value;
+      }
+
+      if (is_array($value)) {
+        $result = $this->findValueByKey($value, $keyToFind);
+        if ($result !== null) {
+          return $result;
+        }
+      }
+    }
+
+    return null; // Si la clé n'est pas trouvée
   }
 }

@@ -36,10 +36,8 @@ order?:any
   import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, APP_STATE_TRANSFER_VERIFICATION_FAILURE, APP_STATE_TRANSFER_VERIFICATION_SUCCESS, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS, WOO_CHECKOUT_FORM_SELECTOR} from './constants';
   import PayTokenSelector from './components/dialogs/content/PayTokenSelector.svelte';
   import {generateTransferAction,generateRegisterPaymentAction} from './proton/actions/';
-  import {verifyPayment} from './services/VerifyPayment'
   import Dialog from './components/dialogs/Dialog.svelte';
   import type { TokenRate } from './type';
-  import PaymentVerification from './components/dialogs/content/PaymentVerify.svelte';
   import PaymentSucceed from './components/dialogs/content/PaymentSucceed.svelte';
   import PaymentVerify from './components/dialogs/content/PaymentVerify.svelte';
   
@@ -139,8 +137,6 @@ order?:any
       pluginOptions.paymentKey
     )
 
-    console.log([registerPaymentAction,transferAction])
-
     protonCheckoutState.isRunning = false;
     const tx:TransactResult = await protonCheckoutState.session.transact(
       {
@@ -189,7 +185,7 @@ order?:any
         <h3 class="modal_title">Select token</h3>
       </div>
       <div slot="content">
-        <PayTokenSelector cartAmount={pluginOptions.order.total.toString()} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()}/>
+        <PayTokenSelector storeCurrency={pluginOptions.wooCurrency} cartAmount={pluginOptions.order.total.toString()} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()}/>
       </div>
     </Dialog>
     <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION}>
@@ -197,12 +193,12 @@ order?:any
         <h3 class="modal_title">Select token</h3>
       </div>
       <div slot="content">
-        <PaymentVerify paymentKey={pluginOptions.paymentKey} onVerify={onPaymentVerify}></PaymentVerify>
+        <PaymentVerify paymentKey={pluginOptions.paymentKey} transactionId={protonCheckoutState.tx.processed.id} onVerify={onPaymentVerify}></PaymentVerify>
       </div>
     </Dialog>
     <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_SUCCESS}>
       <div slot="head">
-        <h3 class="modal_title">Select token</h3>
+        <h3 class="modal_title">Payment verified</h3>
       </div>
       <div slot="content">
         <PaymentSucceed></PaymentSucceed>
@@ -210,7 +206,7 @@ order?:any
     </Dialog>
     <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_FAILURE}>
       <div slot="head">
-        <h3 class="modal_title">Select token</h3>
+        <h3 class="modal_title">Verification fails</h3>
       </div>
       <div slot="content">
         

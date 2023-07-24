@@ -1,1 +1,1 @@
-export const WOO_CHECKOUT_FORM_SELECTOR = '.checkout.woocommerce-checkout'
+export const WOO_NETWORK_CHECKBOX_SELECTOR = '#woocommerce_woow_testnet'

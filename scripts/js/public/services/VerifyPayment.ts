@@ -1,9 +1,11 @@
 import axios from 'axios'
-export function verifyPayment(paymentKey: string) {
+export function verifyPayment(paymentKey: string,transactionId:string,network:string="testnet") {
   
   
   let data = JSON.stringify({
-    "paymentKey": paymentKey
+    "paymentKey": paymentKey,
+    "transactionId": transactionId,
+    "network":network
   });
 
   let config = {

@@ -1,5 +1,6 @@
 {
     "require": {
-        "manamine/php-eos-rpc-sdk": "^1.5"
+        "manamine/php-eos-rpc-sdk": "^1.5",
+        "polygon-io/api": "^1.0"
     }
 }

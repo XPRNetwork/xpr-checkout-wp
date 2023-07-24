@@ -15,12 +15,58 @@ if (!defined('ABSPATH')) {
  * @package     WooCommerce\Classes\Payment
  */
 
+
+
 add_filter('woocommerce_payment_gateways', 'woow_add_gateway_class');
 function woow_add_gateway_class($gateways)
 {
 
   $gateways[] = 'WC_Woow_Gateway';
   return $gateways;
+}
+add_filter('manage_edit-shop_order_columns', 'woow_custom_orders_list_columns', 11);
+function woow_custom_orders_list_columns($columns)
+{
+
+  $new_columns = array();
+  foreach ($columns as $column_name => $column_info) {
+    $new_columns[$column_name] = $column_info;
+    if ('order_status' === $column_name) {
+      $new_columns['txid'] = __('Transaction', 'woow'); // title
+      $new_columns['net'] = __('Mainnet/testnet', 'woow'); // title
+    }
+  }
+  return $new_columns;
+}
+
+add_action('manage_shop_order_posts_custom_column', 'woow_custom_orders_list_column_content', 20, 2);
+function woow_custom_orders_list_column_content($column)
+{
+
+  global $post;
+  if ('txid' === $column) {
+    $order = wc_get_order($post->ID);
+    $txId = $order->get_meta('_txId');
+    $net = $order->get_meta('_net');
+    $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
+    $link = $net == "mainnet" ? "https://protonscan.io/transaction/" : "https://testnet.protonscan.io/transaction/";
+    if ($order->get_payment_method()) {
+      echo '<a class="button-primary" style="color:#50575e;background-color:' . $color . ';" target="_blank" href="' . $link . $txId . '">' . substr($txId, strlen($txId) - 8, strlen($txId)) . '</a>';
+    } else {
+      echo '';
+    }
+  }
+  if ('net' === $column) {
+    $order = wc_get_order($post->ID);
+    $net = $order->get_meta('_net');
+    $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
+    if ($net == 'testnet') {
+      echo '<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Testnet</a>';
+    } elseif ($net == 'mainnet') {
+      echo '<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Mainnet</a>';
+    }
+    echo '';
+  }
 }
 
 add_action('plugins_loaded', 'woow_init_gateway_class');
@@ -59,7 +105,8 @@ function woow_init_gateway_class()
       add_action('woocommerce_checkout_create_order', array($this, 'custom_meta_to_order'), 20, 1);
       add_filter('woocommerce_locate_template', array($this, 'relocate_plugin_template'), 1, 3);
       add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
-
+      add_action('admin_enqueue_scripts', array($this, 'woow_add_admin_script'));
+      add_action('manage_shop_order_posts_custom_column', array($this, 'woow_custom_orders_list_column_content'), 20, 2);
       // Customer Emails.
       add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
     }
@@ -102,22 +149,29 @@ function woow_init_gateway_class()
           'desc_tip'      => true,
         ),
         'description' => array(
-          'title' => __('Title', 'woow'),
+          'title' => __('Description', 'woow'),
           'type' => 'text',
           'description' => __('This controls the title which the user sees during checkout.', 'woow'),
           'default' => __('pay securly with with multiple crypto currencies through Webauth with NO GAS FEE BABY !', 'woow'),
           'desc_tip'      => true,
         ),
+        'registered' => array(
+          'title' => __('Register store ', 'woow'),
+          'type' => 'woow_register',
+          'description' => __('Register you store nearby the smart contract', 'woow'),
+          'default' => __('', 'woow'),
+          'desc_tip'      => true,
+        ),
         'mainwallet' => array(
           'title' => __('Mainnet account', 'woow'),
-          'type' => 'text',
+          'type' => 'hidden',
           'description' => __('Set the destination account on mainnet where pay token will be paid. <b>Used only when "Use testnet" option is disabled</b>', 'woow'),
           'default' => __('', 'woow'),
           'desc_tip'      => true,
         ),
         'testwallet' => array(
           'title' => __('Testnet account', 'woow'),
-          'type' => 'text',
+          'type' => 'hidden',
           'description' => __('Set the destination account on testnet where pay token will be paid. Used only when "Use testnet" option is enabled.', 'woow'),
           'default' => __('', 'woow'),
           'desc_tip'      => true,
@@ -150,13 +204,7 @@ function woow_init_gateway_class()
           'default' => __('', 'woow'),
           'desc_tip'      => true,
         ),
-        'registered' => array(
-          'title' => __('Register store ', 'woow'),
-          'type' => 'woow_register',
-          'description' => __('Register you store nearby the smart contract', 'woow'),
-          'default' => __('', 'woow'),
-          'desc_tip'      => true,
-        )
+
 
       );
     }
@@ -241,10 +289,10 @@ function woow_init_gateway_class()
       $orderData = $order->get_data();
       $paymentKey = $order->get_meta('_paymentKey');
 
+
       // and this is our custom JS in your plugin directory that works with token.js
       wp_register_script('woow_public', PWG_ROOT_URL . 'dist/public/js/proton-wc-app.iife.js?v=' . uniqid(), [], time(), true);
 
-      wp_enqueue_style('woow_public_style', PWG_ROOT_URL . 'dist/public/js/proton-wc-app.css?v=' . uniqid());
       // in most payment processors you have to use PUBLIC KEY to obtain a token
       wp_localize_script('woow_public', 'woowParams', array(
         "mainwallet" => $this->get_option('mainwallet'),
@@ -253,7 +301,7 @@ function woow_init_gateway_class()
         "appName" => $this->get_option('appName'),
         "appLogo" => $this->get_option('appLogo'),
         "allowedTokens" => $this->get_option('allowedTokens'),
-        "wooCurrency" => "EUR",
+        "wooCurrency" => get_woocommerce_currency(),
         "cartAmount" => 20,
         "order" => $orderData,
         "paymentKey" => $paymentKey
@@ -261,6 +309,7 @@ function woow_init_gateway_class()
       ));
 
       wp_enqueue_script('woow_public');
+      wp_enqueue_style('woow_public_style', PWG_ROOT_URL . 'dist/public/js/proton-wc-app.css?v=' . uniqid());
     }
 
     /**
@@ -347,6 +396,110 @@ function woow_init_gateway_class()
         $template = $_template;
 
       return $template;
+    }
+
+    public function generate_woow_register_html($key, $data)
+    {
+      $field_key = $this->get_field_key($key);
+      $defaults  = array(
+        'title'             => '',
+        'disabled'          => false,
+        'class'             => '',
+        'css'               => '',
+        'placeholder'       => '',
+        'type'              => 'text',
+        'desc_tip'          => false,
+        'description'       => '',
+        'custom_attributes' => array(),
+      );
+
+      $data = wp_parse_args($data, $defaults);
+      ob_start();
+?>
+
+
+      <tr valign="top">
+        <th scope="row" class="titledesc">
+          <label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?> <?php echo $this->get_tooltip_html($data); // WPCS: XSS ok. 
+                                                                                                        ?></label>
+        </th>
+        <td class="forminp">
+          <fieldset>
+            <legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
+            <div id="proton-store-reg">
+
+            </div>
+            <?php echo $this->get_description_html($data); // WPCS: XSS ok. 
+            ?>
+          </fieldset>
+        </td>
+      </tr>
+    <?php
+      return ob_get_clean();
+    }
+
+    public function generate_hidden_html($key, $data)
+    {
+      $field_key = $this->get_field_key($key);
+      $defaults  = array(
+        'title'             => '',
+        'disabled'          => false,
+        'class'             => '',
+        'css'               => '',
+        'placeholder'       => '',
+        'type'              => 'text',
+        'desc_tip'          => false,
+        'description'       => '',
+        'custom_attributes' => array(),
+      );
+
+      $data = wp_parse_args($data, $defaults);
+
+      ob_start();
+    ?>
+      <tr valign="top" class="hidden">
+        <th scope="row" class="titledesc">
+          <label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?> <?php echo $this->get_tooltip_html($data); // WPCS: XSS ok. 
+                                                                                                        ?></label>
+        </th>
+        <td class="forminp">
+          <fieldset>
+            <legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
+            <input class="input-text regular-input <?php echo esc_attr($data['class']); ?>" type="<?php echo esc_attr($data['type']); ?>" name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" style="<?php echo esc_attr($data['css']); ?>" value="<?php echo esc_attr($this->get_option($key)); ?>" placeholder="<?php echo esc_attr($data['placeholder']); ?>" <?php disabled($data['disabled'], true); ?> <?php echo $this->get_custom_attribute_html($data); // WPCS: XSS ok. 
+                                                                                                                                                                                                                                                                                                                                                                                                                                              ?> />
+            <?php echo $this->get_description_html($data); // WPCS: XSS ok. 
+            ?>
+          </fieldset>
+        </td>
+      </tr>
+<?php
+
+      return ob_get_clean();
+    }
+
+    public function woow_add_admin_script()
+    {
+
+      global $current_screen;
+      if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wc-settings') {
+        wp_register_script('woow_admin_regstore', PWG_ROOT_URL . 'dist/admin/js/proton-wc-admin.iife.js?v=' . uniqid(), [], time(), true);
+        wp_localize_script('woow_admin_regstore', 'woowRegStoreParams', array(
+          "networkCheckBoxSelector" => "#woocommerce_woow_testnet",
+          "mainnetAccountFieldSelector" => "#woocommerce_woow_mainwallet",
+          "testnetAccountFieldSelector" => "#woocommerce_woow_testwallet",
+          "mainnetActor" => $this->get_option('mainwallet'),
+          "testnetActor" => $this->get_option('testwallet')
+        ));
+
+        wp_enqueue_script('woow_admin_regstore');
+        wp_enqueue_style('woow_public_style', PWG_ROOT_URL . 'dist/admin/js/proton-wc-admin.css?v=' . uniqid());
+      };
+    }
+    public function woow_custom_orders_list_columns($columns)
+    {
+
+      $columns['txid'] = __('Transaction', 'woow'); // title
+      return $columns;
     }
   }
 }

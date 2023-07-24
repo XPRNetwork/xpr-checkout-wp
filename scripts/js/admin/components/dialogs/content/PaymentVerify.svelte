@@ -3,14 +3,12 @@
   import { verifyPayment } from '../../../services/VerifyPayment';
 
  export let paymentKey = '';
- export let transactionId = '';
- export let network = "testnet"
  export let onVerify:(result:any)=>void = (result:any)=>{}
 
 
  onMount(async ()=>{
 
-  const paymentVerifyResult = await verifyPayment(paymentKey,transactionId,network);
+  const paymentVerifyResult = await verifyPayment(paymentKey);
   onVerify(paymentVerifyResult.data);
   console.log('we will verify');
   console.log(paymentVerifyResult.data)

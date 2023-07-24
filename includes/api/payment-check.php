@@ -21,7 +21,7 @@ function handle_payment_check($request)
 
   $returnResult = new WP_REST_Response();
   $params = $request->get_params();
-  if (isset($params['paymentKey'])) {
+  if (isset($params['paymentKey']) && isset($params['transactionId'])) {
 
     $args = array(
       'post_type'      => 'shop_order',
@@ -34,12 +34,29 @@ function handle_payment_check($request)
 
     $ordersQuery = wc_get_orders($args);
     $orderData  = null;
-    if (!empty($ordersQuery)) {
+
+    if (count($ordersQuery) > 0) {
       $order = $ordersQuery[0]; // Return the first order found
 
-      $rpc = new ProtonRPC("https://proton-public-testnet.neftyblocks.com");
+      //TODO: Change the endpoint according to $params['network']
+      $rpc = new ProtonRPC("https://test.proton.eosusa.io");
+
+      $isTransactionVerified = $rpc->verifyTransaction($params['transactionId'], $params['paymentKey']);
+      if (!$isTransactionVerified) {
+        $returnResult = new WP_REST_Response([
+          'status' => 403,
+          'response' => "Unauthorized",
+          'body_response' => null
+        ]);
+        return rest_ensure_response($returnResult);
+      }
+
       $rpcResults = $rpc->verifyPaymentStatusByKey("woow", "woow", "payment", $params['paymentKey'], 100);
+
       if ($rpcResults) {
+
+        $order->update_meta_data('_txId', $params['transactionId']);
+        $order->update_meta_data('_net', $params['network']);
         $order->update_status('completed');
         $order->save();
         $orderData = $order->get_data();
@@ -49,10 +66,9 @@ function handle_payment_check($request)
           'body_response' => $orderData
         ]);
       } else {
-        $returnResult = new WP_Error([
-          'status' => 404,
-          'response' => "order not validated",
-          'body_response' => null
+        $returnResult = new WP_Error("order_not_found", "order not validated", [
+
+          'status' => 404
         ]);
       }
     } else {

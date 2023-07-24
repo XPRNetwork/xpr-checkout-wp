@@ -1,12 +1,16 @@
 <script lang="ts">
   import {truncateToPrecision} from '../../../utils/price'
+  import {getConvertedToUSD} from './../../../services/PriceRate'
   import axios, { type AxiosRequestConfig } from 'axios';
   import {onMount} from 'svelte';
   import type { TokenRate } from './../../../type';
+  import { getTokensPrices } from '../../../services/TokensPrices';
 
   export let allowedTokens:string;
   export let actorName:string;
   export let cartAmount:string;
+  export let storeCurrency:string;
+  export let usdCartAmount:number;
   export let changeSession = ()=>{
     console.log('change session')
   }
@@ -20,11 +24,15 @@
 
   onMount(async ()=>{
 
-    console.log(cartAmount,'cartAmount')
-    const tokenRatesRequest:AxiosRequestConfig = {url:'https://proton.alcor.exchange/api/v2/tokens'}
-    const tokenRatesResult = await axios<TokenRate[]>(tokenRatesRequest);
+    const convertedOrderAmountAsUsd  = await getConvertedToUSD(storeCurrency,parseFloat(cartAmount));
+    if (convertedOrderAmountAsUsd.status == 200){
+      usdCartAmount = convertedOrderAmountAsUsd.data.body_response
+    }
+    console.log(convertedOrderAmountAsUsd.data , 'yeah')
+    
+    const tokenRatesResult = await getTokensPrices();
     if (tokenRatesResult.status == 200){
-      allowedTokenRates = tokenRatesResult.data.reduce((prev:TokenRate[],current)=>{
+      allowedTokenRates = tokenRatesResult.data.body_response.reduce((prev:TokenRate[],current)=>{
 
         if(allowedTokensArray.some((token)=>token == current.symbol)){
           prev.push(current);
@@ -41,8 +49,8 @@
     const rate = getTokenRateBySymbol(symbol)
     if (rate){
 
-      console.log (truncateToPrecision(fiatAmount/rate.usd_price,rate.decimals),'truncateToPrecision(fiatAmount/rate.usd_price,rate.decimals)')
-      return truncateToPrecision(fiatAmount/rate.usd_price,rate.decimals)
+      
+      return parseFloat(truncateToPrecision(fiatAmount/rate.quote.price_usd,rate.decimals))
 
     }
     return 0
@@ -60,6 +68,9 @@
 </script>
 
 <div class="token_rates">
+  {#if usdCartAmount}
+  <span><b>{cartAmount} {storeCurrency} = {truncateToPrecision(usdCartAmount,2)} USD</b></span>
+  {/if}
   {#if allowedTokenRates.length == 0}
     <p>Fetch token rate</p>
   {:else}
@@ -68,7 +79,7 @@
     <li >
       <a aria-roledescription="Select token" class="checkout-button button alt wc-forward wp-element-button token_rates__list__render_item" on:click={()=>selectPayToken(getTokenRateBySymbol(token.symbol),convertFiatPriceToToken(parseFloat(cartAmount),token.symbol))}>
         <h5 class="token_rates__list__render_item__token_price">
-          Pay {convertFiatPriceToToken(parseFloat(cartAmount),token.symbol).toLocaleString()} {token.symbol}
+          Pay {convertFiatPriceToToken(usdCartAmount,token.symbol).toLocaleString()} {token.symbol}
         </h5>
         <div class="token_rates__list__render_item__drill_icon">
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
@@ -119,10 +130,7 @@
 
     width: 16px;
     height: 30px;
-    background-image: url('../../public/img/drill_icon.png');
-    background-position: center center;
-    background-size: contain;
-    background-repeat: no-repeat;
+    
 
   }
   .token_rates__list__render_item__token_price {
