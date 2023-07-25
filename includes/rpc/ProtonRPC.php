@@ -106,6 +106,37 @@ class ProtonRPC
     return null;
   }
 
+  public function fetchBalances($store)
+  {
+
+    $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
+    $data = array(
+      'scope' => $store,
+      'code' => 'woow',
+      'table' => 'balances',
+      'json' => true,
+      'limit' => 100,
+
+
+    );
+
+    $ch = curl_init($endpoint);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if ($response !== false) {
+      return json_decode($response, true);
+    } else {
+
+      return null;
+    }
+    return null;
+  }
+
 
   private function toEOSIOSha256($sha256Key)
   {
