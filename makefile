@@ -1,4 +1,4 @@
-TARGET_NAME		= woow_woocommerc_webauth_gateway
+TARGET_NAME		= woow_woocommerce_webauth_gateway
 VERSION			= 1_0
 BUILD_DIR		=./output
 ROOT_FOLDER = ./
