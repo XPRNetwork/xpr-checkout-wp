@@ -8,16 +8,27 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        assetFileNames:'proton-wc-app.[ext]'
+        //assetFileNames:'woow-public.[ext]'
+        assetFileNames: (assetInfo) => {
+          let extType = assetInfo.name.split('.').at(1);
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
+            extType = 'img';
+          }
+          return `public/${extType}/woow-public.[ext]`;
+        },
       }
     },
     assetsDir: './',
-    outDir:'../../../dist/public',
+    outDir:'../../../dist/',
     lib: {
       entry: resolve(__dirname, './main.ts'),
-      name: 'protonwcapp',
-      // the proper extensions will be added
-      fileName: 'proton-wc-app',
+      name: 'woow_public',
+      
+      fileName: (fileInfo) => { 
+
+        return 'public/js/woow-public.js'
+
+      },
       formats:['iife']
     
     },

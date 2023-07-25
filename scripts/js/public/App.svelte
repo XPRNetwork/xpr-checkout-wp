@@ -30,16 +30,17 @@ order?:any
 
 </script>
 <script lang="ts">
+  import {MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS} from '../commons/constants/';
+  import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, APP_STATE_TRANSFER_VERIFICATION_FAILURE, APP_STATE_TRANSFER_VERIFICATION_SUCCESS} from './constants/';
   import { onMount } from 'svelte';
   import ProtonWeb, { type LinkSession, type TransactResult } from '@proton/web-sdk';
   import {truncateToPrecision} from './utils/price'
-  import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, APP_STATE_TRANSFER_VERIFICATION_FAILURE, APP_STATE_TRANSFER_VERIFICATION_SUCCESS, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS, WOO_CHECKOUT_FORM_SELECTOR} from './constants';
-  import PayTokenSelector from './components/dialogs/content/PayTokenSelector.svelte';
   import {generateTransferAction,generateRegisterPaymentAction} from './proton/actions/';
-  import Dialog from './components/dialogs/Dialog.svelte';
+  import Dialog from '../commons/components/dialogs/Dialog.svelte';
+  import PayTokenSelector from '../commons/components/dialogs/content/PayTokenSelector.svelte';
   import type { TokenRate } from './type';
-  import PaymentSucceed from './components/dialogs/content/PaymentSucceed.svelte';
-  import PaymentVerify from './components/dialogs/content/PaymentVerify.svelte';
+  import PaymentSucceed from '../commons/components/dialogs/content/PaymentSucceed.svelte';
+  import PaymentVerify from '../commons/components/dialogs/content/PaymentVerify.svelte';
   
   
 

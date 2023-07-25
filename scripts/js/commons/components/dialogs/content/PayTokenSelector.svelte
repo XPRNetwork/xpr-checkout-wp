@@ -10,7 +10,7 @@
   export let actorName:string;
   export let cartAmount:string;
   export let storeCurrency:string;
-  export let usdCartAmount:number;
+  let usdCartAmount:number;
   export let changeSession = ()=>{
     console.log('change session')
   }
