@@ -7,7 +7,8 @@
     "dev": "vite",
     "build:public": "LIB_NAME=checkout vite build",
     "build:regstore": "LIB_NAME=regstore vite build",
-    "build": "npm run build:public && npm run build:regstore",
+    "style": "node-sass ./styles/wp/layout/ -o ../dist/admin/layout/",
+    "build": "npm run build:public && npm run build:regstore && npm run style",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -18,6 +19,7 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "@tsconfig/svelte": "^5.0.0",
+    "node-sass": "^9.0.0",
     "sass": "^1.63.6",
     "svelte": "^4.0.3",
     "svelte-check": "^3.4.6",
