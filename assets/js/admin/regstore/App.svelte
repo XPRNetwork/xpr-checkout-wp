@@ -10,6 +10,7 @@
  }
 </script>
 <script lang="ts">
+  import './../../../styles/main.scss'
   import { onMount } from 'svelte';
   import ProtonWeb, { type LinkSession, type TransactResult } from '@proton/web-sdk';
   import Dialog from '../../commons/components/dialogs/Dialog.svelte'
