@@ -76,7 +76,6 @@ class ProtonRPC
   {
 
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
-
     $data = array(
       'scope' => 'woow',
       'code' => 'woow',

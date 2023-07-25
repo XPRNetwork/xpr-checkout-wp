@@ -12,10 +12,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import ProtonWeb, { type LinkSession, type TransactResult } from '@proton/web-sdk';
-  import Dialog from './components/dialogs/Dialog.svelte'
-  import {APP_STATE_STORE_REGISTRATION, APP_STATE_STORE_REGISTRATION_SUCCEED, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS} from './constants';
-  import RegisterStore from './components/dialogs/content/RegisterStoreSelector.svelte';
-  import { generateRegisterStoreAction } from './proton/actions/registerStore';
+  import Dialog from '../../commons/components/dialogs/Dialog.svelte'
+  import {APP_STATE_STORE_REGISTRATION, APP_STATE_STORE_REGISTRATION_SUCCEED} from './constants';
+  import { MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS} from '../../commons/constants';
+  import RegisterStore from '../../commons/components/dialogs/content/RegisterStoreSelector.svelte';
+  import { generateRegisterStoreAction } from '../../commons/proton/actions/registerStore';
   
   
   let protonSession:LinkSession | undefined  = undefined;

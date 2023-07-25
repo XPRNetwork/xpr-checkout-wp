@@ -1,9 +1,9 @@
 <script lang="ts">
   import {truncateToPrecision} from '../../../utils/price'
-  import {getConvertedToUSD} from './../../../services/PriceRate'
+  import {getConvertedToUSD} from '../../../services/PriceRate'
   import axios, { type AxiosRequestConfig } from 'axios';
   import {onMount} from 'svelte';
-  import type { TokenRate } from './../../../type';
+  import type { TokenRate } from '../../../type';
   import { getTokensPrices } from '../../../services/TokensPrices';
 
   export let allowedTokens:string;
