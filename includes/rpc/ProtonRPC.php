@@ -72,6 +72,40 @@ class ProtonRPC
     }
     return null;
   }
+  public function fetchPayments($store)
+  {
+
+    $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
+
+    $data = array(
+      'scope' => 'woow',
+      'code' => 'woow',
+      'table' => 'payment',
+      'json' => true,
+      'index_position' => 3,
+      'key_type' => 'i64',
+      'limit' => 100,
+      'lower_bound' => $store,
+      'upper_bound' => $store,
+
+    );
+
+    $ch = curl_init($endpoint);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if ($response !== false) {
+      return json_decode($response, true);
+    } else {
+
+      return null;
+    }
+    return null;
+  }
 
 
   private function toEOSIOSha256($sha256Key)

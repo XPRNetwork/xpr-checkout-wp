@@ -33,7 +33,7 @@ class TokenPrices
     $response = curl_exec($ch);
     curl_close($ch);
     $responseData = json_decode($response, true);
-    //return $responseData;
+
     if ($responseData) {
 
       $rawFiltered = array_map(function ($token) {
@@ -42,6 +42,7 @@ class TokenPrices
         $tokenBase['symbol'] = $token['symbol'];
         $tokenBase['contract'] = $token['account'];
         $tokenBase['decimals'] = $token['supply']['precision'];
+        $tokenBase['logo'] = $token['metadata']['logo'];
         $prices =  array_filter($token['pairs'], function ($pair) {
           return strpos($pair['id'], '/USD') !== false;
         });

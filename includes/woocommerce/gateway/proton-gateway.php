@@ -15,7 +15,18 @@ if (!defined('ABSPATH')) {
  * @package     WooCommerce\Classes\Payment
  */
 
-
+add_action('admin_menu', 'woow_register_woow_dashboard', 99);
+function woow_register_woow_dashboard()
+{
+  add_submenu_page('woocommerce', 'Woow dashboard', 'Woow dashboard', 'manage_options', 'my-custom-submenu-page', 'render_woow_dashboard');
+}
+function render_woow_dashboard()
+{
+  echo '<h3>Woow Dashboard</h3>';
+  include_once PWG_ROOT_DIR . 'includes/woocommerce/layouts/woow-dashboard.php';
+  $dashboardLayout = new WoowDashboadLayout();
+  echo $dashboardLayout->render();
+}
 
 add_filter('woocommerce_payment_gateways', 'woow_add_gateway_class');
 function woow_add_gateway_class($gateways)
