@@ -3,17 +3,10 @@
   export let title = "";
   export let onClose = ()=>{};
   export let open:boolean = false
-
   function closeCheckoutModal(){
-
     open = false
-
   }
-
 </script>
-
-
-
 {#if open}
 <div class="dialog">
   <div class="dialog__backdrop"></div>
