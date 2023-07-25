@@ -137,6 +137,7 @@ order?:any
       pluginOptions.paymentKey
     )
 
+    console.log([registerPaymentAction,transferAction]);
     protonCheckoutState.isRunning = false;
     const tx:TransactResult = await protonCheckoutState.session.transact(
       {

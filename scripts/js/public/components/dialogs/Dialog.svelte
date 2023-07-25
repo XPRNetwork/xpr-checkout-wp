@@ -58,7 +58,7 @@
     left:50%;
     top: 50%;
     max-height: 80vh;
-    width: 50%;
+    width: 480px;
     transform: translate(-50%,-50%);
     background-color: white;
     z-index: 1;
@@ -66,6 +66,17 @@
     grid-template-columns: 1fr;
     gap: 10px;
     padding: 10px;
+
+  }
+  @media (max-width:640px) {
+    .dialog__content {
+
+      width: auto;
+      left: 10px;
+      right:10px;
+      top: 50%;
+      transform: translate(0,-50%);
+    }
   }
 
   .dialog__close {
