@@ -1,6 +1,6 @@
 import App from './App.svelte'
 const app = new App({
-  target: document.getElementById('proton-store-reg'),
+  target: document.getElementById('wookey-regstore'),
 
 })
 
