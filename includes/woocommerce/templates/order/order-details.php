@@ -40,12 +40,12 @@ if ($show_downloads) {
 	);
 }
 ?>
-<section class="woocommerce-order-details">
+<section class="woocommerce-order-details ">
 	<?php do_action('woocommerce_order_details_before_order_table', $order); ?>
 
 	<h2 class="woocommerce-order-details__title"><?php esc_html_e('Order details', 'woocommerce'); ?></h2>
 
-	<div style="display: grid; grid-template-columns: 1fr  40%; gap:40px">
+	<div class="wookey-order-details">
 		<table style="width: 100%;" class="woocommerce-table woocommerce-table--order-details shop_table order_details">
 
 			<thead>
@@ -98,7 +98,7 @@ if ($show_downloads) {
 				<?php endif; ?>
 			</tfoot>
 		</table>
-		<div id="woow-payment-app"></div>
+		<div id="wookey-checkout" class="wookey-checkout"></div>
 	</div>
 	<?php do_action('woocommerce_order_details_after_order_table', $order); ?>
 </section>
