@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Woow\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: woow-gateway.php:65
+#: woow-gateway.php:559
+msgid "Transaction"
+msgstr ""
+
+#: woow-gateway.php:66
+msgid "Mainnet/testnet"
+msgstr ""
+
+#: woow-gateway.php:151
+msgid "Webauth for woocommerce"
+msgstr ""
+
+#: woow-gateway.php:152
+msgid "Provides a Webauth Payment Gateway for your customer."
+msgstr ""
+
+#: woow-gateway.php:163
+msgid "Enable/Disable"
+msgstr ""
+
+#: woow-gateway.php:165
+msgid "Enable Webauth Payment"
+msgstr ""
+
+#: woow-gateway.php:169
+msgid "Use testnet"
+msgstr ""
+
+#: woow-gateway.php:171
+msgid "Enable testnet"
+msgstr ""
+
+#: woow-gateway.php:175
+msgid "Title"
+msgstr ""
+
+#: woow-gateway.php:177
+#: woow-gateway.php:184
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: woow-gateway.php:178
+msgid "WebAuth payment"
+msgstr ""
+
+#: woow-gateway.php:182
+msgid "Description"
+msgstr ""
+
+#: woow-gateway.php:185
+msgid "pay securly with with multiple crypto currencies through Webauth with NO GAS FEE BABY !"
+msgstr ""
+
+#: woow-gateway.php:189
+msgid "Register store "
+msgstr ""
+
+#: woow-gateway.php:191
+msgid "Register you store nearby the smart contract"
+msgstr ""
+
+#: woow-gateway.php:196
+msgid "Mainnet account"
+msgstr ""
+
+#: woow-gateway.php:198
+msgid "Set the destination account on mainnet where pay token will be paid. <b>Used only when \"Use testnet\" option is disabled</b>"
+msgstr ""
+
+#: woow-gateway.php:203
+msgid "Testnet account"
+msgstr ""
+
+#: woow-gateway.php:205
+msgid "Set the destination account on testnet where pay token will be paid. Used only when \"Use testnet\" option is enabled."
+msgstr ""
+
+#: woow-gateway.php:210
+msgid "dApp Name"
+msgstr ""
+
+#: woow-gateway.php:212
+msgid "The application name displayed in the webauth modal"
+msgstr ""
+
+#: woow-gateway.php:217
+msgid "dApp Logo"
+msgstr ""
+
+#: woow-gateway.php:219
+msgid "The application logo displayed in the webauth modal"
+msgstr ""
+
+#: woow-gateway.php:224
+msgid "Allowed Tokens"
+msgstr ""
+
+#: woow-gateway.php:226
+msgid "Accepted tokens as payment for transfer, will be displayed in the payments process flow. Specify a uppercase only, coma separated, tokens list"
+msgstr ""
+
+#: woow-gateway.php:231
+msgid "Polygon API key "
+msgstr ""
+
+#: woow-gateway.php:233
+msgid "Your key for currency pricing service on polygon.io."
+msgstr ""
+
+#: woow-gateway.php:267
+msgid "Payment to be made upon delivery."
+msgstr ""
+
+#: woow-gateway.php:339
+msgid "Pay with WebAuth"
+msgstr ""
+
+#: woow-gateway.php:340
+msgid "Connect your WebAuth wallet to start the payment flow."
+msgstr ""
+
+#: woow-gateway.php:341
+msgid "Connect WebAuth"
+msgstr ""
+
+#: woow-gateway.php:342
+msgid "Payment succesfull"
+msgstr ""
+
+#: woow-gateway.php:343
+msgid "This order is marked as complete"
+msgstr ""
+
+#: woow-gateway.php:344
+msgid "Select token"
+msgstr ""
+
+#: woow-gateway.php:345
+msgid "Select the token you want to pay with."
+msgstr ""
+
+#: woow-gateway.php:346
+msgid "Connected as"
+msgstr ""
+
+#: woow-gateway.php:347
+msgid "change account ?"
+msgstr ""
+
+#: woow-gateway.php:348
+msgid "Pay"
+msgstr ""
