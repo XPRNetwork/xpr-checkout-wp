@@ -1,15 +1,15 @@
-export function generateRegisterStoreAction(fromActor:string,fromPermission:string) {
+export function generateWithdrawAction(fromActor:string,fromPermission:string, symbol: number) {
   
   return {
     account: "wookey",
-    name: 'store.reg',
+    name: 'bal.claim',
     authorization: [{
       actor: fromActor,
       permission: fromPermission
     }],
     data: {
         storeAccount: fromActor,
-       
+        symbol:`${symbol}`
     }
   };
 }

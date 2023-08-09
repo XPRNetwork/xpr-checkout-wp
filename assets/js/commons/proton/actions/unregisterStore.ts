@@ -1,8 +1,8 @@
-export function generateRegisterStoreAction(fromActor:string,fromPermission:string) {
+export function generateUnregisterStoreAction(fromActor:string,fromPermission:string) {
   
   return {
     account: "wookey",
-    name: 'store.reg',
+    name: 'store.unreg',
     authorization: [{
       actor: fromActor,
       permission: fromPermission

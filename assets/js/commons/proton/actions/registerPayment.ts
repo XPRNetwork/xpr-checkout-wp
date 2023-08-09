@@ -1,7 +1,7 @@
 export function generateRegisterPaymentAction(storeAccout:string,buyer: string,buyerPermission:string, paymentKey:string,amount:number | string,symbol:string,tokenContract:string) {
   
   return {
-    account: "woow",
+    account: "wookey",
     name: 'pay.reg',
     authorization: [{
       actor: buyer,
