@@ -1,5 +1,5 @@
 import axios from 'axios'
-export function getConvertedToUSD(storeCurrency:string,orderAmount:number) {
+export function getConvertedToUSD(baseDomain:string,storeCurrency:string,orderAmount:number) {
   
   
   let data = JSON.stringify({
@@ -10,7 +10,7 @@ export function getConvertedToUSD(storeCurrency:string,orderAmount:number) {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: 'http://localhost:3002/wp-json/woow/v1/price-rates',
+    url: `${baseDomain}/wp-json/wookey/v1/price-rates`,
     headers: { 
       'Content-Type': 'application/json', 
     },
