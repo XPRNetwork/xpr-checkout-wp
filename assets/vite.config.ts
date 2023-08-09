@@ -4,12 +4,24 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 const config = {
   checkout: {
     entry: resolve(__dirname, "./js/public/main.ts"),
-    fileName: "woow.public",
+    fileName: "wookey.public",
+    outdir:'public'
   },
   regstore: {
     entry: resolve(__dirname, "./js/admin/regstore/main.ts"),
-    fileName: "woow.admin.regstore",
-    
+    fileName: "wookey.admin.regstore",
+    outdir:'admin'
+
+  },
+  dashboard: {
+    entry: resolve(__dirname, "./js/admin/dashboard/main.ts"),
+    fileName: "wookey.admin.dashboard",
+    outdir:'admin'
+  },
+  refund: {
+    entry: resolve(__dirname, "./js/admin/refund/main.ts"),
+    fileName: "wookey.admin.refund",
+    outdir:'admin'
   },
 };
 const currentConfig = config[process.env.LIB_NAME];
@@ -22,10 +34,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        assetFileNames:()=>`${currentConfig.fileName}.[ext]`,
-      }
+        
+        assetFileNames: () => { console.log(currentConfig.fileName); return `${currentConfig.fileName}.[ext]`},
+      },
+      
     },
-    outDir: `../dist/${process.env.LIB_NAME}`,
+    outDir: `../dist/${currentConfig.outdir}/${process.env.LIB_NAME}`,
     lib: {
       name: `${process.env.LIB_NAME}`,
       fileName:()=>`${process.env.LIB_NAME}.[ext]`,

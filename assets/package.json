@@ -7,8 +7,11 @@
     "dev": "vite",
     "build:public": "LIB_NAME=checkout vite build",
     "build:regstore": "LIB_NAME=regstore vite build",
-    "style": "node-sass ./styles/wp/layout/ -o ../dist/admin/layout/",
-    "build": "npm run build:public && npm run build:regstore && npm run style",
+    "build:dashboard": "LIB_NAME=dashboard vite build",
+    "build:refund": "LIB_NAME=refund vite build",
+    "styles:checkout": "node-sass ./styles/wp/layout/public.scss -o ../dist/public/",
+    "styles": "npm run styles:checkout",
+    "build": "npm run build:public && npm run build:regstore && npm run build:dashboard && npm run build:refund && npm run styles",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -17,6 +20,7 @@
     "axios": "^1.4.0"
   },
   "devDependencies": {
+    "@proton/js": "^27.9.3",
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "@tsconfig/svelte": "^5.0.0",
     "node-sass": "^9.0.0",
