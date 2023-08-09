@@ -15,6 +15,9 @@ class ProtonRPC
     $data = array(
       'id' => $transactionId,
     );
+    error_log("check transaction");
+    error_log($endpoint);
+    error_log(print_r($data, 1));
 
     $ch = curl_init($endpoint);
     curl_setopt($ch, CURLOPT_POST, 1);
@@ -33,23 +36,27 @@ class ProtonRPC
     return false;
   }
 
-  public function verifyPaymentStatusByKey($contract, $scope, $table, $paymentKey, $limit = 10)
+  public function verifyPaymentStatusByKey($paymentKey)
   {
 
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
 
     $data = array(
-      'scope' => $scope,
-      'code' => $contract,
-      'table' => $table,
+      'scope' => "wookey",
+      'code' => "wookey",
+      'table' => "payments",
       'json' => true,
       'index_position' => 2,
       'key_type' => 'sha256',
-      'limit' => 100,
+      'limit' => 1,
       'lower_bound' => $this->toEOSIOSha256($paymentKey),
       'upper_bound' => $this->toEOSIOSha256($paymentKey),
 
     );
+
+    error_log("verify payment");
+    error_log($endpoint);
+    error_log(print_r($data, 1));
 
     $ch = curl_init($endpoint);
     curl_setopt($ch, CURLOPT_POST, 1);
@@ -58,6 +65,7 @@ class ProtonRPC
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
+    error_log(print_r($response, 1));
     curl_close($ch);
     if ($response !== false) {
       $responseData = json_decode($response, true);
@@ -77,15 +85,16 @@ class ProtonRPC
 
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
     $data = array(
-      'scope' => 'woow',
-      'code' => 'woow',
-      'table' => 'payment',
+      'scope' => 'wookey',
+      'code' => 'wookey',
+      'table' => 'payments',
       'json' => true,
       'index_position' => 3,
       'key_type' => 'i64',
       'limit' => 100,
       'lower_bound' => $store,
       'upper_bound' => $store,
+      'reverse' => true
 
     );
 
@@ -112,7 +121,7 @@ class ProtonRPC
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
     $data = array(
       'scope' => $store,
-      'code' => 'woow',
+      'code' => 'wookey',
       'table' => 'balances',
       'json' => true,
       'limit' => 100,

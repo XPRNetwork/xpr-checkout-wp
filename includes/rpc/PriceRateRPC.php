@@ -15,7 +15,7 @@ class PriceRateRPC
   {
 
     // Do your code checking stuff here e.g. 
-    $myPluginGateway = WC()->payment_gateways->payment_gateways()['woow'];
+    $myPluginGateway = WC()->payment_gateways->payment_gateways()['wookey'];
 
     $now = time();
     $savedPriceRatesValidity = $myPluginGateway->get_option('price_rates_validity');

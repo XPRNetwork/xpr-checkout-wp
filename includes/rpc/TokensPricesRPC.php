@@ -14,7 +14,7 @@ class TokenPrices
   {
 
     // Do your code checking stuff here e.g. 
-    $myPluginGateway = WC()->payment_gateways->payment_gateways()['woow'];
+    $myPluginGateway = WC()->payment_gateways->payment_gateways()['wookey'];
 
     $now = time();
     $savedPriceRatesValidity = $myPluginGateway->get_option('price_rates_validity');
@@ -39,13 +39,18 @@ class TokenPrices
       $rawFiltered = array_map(function ($token) {
         if (strpos($token['key'], 'test') !== false) return null;
         $tokenBase = [];
+
         $tokenBase['symbol'] = $token['symbol'];
         $tokenBase['contract'] = $token['account'];
         $tokenBase['decimals'] = $token['supply']['precision'];
         $tokenBase['logo'] = $token['metadata']['logo'];
-        $prices =  array_filter($token['pairs'], function ($pair) {
-          return strpos($pair['id'], '/USD') !== false;
+        $rawPrices =  array_filter($token['pairs'], function ($pair) {
+          return $pair['pair_quote'] == 'USD';
         });
+
+
+        $prices = array_values($rawPrices);
+
         if (isset($prices[0])) {
 
           return array_merge($prices[0], $tokenBase);
