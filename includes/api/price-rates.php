@@ -3,12 +3,12 @@ if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
-add_action('rest_api_init', 'woow_register_price_rates_routes');
+add_action('rest_api_init', 'wookey_register_price_rates_routes');
 
-function woow_register_price_rates_routes()
+function wookey_register_price_rates_routes()
 {
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
-  register_rest_route('woow/v1', '/price-rates', array(
+  register_rest_route('wookey/v1', '/price-rates', array(
     'methods'  => 'POST',
     'callback' => 'handle_price_rates',
     'permission_callback' => '__return_true'

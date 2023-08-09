@@ -3,12 +3,12 @@ if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
-add_action('rest_api_init', 'woow_register_tokens_prices_routes');
+add_action('rest_api_init', 'wookey_register_tokens_prices_routes');
 
-function woow_register_tokens_prices_routes()
+function wookey_register_tokens_prices_routes()
 {
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
-  register_rest_route('woow/v1', '/tokens-prices', array(
+  register_rest_route('wookey/v1', '/tokens-prices', array(
     'methods'  => 'POST',
     'callback' => 'handle_tokens_prices',
     'permission_callback' => '__return_true'
