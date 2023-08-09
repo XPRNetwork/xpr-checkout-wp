@@ -1,68 +1,54 @@
 <script lang="ts">
+  import type { TokenRate } from '../commons/type';
+  import './../../styles/base.scss'
+  import type { ProtonCheckOutState, ProtonWCControllerOption,  } from './public.type';
   import { onMount } from 'svelte';
-  import ProtonWeb, { type LinkSession, type TransactResult } from '@proton/web-sdk';
-  import {MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS} from '../commons/constants/';
+  
+  import {LINK_STORAGE_PREFIX, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS} from '../commons/constants/';
   import Dialog from '../commons/components/dialogs/Dialog.svelte';
   import PayTokenSelector from '../commons/components/dialogs/content/PayTokenSelector.svelte';
   import PaymentSucceed from '../commons/components/dialogs/content/PaymentSucceed.svelte';
   import PaymentVerify from '../commons/components/dialogs/content/PaymentVerify.svelte';
+  import {webauthConnect} from '../commons/proton/connect';
   import {generateTransferAction,generateRegisterPaymentAction} from '../commons/proton/actions/';
   import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, APP_STATE_TRANSFER_VERIFICATION_FAILURE, APP_STATE_TRANSFER_VERIFICATION_SUCCESS} from './constants/';
-  import {truncateToPrecision} from '../commons/utils/price'
-  import type { ProtonCheckOutState, ProtonWCControllerOption, TokenRate } from '../commons/type';
+  import {truncateToPrecision,canRestoreSession} from '../commons/utils/index'
   
-  
-
-  //if (!window['woowParams']) return;
-  let wooCheckForm:HTMLElement | null = null
-  let pluginOptions: ProtonWCControllerOption = window['woowParams'] as ProtonWCControllerOption;
-  let txId: string | undefined = undefined;
+  let pluginOptions: ProtonWCControllerOption = window['wookeyCheckoutParams'] as ProtonWCControllerOption;
   let protonCheckoutState:ProtonCheckOutState = {isRunning:false};
 
   onMount(()=>{
 
-    console.log(pluginOptions)
+    if(canRestoreSession())connectProton(true,true);
 
   })
 
-  async function  connectProton() {
+  async function connectProton(restoreSession = false,silentRestore=false) {
     
     if (protonCheckoutState.session)  {
         protonCheckoutState.isRunning = true
         return protonCheckoutState.session;
     };
-    const { session, link } = await ProtonWeb({
-      linkOptions: {
-        chainId: pluginOptions.testnet ? TESTNET_CHAIN_ID : MAINNET_CHAIN_ID,
-        endpoints: pluginOptions.testnet ? TESTNET_ENDPOINTS : MAINNET_ENDPOINTS,
-      },
-      transportOptions: {
-        requestAccount: pluginOptions.testnet ? pluginOptions.testwallet : pluginOptions.mainwallet, 
-      },
-      selectorOptions: {
-        appName: pluginOptions.appName,
-      }
-    })
+    const session = await webauthConnect(
+      pluginOptions.testnet ? pluginOptions.testwallet : pluginOptions.mainwallet,
+      pluginOptions.appName,
+      pluginOptions.testnet,
+      restoreSession 
+    )
     protonCheckoutState.isRunning = !!session
     if (session) {
       protonCheckoutState.session = session
-      protonCheckoutState.appState = APP_STATE_TOKEN_SELECT
+      if (!silentRestore)protonCheckoutState.appState = APP_STATE_TOKEN_SELECT
     }
     return session
 
   }
 
-  function closeCheckoutModal (){
-
-    protonCheckoutState.isRunning = false
-
-  }
-  
   function changeAccount (){
 
     protonCheckoutState.isRunning = false
     protonCheckoutState.session = undefined;
-    connectProton()
+    connectProton(false)
 
   }
 
@@ -101,7 +87,7 @@
       token.contract,
       protonCheckoutState.session.auth.actor.toString(),
       protonCheckoutState.session.auth.permission.toString(),
-      "woow",
+      "wookey",
       truncateToPrecision(amount,token.decimals),
       token.symbol,
       pluginOptions.paymentKey
@@ -115,6 +101,7 @@
       },
       {
         broadcast:true
+
       }
     )
 
@@ -124,57 +111,76 @@
     
   }
 </script>
-<main id="woow_payment_process">
-  <Dialog>
-    <div slot="head">
-      <h3 class="modal_title">Thank you!</h3>
-    </div>
-    <div slot="content">
-      <PaymentSucceed></PaymentSucceed>
-      <!-- <PayTokenSelector cartAmount={pluginOptions.order.total.toString()} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()} on:chan/> -->
-    </div>
-  </Dialog>
-
+<main id="wookey-checkout" class="wookey-app wookey-app__grid">
   {#if pluginOptions.order.status !== "completed"}
-  <div class="process_starter">
-    <h3 class="process_typography">Pay with webauth</h3>
-    <p class="process_typography">Connect your webauth wallet to start the payment flow. </p>
-    <a class="checkout-button button alt wc-forward wp-element-button" on:click={connectProton}>Connect webauth</a>
-  </div>
+  
+    <h3>{pluginOptions.translations.payInviteTitle}</h3>
+    <p>{pluginOptions.translations.payInviteText}</p>
+    {#if protonCheckoutState.session}
+    <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>protonCheckoutState.appState = APP_STATE_TOKEN_SELECT}>Pay as {protonCheckoutState.session.auth.actor.toString()}</a>
+    {:else}
+    <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>connectProton()}>{pluginOptions.translations.payInviteButtonLabel}</a>
+    {/if}
+  
   {:else}
-  <div class="process_starter">
-    <h3 class="process_typography">Payment succesfull</h3>
-    <p class="process_typography">This order is marked as complete</p>
-  </div>
+    <h3>{pluginOptions.translations.orderStatusTitle}</h3>
+    <p>{pluginOptions.translations.orderStatusText}</p>
+  
   {/if}
   {#if protonCheckoutState.isRunning}
-    <Dialog open={protonCheckoutState.appState == APP_STATE_TOKEN_SELECT}>
+    <Dialog classes="select__token__dialog__content" open={protonCheckoutState.appState == APP_STATE_TOKEN_SELECT}>
       <div slot="head">
-        <h3 class="modal_title">Select token</h3>
+        <h3>{pluginOptions.translations.selectTokenDialogTitle}</h3>
+        <p>{pluginOptions.translations.selectTokenDialogText}</p>
       </div>
       <div slot="content">
-        <PayTokenSelector storeCurrency={pluginOptions.wooCurrency} cartAmount={pluginOptions.order.total.toString()} changeSession={changeAccount} selectPayToken={(token,amount)=>initTransfer(token,amount)} allowedTokens={pluginOptions.allowedTokens} actorName={protonCheckoutState.session.auth.actor.toString()}/>
+        <PayTokenSelector 
+        storeCurrency={pluginOptions.wooCurrency} 
+        cartAmount={pluginOptions.order.total.toString()} 
+        changeSession={changeAccount} 
+        selectPayToken={(token,amount)=>initTransfer(token,amount)} 
+        allowedTokens={pluginOptions.allowedTokens} 
+        actorName={protonCheckoutState.session.auth.actor.toString()}
+        baseDomain={pluginOptions.baseDomain}
+        translations={{
+          processingLabel:pluginOptions.translations.selectTokenPayProcessingLabel,
+          payLabel:pluginOptions.translations.selectTokenPayButtonLabel,
+          connectedAdLabel:pluginOptions.translations.selectTokenDialogConnectedAs,
+          changeAccountLabel:pluginOptions.translations.selectTokenDialogChangeAccountLabel
+        }}
+        />
+
       </div>
     </Dialog>
     <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION}>
       <div slot="head">
-        <h3 class="modal_title">Select token</h3>
+        <h3>{pluginOptions.translations.verifyPaymentDialogTitle}</h3>
       </div>
       <div slot="content">
-        <PaymentVerify paymentKey={pluginOptions.paymentKey} transactionId={protonCheckoutState.tx.processed.id} onVerify={onPaymentVerify}></PaymentVerify>
+        <PaymentVerify 
+        network={pluginOptions.testnet?'testnet':'mainnet'}
+        paymentKey={pluginOptions.paymentKey} 
+        transactionId={protonCheckoutState.tx.processed.id} 
+        onVerify={onPaymentVerify}
+        baseDomain={pluginOptions.baseDomain}
+        translations={{
+          processingLabel:pluginOptions.translations.verifyPaymentDialogProcessLabel,
+          verifyText:pluginOptions.translations.verifyPaymentDialogText
+        }}
+        ></PaymentVerify>
       </div>
     </Dialog>
-    <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_SUCCESS}>
+    <Dialog footerClose open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_SUCCESS}>
       <div slot="head">
-        <h3 class="modal_title">Payment verified</h3>
+        <h3>{pluginOptions.translations.verifySuccessPaymentDialogTitle}</h3>
       </div>
       <div slot="content">
-        <PaymentSucceed></PaymentSucceed>
+        <PaymentSucceed translations={{text:pluginOptions.translations.verifySuccessPaymentDialogText}}></PaymentSucceed>
       </div>
     </Dialog>
     <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_FAILURE}>
       <div slot="head">
-        <h3 class="modal_title">Verification fails</h3>
+        <h3>Verification fails</h3>
       </div>
       <div slot="content">
         
@@ -184,28 +190,12 @@
 </main>
 
 <style>
+   :global( [slot="content"] ) {
 
-.process_typography {
-
-    padding: 0;
-    margin: 0;
-
-  }
-  .process_starter {
-
-    border: 1px solid;
+    max-height: 100%;
     display: grid;
-    grid-template-columns: 1fr;
-    padding: 20px;
-    gap: 20px;
+    grid-template-rows: min-content 1fr min-content;
+    gap:10px;
 
   }
-
-  .modal_title {
-
-    padding: 0;
-    margin: 0;
-
-  }
-
 </style>
