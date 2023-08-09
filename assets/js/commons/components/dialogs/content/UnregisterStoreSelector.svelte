@@ -7,7 +7,7 @@
     console.log('change session')
   }
   
-  export let onRegister = ()=>{
+  export let onUnregister = ()=>{
     console.log('register store')
   }
 
@@ -19,8 +19,12 @@
 </script>
 
 <div class="register_store">
-    <p>You are about to register your <b>{actorName}</b>'s' account as store account nearby the Woow escrow smart contract</p>
-      <button class="woow-button button-primary full-width" on:click|preventDefault={()=>onRegister()}>Register {actorName} on {isTestnet ? 'testnet' : 'mainnet'}</button>
+    <div class="warning">
+      <p>You are about to unregister your <b>{actorName}</b>'s' account as store account nearby the Wookey escrow smart contract.</p>
+      <p>Please be sure to withdraw all amount from the smart contract in order to change the registered account.</p>
+    </div>
+    
+      <button class="woow-button button-primary full-width" on:click|preventDefault={()=>onUnregister()}>Unregister {actorName} on {isTestnet ? 'testnet' : 'mainnet'}</button>
   <div>Connect as <b>@{actorName}</b>, <a on:click|preventDefault={changeSession} href="#">change account ?</a></div>
 </div>
 <style>
