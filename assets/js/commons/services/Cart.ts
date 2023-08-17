@@ -1,4 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios'
+
+import type{ WPResponse } from '../type';
+import type{ CartSession } from '../../public/public.type';
 export function getCart(baseDomain:string) {
   
   let config:AxiosRequestConfig = {
@@ -12,6 +15,6 @@ export function getCart(baseDomain:string) {
     
   };
 
-  return axios(config)
+  return axios<WPResponse<CartSession>>(config)
 
 }

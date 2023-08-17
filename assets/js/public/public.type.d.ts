@@ -1,4 +1,5 @@
 import { LinkSession, TransactResult } from "@proton/web-sdk";
+import { BaseConfig } from "../commons/type";
 
 export interface Translation {
 
@@ -22,37 +23,24 @@ export interface Translation {
   
   verifySuccessPaymentDialogTitle: string;
   verifySuccessPaymentDialogText: string;
-  
-
 }
 
-export interface ProtonWCControllerOption {
 
-  mainwallet?:string;
-  testwallet?:string;
-  testnet?:boolean;
-  appName?:string;
-  appLogo?:string;
-  allowedTokens?:string;
-  wooCurrency?:string;
-  cartSession: CartSession;
-  createdOrder?: any;
-  translations: Translation;
-  baseDomain: string;
-}
 
 export interface CartSession {
   paymentKey:string;
-  amount: string;
+  cartTotal: string;
+}
+
+interface ConfigWithCart extends BaseConfig {
+  cartSession: CartSession
 }
 
   
 export interface ProtonCheckOutState {
-  
   appState?:string;
   isRunning:boolean,
   session?:LinkSession
   tx?:TransactResult,
   order?:any
-  
 }

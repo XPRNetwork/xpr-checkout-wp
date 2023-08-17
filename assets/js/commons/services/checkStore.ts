@@ -16,7 +16,7 @@ export async function isStoreRegistered(storeAccount:string,isTestnet:boolean) {
     lower_bound: storeAccount,
     upper_bound:storeAccount
   })
-console.log(balanceQuey.rows)
+
   return !!balanceQuey.rows[0];
 
   

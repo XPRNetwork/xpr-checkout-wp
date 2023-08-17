@@ -12,7 +12,6 @@ function wookey_register_payment_verification_routes()
     'methods'  => 'POST',
     'callback' => 'handle_payment_check',
     'permission_callback' => '__return_true'
-
   ));
 }
 

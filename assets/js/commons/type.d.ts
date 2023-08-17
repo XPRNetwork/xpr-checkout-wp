@@ -11,23 +11,27 @@ export interface TokenRate{
 }
 
 
-export interface VerifyPaymentResponse {
+export interface WPResponse<T> {
   status: number;
-  body_response: {
-    paymentKey: string;
-    transactionId: string;
-    validated: boolean;  
-  }
+  body_response: T;
+}
+
+export interface PaymentVerifyResponse {
+  paymentKey: string;
+  transactionId: string;
+  validated: boolean;  
 }
 
 interface BaseConfig {
   mainnetActor: string;
   testnetActor: string;
+  appName: string;
   testnet: boolean;
   network: string;
-  allowedTokens: string[]; 
+  allowedTokens: string; 
   wooCurrency: string;
   baseDomain: string;
+  translations: any;
 }
 
 interface ConfigWithOrder extends BaseConfig {
@@ -36,9 +40,6 @@ interface ConfigWithOrder extends BaseConfig {
   orderTotal: number;
 }
 
-interface ConfigWithCart extends BaseConfig {
-  cartTotal: number;
-  paymentKey: string;
-}
+
 
 

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios'
-import type{ VerifyPaymentResponse } from './../type';
+import type{ PaymentVerifyResponse, WPResponse } from './../type';
 export function verifyPayment(baseDomain:string,paymentKey: string,transactionId:string,network:string="testnet") {
   
   
@@ -19,6 +19,6 @@ export function verifyPayment(baseDomain:string,paymentKey: string,transactionId
     data : data
   };
 
-  return axios<VerifyPaymentResponse>(config)
+  return axios<WPResponse<PaymentVerifyResponse>>(config)
 
 }
