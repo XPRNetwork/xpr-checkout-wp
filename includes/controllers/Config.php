@@ -2,6 +2,11 @@
 
 namespace wookey\config;
 
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
+
+
 
 /**
  * Configuration handler for WooKey payment gateway.
@@ -30,11 +35,10 @@ class Config
   public static function GetBaseConfig()
   {
     $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
-    $mainnetActor = $wookeyGateway->get_option('mainwallet');
-    $testnetActor = $wookeyGateway->get_option('testwallet');
     return array(
-      "mainnetActor" => $mainnetActor,
-      "testnetActor" => $testnetActor,
+      "mainnetActor" => $wookeyGateway->get_option('mainwallet'),
+      "testnetActor" => $wookeyGateway->get_option('testwallet'),
+      "appName" => $wookeyGateway->get_option('appName'),
       "testnet" => 'testnet' === $wookeyGateway->get_option('network'),
       "network" => $wookeyGateway->get_option('network'),
       "allowedTokens" => $wookeyGateway->get_option('allowedTokens'),
@@ -87,8 +91,8 @@ class Config
     if (!isset(WC()->cart)) {
       return array_merge($baseConfig, $extendedConfig);
     }
-    $extendedConfig["cartTotal"] = WC()->cart->total;
-    $extendedConfig["paymentKey"] = WC()->session->get('paymentKey');
+    $extendedConfig['cartSession']["cartTotal"] = WC()->cart->total;
+    $extendedConfig['cartSession']["paymentKey"] = WC()->session->get('paymentKey');
 
     return array_merge($baseConfig, $extendedConfig);
   }
