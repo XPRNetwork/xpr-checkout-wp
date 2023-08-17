@@ -13,6 +13,7 @@ class ProtonWcGateway
 
   private function loadDependencies()
   {
+    require_once WOOKEY_ROOT_DIR . '/includes/controllers/Config.php';
     require_once WOOKEY_ROOT_DIR . '/includes/woocommerce/gateway/wookey-gateway.php';
     require_once WOOKEY_ROOT_DIR . '/includes/rpc/ProtonRPC.php';
     require_once WOOKEY_ROOT_DIR . '/includes/rpc/PriceRateRPC.php';
