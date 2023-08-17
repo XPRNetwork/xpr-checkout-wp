@@ -32,7 +32,7 @@ This is a good'ol wordpress plugin.
 7. Once WordPress finishes the installation process, click the "Activate now" button
 <img width="1431" alt="Capture d’écran 2023-08-17 à 09 58 29" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/6e5fe4cd-1519-44e2-ad7e-9092b5e1639d">
 
-8. Done, congratulation! Take a coffee, you deserve it.
+8. Done, congratulation! Grab a coffee, you deserve it.
 
 ## Pre-Setup
 The Wookey payment gateway use a escrow smart contract to ease the daily basis store management. 
@@ -43,7 +43,7 @@ The Wookey escrow contract is in charge for
 - Allow store to withdraw his balances 
 - Refund non withdrawn payment
 
-**We strongly recommend to create a dedicated proton account for your store before register it.**
+**We strongly recommend you to create a dedicated proton account for your store before register it.**
 
 ## Setup
 1. Go to Woocommerce > settings
@@ -54,4 +54,8 @@ The Wookey escrow contract is in charge for
 6. Register your proton store account with the Wookey smart contract.
 7. Gives the payment method a title, it will appear on the checkout page, where user choose his payment method.
 8. Give a description to the payment method, it will appear on the checkout page, where user choose his payment method.
+9. Provide the list of accepted tokens for payment
+10. Leave the Free API key empty for now 
+11. Your user is now able to pay with any crypto you've allowed on your store ! 
+12. Done, congratulation! Grab another coffee, you deserve it. 
 
