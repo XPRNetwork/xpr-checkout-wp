@@ -35,14 +35,17 @@ export interface ProtonWCControllerOption {
   appLogo?:string;
   allowedTokens?:string;
   wooCurrency?:string;
-  paymentKey:string;
-  order:{
-    total:number,
-    status:string
-  },
+  cartSession: CartSession;
+  createdOrder?: any;
   translations: Translation;
   baseDomain: string;
 }
+
+export interface CartSession {
+  paymentKey:string;
+  amount: string;
+}
+
   
 export interface ProtonCheckOutState {
   
