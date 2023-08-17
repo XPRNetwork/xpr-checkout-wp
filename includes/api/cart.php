@@ -19,15 +19,11 @@ function wookey_register_cart_routes()
 function handle_get_cart($request)
 {
 
-
-
-
-  $returnResult = new WP_REST_Response([
+  $returnResult = new \WP_REST_Response([
     'status' => 200,
-    'response' => "prices",
+    'response' => "cart",
     'body_response' => [
-      'checkout' => WC()->customer,
-      'amount' => WC()->cart->total,
+      'cartTotal' => WC()->cart->total,
       'paymentKey' => WC()->session->get('paymentKey'),
     ]
 
