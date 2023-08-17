@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 /**
  * Represents the WooKey cart functionality.
  *
- * This class is responsible for handling cart-related tasks such as generating a unique payment key for the cart.
+ * This class is responsible for handling cart-related tasks such as generating a unique payment key for the cart to bind with the smart contract.
  */
 
 class Cart
