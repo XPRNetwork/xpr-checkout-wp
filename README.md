@@ -8,12 +8,25 @@ Overall, this plugin helps to expand the use of cryptocurrencies through the pro
 
 ## Intallation
 This is a good'ol wordpress plugin. 
+
 1. Download the latest stable version from the github [release](https://github.com/ProtonProtocol/wookey-woocommerce-webauth/releases) section
 2. Login to your WordPress admin.
+<img width="1435" alt="Capture d’écran 2023-08-17 à 09 42 49" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/925d76cb-d314-4c7a-872b-be3db5018ac9">
+
 3. Go to plugin > add new.
+<img width="1427" alt="Capture d’écran 2023-08-17 à 09 33 57" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/03f07cde-23cb-4ba8-9f7c-a8a9c5149103">
+
 4. Click on the "Upload Plugin" for the top of the page.
-5. Then click on the "Select a file" and locate the ZIP file downloaded from step 1, select it and click open.
+<img width="1439" alt="Capture d’écran 2023-08-17 à 09 34 18" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/cadc2706-37a7-4252-9d55-a9a060dede03">
+
+5. Then click on the "Select a file"'s button. From your file system dialog, locate the ZIP file downloaded from Step 1, select it, and click open.
+<img width="1439" alt="Capture d’écran 2023-08-17 à 09 34 47" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/c546f9c7-a7c8-4f49-87ea-3921353b912f">
+
 6. Once it's done click install now.
-7. Once WordPress finish the installation process, click the "Activate now" button
+<img width="1438" alt="Capture d’écran 2023-08-17 à 09 45 02" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/8f0dc3f5-fa8d-449b-9aba-1a99d72ae70c">
+
+7. Once WordPress finishes the installation process, click the "Activate now" button
+<img width="1431" alt="Capture d’écran 2023-08-17 à 09 58 29" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/6e5fe4cd-1519-44e2-ad7e-9092b5e1639d">
+
 8. Done, congratulation! Take a coffee, you deserve it.
 ## Setup
