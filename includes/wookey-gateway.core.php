@@ -20,6 +20,7 @@ class ProtonWcGateway
     require_once WOOKEY_ROOT_DIR . '/includes/api/payment-check.php';
     require_once WOOKEY_ROOT_DIR . '/includes/api/price-rates.php';
     require_once WOOKEY_ROOT_DIR . '/includes/api/tokens-prices.php';
+    require_once WOOKEY_ROOT_DIR . '/includes/api/cart.php';
     require_once WOOKEY_ROOT_DIR . '/includes/api/admin-payments-with-orders.php';
   }
 }

@@ -30,66 +30,66 @@ function handle_payment_check($request)
     ]);
   }
 
-  $args = array(
-    'post_type'      => 'shop_order',
-    'post_status'    => 'any',
-    'meta_key'       => '_paymentKey', // Meta key for paymentKey
-    'meta_value'     => $params['paymentKey'],
-    'meta_compare'   => '=',
-    'posts_per_page' => 1,
-  );
 
-  $ordersQuery = wc_get_orders($args);
-  $orderData  = null;
+  $cart = WC()->cart;
 
-  if (count($ordersQuery) > 0) {
-    $order = $ordersQuery[0]; // Return the first order found
+  if (is_null($cart)) {
 
-    //TODO: Change the endpoint according to $params['network']
-    $rpcEndpoint = $params['network'] == 'testnet' ? WOOKEY_TESTNET_ENDPOINT : WOOKEY_MAINNET_ENDPOINT;
-    $rpc = new ProtonRPC($rpcEndpoint);
+    return rest_ensure_response($returnResult);
+  }
+  error_log("## HAS CART");
+  error_log(print_r($cart->get_cart_hash(), 1));
+  $paymentKey = WC()->session->get('paymentKey');
 
-    $isTransactionVerified = $rpc->verifyTransaction($params['transactionId'], $params['paymentKey']);
+  if (is_null($paymentKey)) {
 
-    if (!$isTransactionVerified) {
-      $returnResult = new WP_REST_Response([
-        'status' => 403,
-        'response' => "Unauthorized",
-        'body_response' => null
-      ]);
-      return rest_ensure_response($returnResult);
-    }
-
-    $rpcResults = $rpc->verifyPaymentStatusByKey($params['paymentKey']);
-
-    if ($rpcResults) {
-
-      $order->update_meta_data('_txId', $params['transactionId']);
-      $order->update_meta_data('_net', $params['network']);
-      $order->update_status('completed');
-      $order->save();
-      $orderData = $order->get_data();
-      $returnResult = new WP_REST_Response([
-        'status' => 200,
-        'response' => "order validated",
-        'body_response' => $orderData
-      ]);
-    } else {
-      $returnResult = new WP_Error("order_not_found", "order not validated", [
-
-        'status' => 404
-      ]);
-    }
-  } else {
-
-    $returnResult = new WP_REST_Response([
-      'status' => 404,
-      'response' => "order not found",
-      'body_response' => null
-    ]);
+    return rest_ensure_response($returnResult);
   }
 
+  error_log("## HAS PAYMENT KEY");
+  error_log(print_r($paymentKey, 1));
+
+  if ($paymentKey != $params['paymentKey']) {
+    return rest_ensure_response($returnResult);
+  }
+
+  error_log("##PAYMENT KEY MATCH PROVIDED");
+  error_log(print_r($paymentKey, 1));
+  error_log(print_r($params['paymentKey'], 1));
+
+  $rpcEndpoint = $params['network'] == 'testnet' ? WOOKEY_TESTNET_ENDPOINT : WOOKEY_MAINNET_ENDPOINT;
+  $rpc = new ProtonRPC($rpcEndpoint);
+  $isTransactionVerified = $rpc->verifyTransaction($params['transactionId'], $params['paymentKey']);
+  if (!$isTransactionVerified) {
+    $returnResult = new WP_REST_Response([
+      'status' => 403,
+      'response' => "Unauthorized",
+      'body_response' => null
+    ]);
+    return rest_ensure_response($returnResult);
+  }
+
+  WC()->session->set('transactionId', $params['transactionId']);
+  $rpcResults = $rpc->verifyPaymentStatusByKey($params['paymentKey']);
+
+  if ($rpcResults) {
 
 
-  return rest_ensure_response($returnResult);
+    $returnResult = new WP_REST_Response([
+      'status' => 200,
+      'response' => "order validated",
+      'body_response' => [
+        "validated" => true,
+        "paymentKey" => $params['paymentKey'],
+        "transactionId" => $params['transactionId'],
+
+      ]
+    ]);
+    return rest_ensure_response($returnResult);
+  } else {
+    $returnResult = new WP_Error("order_not_found", "order not validated", [
+      'status' => 404
+    ]);
+    return rest_ensure_response($returnResult);
+  }
 }

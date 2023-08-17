@@ -86,7 +86,7 @@ function wookey_add_styles()
       "allowedTokens" => $wookeyGateway->get_option('allowedTokens'),
       "wooCurrency" => get_woocommerce_currency(),
       "baseDomain" => get_site_url(),
-      "transactionId" => $order->get_meta('_txId'),
+      "transactionId" => $order->get_meta('_transactionId'),
       "network" => $order->get_meta('_net'),
       "paymentKey" => $order->get_meta('_paymentKey'),
       "order" => $orderData
@@ -123,7 +123,7 @@ function wookey_custom_orders_list_columns($columns)
   foreach ($columns as $column_name => $column_info) {
     $new_columns[$column_name] = $column_info;
     if ('order_status' === $column_name) {
-      $new_columns['txid'] = __('Transaction', 'wookey'); // title
+      $new_columns['transactionId'] = __('Transaction', 'wookey'); // title
       $new_columns['net'] = __('Mainnet/testnet', 'wookey'); // title
     }
   }
@@ -136,14 +136,14 @@ function wookey_custom_orders_list_column_content($column)
 {
 
   global $post;
-  if ('txid' === $column) {
+  if ('transactionId' === $column) {
     $order = wc_get_order($post->ID);
-    $txId = $order->get_meta('_txId');
+    $transactionId = $order->get_meta('_transactionId');
     $net = $order->get_meta('_net');
     $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
     $link = $net == "mainnet" ? "https://protonscan.io/transaction/" : "https://testnet.protonscan.io/transaction/";
     if ($order->get_payment_method()) {
-      echo '<a class="button-primary" style="color:#50575e;background-color:' . $color . ';" target="_blank" href="' . $link . $txId . '">' . substr($txId, strlen($txId) - 8, strlen($txId)) . '</a>';
+      echo '<a class="button-primary" style="color:#50575e;background-color:' . $color . ';" target="_blank" href="' . $link . $transactionId . '">' . substr($transactionId, strlen($transactionId) - 8, strlen($transactionId)) . '</a>';
     } else {
       echo '';
     }
@@ -185,8 +185,18 @@ function wookey_register_metabox()
 
   );
 }
-
 add_action('add_meta_boxes', 'wookey_register_metabox');
+
+
+add_action('woocommerce_cart_totals_before_order_total', 'generate_wookey_car_hash', 99, 2);
+function generate_wookey_car_hash($cart_item_data)
+{
+
+  $cart = WC()->cart->get_cart();
+  $serializedCart = wp_json_encode($cart);
+  $newHash = $cart ? hash('sha256', $serializedCart . time()) : '';
+  WC()->session->set('paymentKey', $newHash);
+}
 
 add_action('plugins_loaded', 'wookey_init_translations');
 function wookey_init_translations()
@@ -234,7 +244,7 @@ function wookey_init_gateway_class()
 
       // Actions.
       add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
-      add_filter('woocommerce_locate_template', array($this, 'wookey_relocate_plugin_template'), 1, 3);
+      //add_filter('woocommerce_locate_template', array($this, 'wookey_relocate_plugin_template'), 1, 3);
       add_action('woocommerce_checkout_create_order', array($this, 'wookey_custom_meta_to_order'), 20, 1);
       add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
       add_action('admin_enqueue_scripts', array($this, 'wookey_add_admin_script'));
@@ -372,6 +382,14 @@ function wookey_init_gateway_class()
     {
 
       $order = wc_get_order($order_id);
+      error_log("can process the payment at this point");
+      error_log(print_r($order, 1));
+      error_log("is the payment key in session ?");
+      error_log(WC()->session->get('paymentKey'));
+      error_log(WC()->session->get('transactionId'));
+
+      $order->update_meta_data('_paymentKey', WC()->session->get('paymentKey'));
+      $order->update_meta_data('_transactionId', WC()->session->get('transactionId'));
 
       if ($order->get_total() > 0) {
         // Mark as processing or on-hold (payment won't be taken until delivery).
@@ -405,6 +423,7 @@ function wookey_init_gateway_class()
           $desc .= $this->description;
           $desc  = trim($desc);
         }
+        echo wpautop('<div id="wookey-checkout"></div>');
         // display the description with <p> tags etc.
         echo wpautop(wp_kses_post($desc));
       }
@@ -417,12 +436,12 @@ function wookey_init_gateway_class()
     public function wookey_custom_meta_to_order($order)
     {
 
-      $orderData = $order->get_data();
-      $serializedOrder  = serialize($orderData);
-      $hashedOrder = hash('sha256', $serializedOrder . time());
-      $order->update_meta_data('_paymentKey', $hashedOrder);
+      $cartHash = WC()->session->get('paymentKey');
+      $order->update_meta_data('_paymentKey', $cartHash);
       $order->save();
     }
+
+
 
     /**
      * Add scripts
@@ -432,56 +451,61 @@ function wookey_init_gateway_class()
     public function payment_scripts()
     {
 
+      global $woocommerce;
+      error_log('before hash');
+      $cart = $woocommerce->cart;
       if ('no' === $this->enabled) {
         return;
       };
 
       if (!$this->is_available()) return;
 
-      if (!isset($_GET['key'])) {
+      /*if (!isset($_GET['key'])) {
         return;
-      };
-      $orderKey = $_GET['key'];
+      };*/
+      /*$orderKey = $_GET['key'];
       $orderId = wc_get_order_id_by_order_key($orderKey);
       $order = wc_get_order($orderId);
       $orderData = $order->get_data();
-      $paymentKey = $order->get_meta('_paymentKey');
-
+      $paymentKey = $order->get_meta('_paymentKey');*/
+      $paymentKey = WC()->session->get('paymentKey');
       // and this is our custom JS in your plugin directory that works with token.js
       wp_register_script('wookey_public', WOOKEY_ROOT_URL . 'dist/public/checkout/wookey.public.iife.js?v=' . uniqid(), [], time(), true);
 
-      // in most payment processors you have to use PUBLIC KEY to obtain a token
-      wp_localize_script('wookey_public', 'wookeyCheckoutParams', array(
-        "mainwallet" => $this->get_option('mainwallet'),
-        "testwallet" => $this->get_option('testwallet'),
-        "testnet" => 'yes' === $this->get_option('testnet'),
-        "appName" => $this->get_option('appName'),
-        "appLogo" => $this->get_option('appLogo'),
-        "allowedTokens" => $this->get_option('allowedTokens'),
-        "wooCurrency" => get_woocommerce_currency(),
-        "cartAmount" => 20,
-        "order" => $orderData,
-        "paymentKey" => $paymentKey,
-        "baseDomain" => get_site_url(),
-        "translations" => [
-          "payInviteTitle" => __('Pay with WebAuth', 'wookey'),
-          "payInviteText" => __('Connect your WebAuth wallet to start the payment flow.', 'wookey'),
-          "payInviteButtonLabel" => __('Connect WebAuth', 'wookey', 'wookey'),
-          "orderStatusTitle" => __("Payment succesfull", 'wookey'),
-          "orderStatusText" => __("This order is marked as complete", 'wookey'),
-          "selectTokenDialogTitle" => __("Select token", 'wookey'),
-          "selectTokenDialogText" => __("Select the token you want to pay with.", 'wookey'),
-          "selectTokenDialogConnectedAs" => __("Connected as", 'wookey'),
-          "selectTokenDialogChangeAccountLabel" => __("change account ?", 'wookey'),
-          "selectTokenPayButtonLabel" => __("Pay", 'wookey'),
-          "selectTokenPayProcessingLabel" => __("Fetching tokens rates", 'wookey'),
-          "verifyPaymentDialogTitle" => __("Payment verification", 'wookey'),
-          "verifyPaymentDialogText" => __("Please wait while we check payment information.", 'wookey'),
-          "verifyPaymentDialogProcessLabel" => __("Verifying payment", 'wookey'),
-          "verifySuccessPaymentDialogTitle" => __("Payment verified", 'wookey'),
-          "verifySuccessPaymentDialogText" => __("Great, your payment has be verified, order is now completed! ", 'wookey'),
-        ]
-      ));
+      $cart =
+        // in most payment processors you have to use PUBLIC KEY to obtain a token
+        wp_localize_script('wookey_public', 'wookeyCheckoutParams', array(
+          "mainwallet" => $this->get_option('mainwallet'),
+          "testwallet" => $this->get_option('testwallet'),
+          "testnet" => 'yes' === $this->get_option('testnet'),
+          "appName" => $this->get_option('appName'),
+          "appLogo" => $this->get_option('appLogo'),
+          "allowedTokens" => $this->get_option('allowedTokens'),
+          "wooCurrency" => get_woocommerce_currency(),
+          "cartSession" => [
+            "amount" => $cart->total,
+            "paymentKey" => $paymentKey,
+          ],
+          "baseDomain" => get_site_url(),
+          "translations" => [
+            "payInviteTitle" => __('Pay with WebAuth', 'wookey'),
+            "payInviteText" => __('Connect your WebAuth wallet to start the payment flow.', 'wookey'),
+            "payInviteButtonLabel" => __('Connect WebAuth', 'wookey', 'wookey'),
+            "orderStatusTitle" => __("Payment succesfull", 'wookey'),
+            "orderStatusText" => __("This order is marked as complete", 'wookey'),
+            "selectTokenDialogTitle" => __("Select token", 'wookey'),
+            "selectTokenDialogText" => __("Select the token you want to pay with.", 'wookey'),
+            "selectTokenDialogConnectedAs" => __("Connected as", 'wookey'),
+            "selectTokenDialogChangeAccountLabel" => __("change account ?", 'wookey'),
+            "selectTokenPayButtonLabel" => __("Pay", 'wookey'),
+            "selectTokenPayProcessingLabel" => __("Fetching tokens rates", 'wookey'),
+            "verifyPaymentDialogTitle" => __("Payment verification", 'wookey'),
+            "verifyPaymentDialogText" => __("Please wait while we check payment information.", 'wookey'),
+            "verifyPaymentDialogProcessLabel" => __("Verifying payment", 'wookey'),
+            "verifySuccessPaymentDialogTitle" => __("Payment verified", 'wookey'),
+            "verifySuccessPaymentDialogText" => __("Great, your payment has be verified, order is now completed! ", 'wookey'),
+          ]
+        ));
 
       wp_enqueue_script('wookey_public');
       wp_enqueue_style('wookey_public_style', WOOKEY_ROOT_URL . 'dist/public/checkout/wookey.public.css?v=' . uniqid());
@@ -640,7 +664,7 @@ function wookey_init_gateway_class()
     public function wookey_custom_orders_list_columns($columns)
     {
 
-      $columns['txid'] = __('Transaction', 'wookey'); // title
+      $columns['transactionId'] = __('Transaction', 'wookey'); // title
       return $columns;
     }
 
@@ -653,3 +677,56 @@ function wookey_init_gateway_class()
     }
   }
 }
+
+add_action('wp_loaded', 'maybe_load_cart', 5);
+/**
+ * Loads the cart, session and notices should it be required.
+ *
+ * Note: Only needed should the site be running WooCommerce 3.6
+ * or higher as they are not included during a REST request.
+ *
+ * @see https://plugins.trac.wordpress.org/browser/cart-rest-api-for-woocommerce/trunk/includes/class-cocart-init.php#L145
+ * @since   2.0.0
+ * @version 2.0.3
+ */
+function maybe_load_cart()
+{
+  if (version_compare(WC_VERSION, '3.6.0', '>=') && WC()->is_rest_api_request()) {
+
+
+    require_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+    require_once WC_ABSPATH . 'includes/wc-notice-functions.php';
+
+    if (null === WC()->session) {
+      $session_class = apply_filters('woocommerce_session_handler', 'WC_Session_Handler'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+
+      // Prefix session class with global namespace if not already namespaced
+      if (false === strpos($session_class, '\\')) {
+        $session_class = '\\' . $session_class;
+      }
+
+      WC()->session = new $session_class();
+      WC()->session->init();
+    }
+
+    /**
+     * For logged in customers, pull data from their account rather than the
+     * session which may contain incomplete data.
+     */
+    if (is_null(WC()->customer)) {
+      if (is_user_logged_in()) {
+        WC()->customer = new WC_Customer(get_current_user_id());
+      } else {
+        WC()->customer = new WC_Customer(get_current_user_id(), true);
+      }
+
+      // Customer should be saved during shutdown.
+      add_action('shutdown', array(WC()->customer, 'save'), 10);
+    }
+
+    // Load Cart.
+    if (null === WC()->cart) {
+      WC()->cart = new WC_Cart();
+    }
+  }
+} // END maybe_load_cart()
