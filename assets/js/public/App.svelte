@@ -1,10 +1,8 @@
 <script lang="ts">
-  import type { TokenRate } from '../commons/type';
+  import type { TokenRate, VerifyPaymentResponse } from '../commons/type';
   import './../../styles/base.scss'
   import type { ProtonCheckOutState, ProtonWCControllerOption,  } from './public.type';
   import { onMount } from 'svelte';
-  
-  import {LINK_STORAGE_PREFIX, MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS} from '../commons/constants/';
   import Dialog from '../commons/components/dialogs/Dialog.svelte';
   import PayTokenSelector from '../commons/components/dialogs/content/PayTokenSelector.svelte';
   import PaymentSucceed from '../commons/components/dialogs/content/PaymentSucceed.svelte';
@@ -13,13 +11,20 @@
   import {generateTransferAction,generateRegisterPaymentAction} from '../commons/proton/actions/';
   import {APP_STATE_TOKEN_SELECT, APP_STATE_TRANSFER_VERIFICATION, APP_STATE_TRANSFER_VERIFICATION_FAILURE, APP_STATE_TRANSFER_VERIFICATION_SUCCESS} from './constants/';
   import {truncateToPrecision,canRestoreSession} from '../commons/utils/index'
+  import { getCart } from '../commons/services/Cart';
+  import type { TransactResult } from '@proton/web-sdk';
   
   let pluginOptions: ProtonWCControllerOption = window['wookeyCheckoutParams'] as ProtonWCControllerOption;
   let protonCheckoutState:ProtonCheckOutState = {isRunning:false};
+  let checkoutForm = null
 
-  onMount(()=>{
+  onMount(async ()=>{
 
     if(canRestoreSession())connectProton(true,true);
+    const cart = await getCart(pluginOptions.baseDomain); 
+    checkoutForm = document.querySelector('form[name="checkout"]')
+    console.log();
+    console.log(cart);
 
   })
 
@@ -52,14 +57,13 @@
 
   }
 
-  function onPaymentVerify (verifyResult:any){
+  function onPaymentVerify (verifyResult:VerifyPaymentResponse){
 
     console.log(verifyResult,verifyResult.status)
     if(verifyResult && verifyResult.status==200){
 
       if (verifyResult.status == 200){
-      if(verifyResult.body_response != null){
-        pluginOptions.order = verifyResult.body_response;
+      if(verifyResult.body_response.validated){
         protonCheckoutState.appState = APP_STATE_TRANSFER_VERIFICATION_SUCCESS;
       }
     }else {
@@ -77,7 +81,7 @@
       pluginOptions.testnet ? pluginOptions.testwallet : pluginOptions.mainwallet ,
       protonCheckoutState.session.auth.actor.toString(),
       protonCheckoutState.session.auth.permission.toString(),
-      pluginOptions.paymentKey,
+      pluginOptions.cartSession.paymentKey,
       truncateToPrecision(amount,token.decimals),
       token.symbol,
       token.contract
@@ -90,14 +94,17 @@
       "wookey",
       truncateToPrecision(amount,token.decimals),
       token.symbol,
-      pluginOptions.paymentKey
+      pluginOptions.cartSession.paymentKey
     )
 
     console.log([registerPaymentAction,transferAction]);
     protonCheckoutState.isRunning = false;
     const tx:TransactResult = await protonCheckoutState.session.transact(
       {
-        actions:[registerPaymentAction,transferAction]
+        actions:[
+          registerPaymentAction,
+          transferAction
+        ]
       },
       {
         broadcast:true
@@ -112,7 +119,7 @@
   }
 </script>
 <main id="wookey-checkout" class="wookey-app wookey-app__grid">
-  {#if pluginOptions.order.status !== "completed"}
+  
   
     <h3>{pluginOptions.translations.payInviteTitle}</h3>
     <p>{pluginOptions.translations.payInviteText}</p>
@@ -121,12 +128,6 @@
     {:else}
     <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>connectProton()}>{pluginOptions.translations.payInviteButtonLabel}</a>
     {/if}
-  
-  {:else}
-    <h3>{pluginOptions.translations.orderStatusTitle}</h3>
-    <p>{pluginOptions.translations.orderStatusText}</p>
-  
-  {/if}
   {#if protonCheckoutState.isRunning}
     <Dialog classes="select__token__dialog__content" open={protonCheckoutState.appState == APP_STATE_TOKEN_SELECT}>
       <div slot="head">
@@ -136,7 +137,7 @@
       <div slot="content">
         <PayTokenSelector 
         storeCurrency={pluginOptions.wooCurrency} 
-        cartAmount={pluginOptions.order.total.toString()} 
+        cartAmount={pluginOptions.cartSession.amount.toString()} 
         changeSession={changeAccount} 
         selectPayToken={(token,amount)=>initTransfer(token,amount)} 
         allowedTokens={pluginOptions.allowedTokens} 
@@ -159,7 +160,7 @@
       <div slot="content">
         <PaymentVerify 
         network={pluginOptions.testnet?'testnet':'mainnet'}
-        paymentKey={pluginOptions.paymentKey} 
+        paymentKey={pluginOptions.cartSession.paymentKey} 
         transactionId={protonCheckoutState.tx.processed.id} 
         onVerify={onPaymentVerify}
         baseDomain={pluginOptions.baseDomain}
@@ -170,7 +171,7 @@
         ></PaymentVerify>
       </div>
     </Dialog>
-    <Dialog footerClose open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_SUCCESS}>
+    <Dialog open={protonCheckoutState.appState == APP_STATE_TRANSFER_VERIFICATION_SUCCESS}>
       <div slot="head">
         <h3>{pluginOptions.translations.verifySuccessPaymentDialogTitle}</h3>
       </div>

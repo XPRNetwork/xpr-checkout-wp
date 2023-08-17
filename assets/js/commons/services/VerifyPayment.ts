@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
+import type{ VerifyPaymentResponse } from './../type';
 export function verifyPayment(baseDomain:string,paymentKey: string,transactionId:string,network:string="testnet") {
   
   
@@ -8,7 +9,7 @@ export function verifyPayment(baseDomain:string,paymentKey: string,transactionId
     "network":network
   });
 
-  let config = {
+  let config:AxiosRequestConfig = {
     method: 'post',
     maxBodyLength: Infinity,
     url: `${baseDomain}/wp-json/wookey/v1/verify-payment`,
@@ -18,6 +19,6 @@ export function verifyPayment(baseDomain:string,paymentKey: string,transactionId
     data : data
   };
 
-  return axios(config)
+  return axios<VerifyPaymentResponse>(config)
 
 }
