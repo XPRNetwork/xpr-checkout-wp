@@ -19,3 +19,26 @@ export interface VerifyPaymentResponse {
     validated: boolean;  
   }
 }
+
+interface BaseConfig {
+  mainnetActor: string;
+  testnetActor: string;
+  testnet: boolean;
+  network: string;
+  allowedTokens: string[]; 
+  wooCurrency: string;
+  baseDomain: string;
+}
+
+interface ConfigWithOrder extends BaseConfig {
+  transactionId: string;
+  paymentKey: string;
+  orderTotal: number;
+}
+
+interface ConfigWithCart extends BaseConfig {
+  cartTotal: number;
+  paymentKey: string;
+}
+
+
