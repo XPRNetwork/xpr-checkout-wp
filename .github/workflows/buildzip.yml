@@ -33,6 +33,6 @@ jobs:
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
-        directory: '.'
+        tag: ${{ github.ref }}
         artifacts: "release.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
