@@ -9,7 +9,6 @@ on:
     #tags:
       #- "v*.*.*"
   # Allows you to run this workflow manually from the Actions tab
-  
 
 jobs:
   build:
@@ -18,13 +17,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-
     - name: Install deps
-        working-directory: './assets'
-        run: 'npm install'
+      working-directory: './assets'
+      run: 'npm install'
     - name: Build Svelte apps
-        working-directory: './assets'
-        run: 'npm run build'
+      working-directory: './assets'
+      run: 'npm run build'
     - name: Generate zip
       uses: 10up/action-wordpress-plugin-build-zip@stable
       env:
