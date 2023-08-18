@@ -1,61 +1,61 @@
-# wookey-woocommerce-webauth
- 
+# Wookey: Woocommerce Webauth gateway
+*A WebAuth-Enabled Gateway for WooCommerce*
+
+## The basic scope
+
 This plugin provides a payment gateway for WooCommerce that enables users to pay for their purchases using any cryptocurrency available in the WebAuth wallet. With this feature, users can enjoy a seamless and secure shopping experience, thank Proton, as they can easily pay for their purchases using their preferred digital currency.
 
 Wookey, through a hassle-free configuration, provides additional features to help store owners manage payment reconciliation, withdrawal, and refund inside the WooCommerce regular flow also driven by Webauth authentification. 
 
 Overall, this plugin helps to expand the use of cryptocurrencies through the proton chain in e-commerce, making it easier and more convenient for users to use their digital assets for online shopping.
 
-## Pre-installation
-1. First be sure that WooCommerce is installed and activated on your WordPress web site. 
-2. Be sure to use the "Post Name" structure in settings > Permalinks
+## Code structure
 
-## Intallation
-This is a good'ol wordpress plugin. 
+The gateway itself follows the rules of each WooCommerce gateway. It binds the WooCommerce and WordPress event flow to functions through the use of hooks and filters that trigger methods from the **Wookey_Gateway** class.
 
-1. Download the latest stable version from the github [release](https://github.com/ProtonProtocol/wookey-woocommerce-webauth/releases) section
-2. Login to your WordPress admin.
-<img width="1435" alt="Capture d’écran 2023-08-17 à 09 42 49" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/925d76cb-d314-4c7a-872b-be3db5018ac9">
+The front-end checkout widget and back-office utility widgets run exclusively on JS, composed of several apps compiled independently but sharing the same code base. 
 
-3. Go to plugin > add new.
-<img width="1427" alt="Capture d’écran 2023-08-17 à 09 33 57" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/03f07cde-23cb-4ba8-9f7c-a8a9c5149103">
+Additionally, some API endpoints provide services abstraction like 
 
-4. Click on the "Upload Plugin" for the top of the page.
-<img width="1439" alt="Capture d’écran 2023-08-17 à 09 34 18" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/cadc2706-37a7-4252-9d55-a9a060dede03">
+- real-time tokens prices in USD
+- checkout amount in store currency to USD
+- payment validation endpoint that consumes RPC curl call on the smart contract tables
 
-5. Then click on the "Select a file"'s button. From your file system dialog, locate the ZIP file downloaded from Step 1, select it, and click open.
-<img width="1439" alt="Capture d’écran 2023-08-17 à 09 34 47" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/c546f9c7-a7c8-4f49-87ea-3921353b912f">
+The apps are compiled through a Vite config, and the distribution package (WordPress ready-to-install .zip file) is made by a make file automation.
 
-6. Once it's done click install now.
-<img width="1438" alt="Capture d’écran 2023-08-17 à 09 45 02" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/8f0dc3f5-fa8d-449b-9aba-1a99d72ae70c">
+The smart contract is outside this code structure as it uses a totally different compiler. 
 
-7. Once WordPress finishes the installation process, click the "Activate now" button
-<img width="1431" alt="Capture d’écran 2023-08-17 à 09 58 29" src="https://github.com/ProtonProtocol/wookey-woocommerce-webauth/assets/1812457/6e5fe4cd-1519-44e2-ad7e-9092b5e1639d">
+### Front-end
 
-8. Done, congratulation! Grab a coffee, you deserve it.
+The front end is a simple Svelte application that wraps the proton-web-SDK and is synced with the WebAuth authentication flow. After the user authorizes the connection with the Store dApp, it provides the total price of the checkout declined on a list of authorized tokens whose amount is calculated in real-time through prices services API. Thus, the user can select which token with he wants to pay to checkout amount.
 
-## Pre-Setup
-The Wookey payment gateway use a escrow smart contract to ease the daily basis store management. 
-In order to allow your store to work with the Wookey smart contract you have to register an account with the smart contract.  
-The Wookey escrow contract is in charge for
-- receive and reconciliate payment
-- Keep track of the store balances per token
-- Allow store to withdraw his balances 
-- Refund non withdrawn payment
+Once the user has chosen the token, two actions are pushed through his session, a payment registration on the Wookey smart contract, and a transfer action to the token contract. Booth actions are tied together by a unique checksum SHA256 key, generated for the WooCommerce order object and stored in the WooCommerce order meta. 
 
-**We strongly recommend you to create a dedicated proton account for your store before register it.**
+After those two action return with no error,  the application moves to a new view and uses the payment validation API endpoint to verify two things:  
 
-## Setup
-1. Go to Woocommerce > settings
-2. Choose the tab "Payments"
-3. Click on the "Manage"'s button on the "WebAuth for WooCommerce" row.
-4. Enable the gateway 
-5. If you want to test the plugin, activate testnet. Unchecked mean mainnet.
-6. Register your proton store account with the Wookey smart contract.
-7. Gives the payment method a title, it will appear on the checkout page, where user choose his payment method.
-8. Give a description to the payment method, it will appear on the checkout page, where user choose his payment method.
-9. Provide the list of accepted tokens for payment
-10. Leave the Free API key empty for now 
-11. Your user is now able to pay with any crypto you've allowed on your store ! 
-12. Done, congratulation! Grab another coffee, you deserve it. 
+- if the order checksum SHA256 key match the payment registration key
+- if the transfer transaction memo is equal to the same checksum SHA256 key.
 
+If both checks are validated, the order is marked as complete in WooCommerce. 
+
+### Smart contract
+
+To ease the pain of a bulky installation and configuration from the store owner, Wookey provides a smart contract that handles the process for all stores in one place :
+
+The core of the smart contract is the following actions: 
+
+1. **Payment Registration (pay.reg)** 
+That registers the checksum SHA256 key (generated by the Wookey gateway at order creation) amongst a token amount. When registered, the payment is flagged as “AWAIT”. 
+2. **Transfer tokens notification actions (transfer)**
+The transfer memo must contain the same checksum SHA256 key provided to the **Payment Registration.** Thus the contract can find the payment, validate both the token and amount that have to be paid, and finally flag the payment as “PAID”.
+
+It also provides other actions to manage stores, withdrawals, and refunds:
+
+- **Store registration (store.reg)**
+Register a store to allow payment and multi-balance storage (for different tokens).
+- **Store unregistration (store.unreg)**
+Remove a store from the store list, but keep the balance stored.
+- **Refund by the store owner (pay.refund)**
+Allow the refund of payment that is not already a part of a withdrawal, and flag the payment as “REFUNDED”.
+- **Withdraw of payments by the store owner (bal.claim)**
+Allow the user to claim all payments made on his store marked as “PAID” since the last claim. It transfers an amount of {tokens}, defined by a symbol param, from the store-scoped balance table to the registered store account. It also flag concerned payments as “PAID_OUT”, the refund of those payments is not possible anymore for the Wookey smart contract.
