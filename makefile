@@ -8,7 +8,6 @@ PACKAGE_NAME	= $(TARGET_NAME)_$(VERSION).zip
 compile: 
 	make clean
 	make prepare
-	make build
 	zip -r $(PACKAGE_NAME) $(ROOT_FOLDER)/$(FOLDERS)
 	rm -rf $(BUILD_DIR)
 

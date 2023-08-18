@@ -35,3 +35,11 @@ jobs:
       - name: Compile folder
         working-directory: './'
         run: 'make compile'
+      - name: Create Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./wookey_woocommerce_webauth_gateway_0.9.13-beta.zip # the folder which has all the files that you want to release
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
