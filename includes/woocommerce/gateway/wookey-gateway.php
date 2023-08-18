@@ -302,6 +302,14 @@ class WC_WookeyGateway extends WC_Payment_Gateway
     return ob_get_clean();
   }
 
+  /**
+   * Generate HTML for hidden fields.
+   *
+   * @param string $key  The field key.
+   * @param array  $data Associated data for the field.
+   *
+   * @return string
+   */
   public function generate_hidden_html($key, $data)
   {
     $field_key = $this->get_field_key($key);
