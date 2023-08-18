@@ -15,8 +15,6 @@ compile:
 build:
 	cd ./assets; npm run build
 	
-	
-
 prepare:
 	mkdir $(BUILD_DIR)
 	cp -r $(FOLDERS) $(BUILD_DIR)
