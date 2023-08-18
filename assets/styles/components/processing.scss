@@ -1,0 +1,20 @@
+.processing {
+  display: grid;
+  gap: 10px;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  padding: 50px 0;
+
+  &__icon {
+    width: 80px;
+    height: 48px;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  &__label {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+}

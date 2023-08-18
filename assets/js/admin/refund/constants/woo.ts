@@ -1,0 +1,1 @@
+export const WOO_NETWORK_CHECKBOX_SELECTOR = '#woocommerce_woow_testnet'

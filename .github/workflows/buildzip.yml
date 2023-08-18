@@ -1,0 +1,37 @@
+name: Release on tag
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the any branch
+  push:
+    tags:
+      - "v*"
+  # Allows you to run this workflow manually from the Actions tab
+permissions:
+  contents: write
+jobs:
+  build:
+    name: Build release zip
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install deps
+      working-directory: './assets'
+      run: 'npm install'
+    - name: Build Svelte apps
+      working-directory: './assets'
+      run: 'npm run build'
+    - name: Archive Release
+      uses: thedoctor0/zip-release@0.7.1
+      with:
+        type: 'zip'
+        filename: 'wookey_woocomerce_gateway_${{  github.ref_name }}.zip'
+        directory: '.'
+        exclusions: '*.git* /*node_modules/* .editorconfig'
+    - name: Upload Release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        tag: ${{  github.ref_name }}"
+        artifacts: "wookey_woocomerce_gateway_${{  github.ref_name }}.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}

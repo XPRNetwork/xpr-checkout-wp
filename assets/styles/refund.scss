@@ -1,0 +1,30 @@
+.wookey-refund {
+  margin-top: 10px;
+  &__order-info {
+    display: grid;
+    gap: 10px;
+    &__render-item {
+      max-width: 100%;
+      overflow: hidden;
+      * {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .button {
+        display: block;
+      }
+    }
+  }
+  &__refund-option {
+    display: grid;
+    gap: 10px;
+    &__warning {
+      display: grid;
+      gap: 10px;
+      background-color: #ffd8d8;
+      border: 1px solid #d25f5f;
+      padding: 10px;
+    }
+  }
+}
