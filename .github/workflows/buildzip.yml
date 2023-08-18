@@ -26,12 +26,12 @@ jobs:
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
-        filename: 'wookey_woocomerce_gateway_${{  github.ref_name }}.zip'
+        filename: 'wookey_woocomerce_gateway_beta_${{  github.ref_name }}.zip'
         directory: '.'
         exclusions: '*.git* /*node_modules/* .editorconfig /*assets/*'
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
         tag: ${{  github.ref_name }}"
-        artifacts: "wookey_woocomerce_gateway_${{  github.ref_name }}.zip"
+        artifacts: "wookey_woocomerce_gateway_beta_${{  github.ref_name }}.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
