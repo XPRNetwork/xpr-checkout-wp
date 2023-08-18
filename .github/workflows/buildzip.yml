@@ -4,10 +4,8 @@ name: Release on tag
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches:
-      - release
-    #tags:
-      #- "v*.*.*"
+    tags:
+      - "v*"
   # Allows you to run this workflow manually from the Actions tab
 permissions:
   contents: write
@@ -34,6 +32,6 @@ jobs:
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
-        tag: ${{ github.ref }}
+        tag: ${{  github.ref_name }}"
         artifacts: "release.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
