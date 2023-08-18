@@ -1,0 +1,31 @@
+name: Release on tag
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches:
+      - release
+    #tags:
+      #- "v*.*.*"
+  # Allows you to run this workflow manually from the Actions tab
+  
+
+jobs:
+  build:
+    name: Build release zip
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install deps
+        working-directory: './assets'
+        run: 'npm install'
+    - name: Build Svelte apps
+        working-directory: './assets'
+        run: 'npm run build'
+    - name: Generate zip
+      uses: 10up/action-wordpress-plugin-build-zip@stable
+      env:
+        SLUG: my-super-cool-plugin # optional, remove if GitHub repo name matches SVN slug, including capitalization

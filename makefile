@@ -8,8 +8,8 @@ PACKAGE_NAME	= $(TARGET_NAME)_$(VERSION).zip
 compile: 
 	make clean
 	make prepare
-	zip -r $(PACKAGE_NAME) $(ROOT_FOLDER)/$(FOLDERS)
-	rm -rf $(BUILD_DIR)
+	# zip -r $(PACKAGE_NAME) $(ROOT_FOLDER)/$(FOLDERS)
+	# rm -rf $(BUILD_DIR)
 
 build:
 	cd ./assets; npm run build
