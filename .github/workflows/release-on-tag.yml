@@ -32,3 +32,6 @@ jobs:
       - name: Build Svelte apps
         working-directory: './assets'
         run: 'npm run build'
+      - name: Compile folder
+        working-directory: './'
+        run: 'make compile'
