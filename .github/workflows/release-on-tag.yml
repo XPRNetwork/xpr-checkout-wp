@@ -26,6 +26,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
+      - name: Install deps
+        working-directory: './assets'
+        run: 'npm install'
       - name: Build Svelte apps
         working-directory: './assets'
         run: 'npm run build'
