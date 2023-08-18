@@ -18,7 +18,7 @@ jobs:
     - name: Build Svelte apps
       working-directory: './assets'
       run: 'npm run build'
-    - name: Archive Release
+    - name: Compile Release
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
