@@ -9,7 +9,8 @@ on:
     #tags:
       #- "v*.*.*"
   # Allows you to run this workflow manually from the Actions tab
-
+permissions:
+  contents: write
 jobs:
   build:
     name: Build release zip
