@@ -97,7 +97,7 @@ class WC_WookeyGateway extends WC_Payment_Gateway
         'title' => __('Description', 'wookey'),
         'type' => 'textarea',
         'description' => __('This controls the title which the user sees during checkout.', 'wookey'),
-        'default' => __('Pay securly with with multiple crypto currencies through WebAuth with NO GAS FEE BABY !', 'wookey'),
+        'default' => __('Pay securely with with multiple crypto currencies through WebAuth with zero gas fee', 'wookey'),
         'desc_tip'      => true,
       ),
 
