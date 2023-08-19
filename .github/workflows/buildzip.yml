@@ -28,6 +28,6 @@ jobs:
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
-        tag: ${{  github.ref_name }}"
+        tag: '${{  github.ref_name }}'
         artifacts: "wookey_woocomerce_gateway_beta_${{  github.ref_name }}.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
