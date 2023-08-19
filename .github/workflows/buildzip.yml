@@ -26,7 +26,7 @@ jobs:
         directory: '.'
         exclusions: '*.git* /*node_modules/* .editorconfig /*assets/*'
     - name: Generate JSON manifest
-        run: "VERSION=${{  github.ref_name }} make generate_manifest" 
+      run: 'VERSION=${{  github.ref_name }} make generate_manifest'
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
