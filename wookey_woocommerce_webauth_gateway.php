@@ -16,6 +16,7 @@ define('WOOKEY_MAINNET_ENDPOINT', "https://proton.eosusa.io");
 define('WOOKEY_TESTNET_ENDPOINT', "https://test.proton.eosusa.io");
 define('WOOKEY_MAINNET_BLOCK_EXPLORER', "https://protonscan.io");
 define('WOOKEY_TESTNET_BLOCK_EXPLORER', "https://testnet.protonscan.io");
+error_log(WOOKEY_ROOT_DIR . 'includes/controllers/Cart.php');
 
 
 
