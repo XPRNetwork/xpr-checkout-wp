@@ -4,7 +4,7 @@
  * Description: Allow user to pay securly with with multiple crypto currencies through Webauth with NO GAS FEE BABY !
  * Author: Rémy Chauveau AKA Rockerone
  * Author URI: hypersolid.io
- * Version: 1.0.3-beta
+ * Version: 1.0.4-beta
  * Text Domain: wookey
  * Domain Path: /i18n/languages/
  */
