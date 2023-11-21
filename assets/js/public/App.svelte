@@ -32,8 +32,10 @@
 
   async function connectProton(restoreSession = false,silentRestore=false) {
     
+    console.log("connect proton")
     if (protonCheckoutState.session)  {
-        protonCheckoutState.isRunning = true
+        protonCheckoutState.isRunning = true;
+        if (!silentRestore)protonCheckoutState.appState = APP_STATE_TOKEN_SELECT
         return protonCheckoutState.session;
     };
     const session = await webauthConnect(
@@ -99,9 +101,10 @@
       params.cartSession.paymentKey
     )
 
-    console.log([registerPaymentAction,transferAction]);
     protonCheckoutState.isRunning = false;
-    const tx:TransactResult = await protonCheckoutState.session.transact(
+    try {
+      
+      const tx:TransactResult = await protonCheckoutState.session.transact(
       {
         actions:[
           registerPaymentAction,
@@ -117,8 +120,23 @@
     protonCheckoutState.tx = tx;
     protonCheckoutState.appState = APP_STATE_TRANSFER_VERIFICATION;
     protonCheckoutState.isRunning = true;
-    
+
+    }catch (e:any){
+
+      console.log("Error occur")
+      protonCheckoutState.isRunning = false
+      protonCheckoutState.appState = undefined
+      
+
+    } 
   }
+
+  function setAppState(appState:string){
+
+    protonCheckoutState.appState = appState
+
+  }
+
 </script>
 <main id="wookey-checkout" class="wookey-app wookey-app__grid">
   
@@ -126,7 +144,7 @@
     <h3>{params.translations.payInviteTitle}</h3>
     <p>{params.translations.payInviteText}</p>
     {#if protonCheckoutState.session}
-    <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>protonCheckoutState.appState = APP_STATE_TOKEN_SELECT}>Pay as {protonCheckoutState.session.auth.actor.toString()}</a>
+    <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>connectProton(true,false)}>Pay as {protonCheckoutState.session.auth.actor.toString()}</a>
     {:else}
     <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>connectProton()}>{params.translations.payInviteButtonLabel}</a>
     {/if}
