@@ -13,22 +13,29 @@
   import {truncateToPrecision,canRestoreSession} from '../commons/utils/index'
   import { getCart } from '../commons/services/Cart';
   import type { TransactResult } from '@proton/web-sdk';
+  import JqEvent from '../commons/jqEvent.svelte';
   
   let params: ConfigWithCart = window['params'] as ConfigWithCart;
   let protonCheckoutState:ProtonCheckOutState = {isRunning:false};
-  let checkoutForm = null
-
+  
+  let checkoutForm = false;
+  
   onMount(async ()=>{
 
-    
     if(canRestoreSession())connectProton(true,true);
     const updatedCartSession = await getCart(params.baseDomain); 
-    checkoutForm = document.querySelector('form[name="checkout"]')
-    params.cartSession = updatedCartSession.data.body_response;
-    console.log(params)
     
+    params.cartSession = updatedCartSession.data.body_response;
 
   })
+
+  async function updateCheckOutValidState (isValid){
+
+    console.log('is valid ?',isValid)
+    checkoutForm = isValid;
+    
+
+  }
 
   async function connectProton(restoreSession = false,silentRestore=false) {
     
@@ -138,13 +145,15 @@
   }
 
 </script>
+<JqEvent on:formEvent={(e)=>updateCheckOutValidState(e.detail)}></JqEvent>
 <main id="wookey-checkout" class="wookey-app wookey-app__grid">
   
   
+    
     <h3>{params.translations.payInviteTitle}</h3>
     <p>{params.translations.payInviteText}</p>
     {#if protonCheckoutState.session}
-    <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>connectProton(true,false)}>Pay as {protonCheckoutState.session.auth.actor.toString()}</a>
+    <a class={`${checkoutForm ? '' : 'invalid-checkout-form'} woow-button checkout-button button alt wc-forward wp-element-button`} on:click={()=>connectProton(true,false)}>Pay as {protonCheckoutState.session.auth.actor.toString()}</a>
     {:else}
     <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>connectProton()}>{params.translations.payInviteButtonLabel}</a>
     {/if}
@@ -219,4 +228,12 @@
     gap:10px;
 
   }
+
+  .invalid-checkout-form {
+
+    pointer-events: none;
+    opacity: 0.5;
+
+  }
+
 </style>
