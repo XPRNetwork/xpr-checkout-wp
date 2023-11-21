@@ -1,25 +1,7 @@
 export const MAINNET_ENDPOINTS = [
-  "https://api-proton.eosarabia.net",
-  "https://api-proton.nodeone.network:8344",
-  "https://api.protoneastern.cn",
-  "https://api.protonmt.com",
-  "https://api.protonnz.com",
-  "https://api.totalproton.tech",
-  "https://main.proton.kiwi",
-  "https://mainnet.brotonbp.com",
   "https://proton-api.alvosec.com",
-  "https://proton-public.neftyblocks.com",
-  "https://proton.cryptotribe.io",
-  "https://proton.eoscafeblock.com",
-  "https://proton.eoseoul.io",
-  "https://proton.eosrio.io",
   "https://proton.eosusa.io",
-  "https://proton.eu.eosamsterdam.net",
-  "https://proton.genereos.io",
-  "https://proton.pink.gg",
-  "https://proton.protonuk.io",
-  "https://protonapi.blocksindia.com",
-  "https://protonapi.ledgerwise.io"
+  "https://api.protonnz.com"
 ]
 
 export const TESTNET_ENDPOINTS = [
