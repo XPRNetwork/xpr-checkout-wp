@@ -9,7 +9,7 @@
  * Domain Path: /i18n/languages/
  */
 
-define('WOOKEY_VERSION', '1.0.3-beta');
+define('WOOKEY_VERSION', '1.0.7-beta');
 define('WOOKEY_ROOT_DIR', plugin_dir_path(__FILE__));
 define('WOOKEY_ROOT_URL', plugin_dir_url(__FILE__));
 define('WOOKEY_MAINNET_ENDPOINT', "https://proton.eosusa.io");
