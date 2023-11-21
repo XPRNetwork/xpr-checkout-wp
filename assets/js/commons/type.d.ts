@@ -6,8 +6,18 @@ export interface TokenRate{
   id: string
   logo?: string;
   quote: {
-    price_usd:number
-  }
+    price_usd: number
+  };
+  availableUserBalance: number;
+  enable: boolean;
+  pair_base: string;
+}
+
+export interface UserBalance {
+    currency: string
+    contract: string
+    decimals: string
+    amount: string
 }
 
 
