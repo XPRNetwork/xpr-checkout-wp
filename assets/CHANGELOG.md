@@ -1,5 +1,11 @@
 # Wookey
 
+## 1.0.7
+
+### Patch Changes
+
+- Update version, hide "place order" button
+
 ## 1.0.6
 
 ### Patch Changes
@@ -21,7 +27,7 @@
 
 - Update plugin semver
 - from XPRNetwork/fix-include-paths
-- Fix import paths in wookey-gateway.core.php. 
+- Fix import paths in wookey-gateway.core.php.
 - Remove old php tag opening
 
 ## 1.0.3
