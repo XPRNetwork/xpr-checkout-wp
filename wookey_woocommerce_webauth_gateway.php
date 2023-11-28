@@ -26,7 +26,23 @@ include_once WOOKEY_ROOT_DIR . '/includes/wookey-gateway.core.php';
 function run_proton_wc_gateway()
 {
 
-  $plugin = new ProtonWcGateway();
-  $plugin->run();
+  if ( class_exists( 'WooCommerce' ) ) {
+    $plugin = new ProtonWcGateway();
+    $plugin->run();
+  }else {
+    add_action( 'admin_notices', 'sample_admin_notice_success' );
+  }
 }
+
+function sample_admin_notice_success() {
+  ?>
+  <div  class="notice notice-error">
+      <p><b><?php _e( 'Wookey - Webauth Gateway for Woocommerce require WooCommerce to work!', 'sample-text-domain' ); ?></b></p>
+      <a href="/wp-admin/plugin-install.php?s=woo&tab=search&type=term">Install Woocommerce </a>
+      <p></p>
+  </div>
+  <?php
+}
+
+
 run_proton_wc_gateway();
