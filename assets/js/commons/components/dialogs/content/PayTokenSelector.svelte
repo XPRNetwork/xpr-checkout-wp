@@ -8,6 +8,7 @@
   import {getUserBalances} from '../../../services/UserBalance'
   import Processing from '../../processing/Processing.svelte';
 
+  export let isTestnet:boolean;
   export let allowedTokens:string;
   export let actorName:string;
   export let cartAmount:string;
@@ -39,8 +40,9 @@
 
   async function refresh (){
 
+    console.log(isTestnet,'isTestnet,')
     refreshing = true
-    const userBalances  = await getUserBalances(actorName,false);
+    const userBalances  = await getUserBalances(actorName,isTestnet);
     console.log(userBalances)
     const convertedOrderAmountAsUsd  = await getConvertedToUSD(baseDomain,storeCurrency,parseFloat(cartAmount));
     if (convertedOrderAmountAsUsd.status == 200){

@@ -13,7 +13,7 @@
   import {truncateToPrecision,canRestoreSession} from '../commons/utils/index'
   import { getCart } from '../commons/services/Cart';
   import type { TransactResult } from '@proton/web-sdk';
-  import JqEvent from '../commons/jqEvent.svelte';
+  import {validateCheckoutForm} from '../commons/utils/wc-form-validation'
   
   let params: ConfigWithCart = window['params'] as ConfigWithCart;
   let protonCheckoutState:ProtonCheckOutState = {isRunning:false};
@@ -24,18 +24,12 @@
 
     if(canRestoreSession())connectProton(true,true);
     const updatedCartSession = await getCart(params.baseDomain); 
-    
+    checkoutForm = validateCheckoutForm();
     params.cartSession = updatedCartSession.data.body_response;
 
   })
 
-  async function updateCheckOutValidState (isValid){
-
-    console.log('is valid ?',isValid)
-    checkoutForm = isValid;
-    
-
-  }
+  
 
   async function connectProton(restoreSession = false,silentRestore=false) {
     
@@ -48,7 +42,7 @@
     const session = await webauthConnect(
       params.testnet ? params.testnetActor : params.mainnetActor,
       params.appName,
-      params.testnet,
+      params.testnet.toString()=="1",
       restoreSession 
     )
     protonCheckoutState.isRunning = !!session
@@ -145,7 +139,7 @@
   }
 
 </script>
-<JqEvent on:formEvent={(e)=>updateCheckOutValidState(e.detail)}></JqEvent>
+
 <main id="wookey-checkout" class="wookey-app wookey-app__grid">
   
   
@@ -153,7 +147,8 @@
     <h3>{params.translations.payInviteTitle}</h3>
     <p>{params.translations.payInviteText}</p>
     {#if protonCheckoutState.session}
-    <a class={`${checkoutForm ? '' : 'invalid-checkout-form'} woow-button checkout-button button alt wc-forward wp-element-button`} on:click={()=>connectProton(true,false)}>Pay as {protonCheckoutState.session.auth.actor.toString()}</a>
+    <p>{checkoutForm ? "Well the form is valid" : "The fucking form is invalid"}</p>
+    <a id="connected-checkout" class={`${checkoutForm ? '' : 'invalid-checkout-form'} woow-button checkout-button button alt wc-forward wp-element-button`} on:click={()=>connectProton(true,false)}>Pay as {protonCheckoutState.session.auth.actor.toString()}</a>
     {:else}
     <a class="woow-button checkout-button button alt wc-forward wp-element-button" on:click={()=>connectProton()}>{params.translations.payInviteButtonLabel}</a>
     {/if}
@@ -165,6 +160,7 @@
       </div>
       <div slot="content">
         <PayTokenSelector 
+        isTestnet={params.testnet.toString()=="1"}
         storeCurrency={params.wooCurrency} 
         cartAmount={params.cartSession.cartTotal.toString()} 
         changeSession={changeAccount} 

@@ -36,7 +36,7 @@ interface BaseConfig {
   mainnetActor: string;
   testnetActor: string;
   appName: string;
-  testnet: boolean;
+  testnet: string;
   network: string;
   allowedTokens: string; 
   wooCurrency: string;
