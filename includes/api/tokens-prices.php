@@ -19,13 +19,16 @@ function wookey_register_tokens_prices_routes()
 function handle_tokens_prices($request)
 {
 
+  
   $returnResult = new WP_REST_Response();
   $tokenRPC = new TokenPrices();
   $tokensPrices = $tokenRPC->getTokenPrices();
+  
   $returnResult = new WP_REST_Response([
     'status' => 200,
     'response' => "prices",
-    'body_response' => $tokensPrices
+    'body_response' => $tokensPrices,
+    'nonce' => wp_create_nonce('wp_rest')
 
   ]);
 
