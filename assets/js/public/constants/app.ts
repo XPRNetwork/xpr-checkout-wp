@@ -1,4 +1,8 @@
-export const APP_STATE_TOKEN_SELECT = 'app_state_token_select';
-export const APP_STATE_TRANSFER_VERIFICATION = 'app_state_transfer_verification';
-export const APP_STATE_TRANSFER_VERIFICATION_SUCCESS = 'app_state_transfer_verification_success';
-export const APP_STATE_TRANSFER_VERIFICATION_FAILURE = 'app_state_transfer_verification_failure';
+export const APP_STATE_PENDING_LOGIN = 0;
+export const APP_STATE_TOKEN_SELECT = 1;
+export const APP_STATE_TRANSFER_PROCESSING = 2;
+export const APP_STATE_TRANSFER_FAILURE = 3;
+export const APP_STATE_TRANSFER_VERIFICATION = 4;
+export const APP_STATE_TRANSFER_VERIFICATION_SUCCESS = 5;
+export const APP_STATE_TRANSFER_VERIFICATION_FAILURE = 6;
+export const APP_STATE_INVALID_ORDER = -1;
