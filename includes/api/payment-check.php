@@ -20,7 +20,7 @@ function handle_payment_check($request)
 
   $returnResult = new WP_REST_Response();
   $params = $request->get_params();
-  if (!isset($params['paymentKey']) || !isset($params['transactionId']) || !isset($params['network'])) {
+  if (!isset($params['paymentKey']) || !isset($params['network'])) {
 
     return new WP_REST_Response([
       'status' => 403,
@@ -29,32 +29,32 @@ function handle_payment_check($request)
     ]);
   }
 
+  $params = $request->get_params();
+  $args = array(
+    'post_type'      => 'shop_order',
+    'post_status'    => 'any',
+    'meta_key'       => '_paymentKey', // Meta key for paymentKey
+    'meta_value'     => $params['paymentKey'],
+    'meta_compare'   => '=',
+    'posts_per_page' => 1,
 
-  $cart = WC()->cart;
+  );
+  $ordersQuery = wc_get_orders($args);
+  $returnResult = new WP_Error("order_not_found", "order not validated", [
+    'status' => 404
+  ]);
 
-  if (is_null($cart)) {
-
-    return rest_ensure_response($returnResult);
-  }
-  error_log("## HAS CART");
-  error_log(print_r($cart->get_cart_hash(), 1));
-  $paymentKey = WC()->session->get('paymentKey');
-
-  if (is_null($paymentKey)) {
-
-    return rest_ensure_response($returnResult);
-  }
-
-  error_log("## HAS PAYMENT KEY");
-  error_log(print_r($paymentKey, 1));
-
-  if ($paymentKey != $params['paymentKey']) {
-    return rest_ensure_response($returnResult);
-  }
+  $existingOrder = $ordersQuery[0];
+  if (!isset($existingOrder) ) return rest_ensure_response($returnResult);
+  $orderPaymentKey = $existingOrder->get_meta('_paymentKey');
+  if ($orderPaymentKey != $params['paymentKey'] ) return rest_ensure_response($returnResult);
 
   error_log("##PAYMENT KEY MATCH PROVIDED");
   error_log(print_r($paymentKey, 1));
   error_log(print_r($params['paymentKey'], 1));
+  error_log("##Have user id");
+  error_log(print_r(get_current_user_id(), 1));
+
 
   $rpcEndpoint = $params['network'] == 'testnet' ? WOOKEY_TESTNET_ENDPOINT : WOOKEY_MAINNET_ENDPOINT;
   $rpc = new ProtonRPC($rpcEndpoint);
@@ -73,7 +73,7 @@ function handle_payment_check($request)
 
   if ($rpcResults) {
 
-
+    $order->payment_complete(); 
     $returnResult = new WP_REST_Response([
       'status' => 200,
       'response' => "order validated",
