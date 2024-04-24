@@ -13,6 +13,7 @@ class TokenPrices
   public function getTokenPrices()
   {
 
+    global $wpdb;
     // Do your code checking stuff here e.g. 
     $myPluginGateway = WC()->payment_gateways->payment_gateways()['wookey'];
 
@@ -36,7 +37,7 @@ class TokenPrices
 
     if ($responseData) {
 
-      $rawFiltered = array_map(function ($token) {
+      $rawFiltered = array_map(function ($token)use($wpdb) {
         if (strpos($token['key'], 'test') !== false) return null;
         $tokenBase = [];
 
@@ -48,12 +49,17 @@ class TokenPrices
           return $pair['pair_quote'] == 'USD';
         });
 
-
         $prices = array_values($rawPrices);
 
         if (isset($prices[0])) {
-
-          return array_merge($prices[0], $tokenBase);
+          $mergedToken = array_merge($prices[0], $tokenBase);
+          if ($mergedToken['pair_base'] == "XPR")error_log(print_r($mergedToken['quote']['price_usd'],1));
+          $sql = "INSERT INTO wp_".WOOKEY_TABLE_TOKEN_RATES." (symbol,contract,token_precision,rate) VALUES (%s,%s,%d,%.12f) ON DUPLICATE KEY UPDATE rate = %.12f";
+          $sql = $wpdb->prepare($sql,$mergedToken['pair_base'],$mergedToken['contract'],$mergedToken['decimals'],$mergedToken['quote']['price_usd'],$mergedToken['quote']['price_usd']);
+          $res = $wpdb->query($sql);
+          
+        
+          return $mergedToken;
         } else {
           return null;
         }
