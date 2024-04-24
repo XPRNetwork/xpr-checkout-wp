@@ -2,12 +2,14 @@
  import  {onMount} from 'svelte';
   import { verifyPayment } from '../../../services/VerifyPayment';
   import Processing from '../../processing/Processing.svelte';
+  
+  import type { WPResponse,Order } from '../../../type';
 
  export let paymentKey = '';
- export let transactionId = '';
+ export let actor = '';
  export let network = "testnet"
  export let baseDomain = "";
- export let onVerify:(result:any)=>void = (result:any)=>{}
+ export let onVerify:(result:WPResponse<Order>)=>void = (result:WPResponse<Order>)=>{}
  export let translations:any = {
   processingLabel:"",
   verifyText:""
@@ -17,7 +19,7 @@
 
  onMount(async ()=>{
 
-  const paymentVerifyResult = await verifyPayment(baseDomain,paymentKey,transactionId,network);
+  const paymentVerifyResult = await verifyPayment(baseDomain,paymentKey,actor,network);
   onVerify(paymentVerifyResult.data);
   
  })

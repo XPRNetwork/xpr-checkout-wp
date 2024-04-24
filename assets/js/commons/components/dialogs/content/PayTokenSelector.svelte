@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {truncateToPrecision} from '../../../utils/price'
+  import {toPrecision} from '../../../utils/price'
   import {getUserBalanceForToken} from '../../../utils/tokens'
   import {getConvertedToUSD} from '../../../services/PriceRate'
   import {onMount} from 'svelte';
@@ -85,7 +85,8 @@
   function convertFiatPriceToToken (fiatAmount:number,symbol:string){
     const rate = getTokenRateBySymbol(symbol)
     if (rate){
-      return parseFloat(truncateToPrecision(fiatAmount/rate.quote.price_usd,rate.decimals));
+      console.log(fiatAmount,rate.quote.price_usd,rate.decimals)
+      return parseFloat(toPrecision(fiatAmount/rate.quote.price_usd,rate.decimals));
     }
     return 0
   }
@@ -104,26 +105,29 @@
   
 </script>
 
+  <div class="flex flex-col gap-4">
 
+  
   {#if usdCartAmount}
   <div class="usd_cart_amount">
-    <span><b>{cartAmount} {storeCurrency} = {truncateToPrecision(usdCartAmount,2)} USD</b></span>
-    <a on:click={()=>refresh()}>Refresh </a>
+    <p class="text-sm font-bold text-gray-500">{cartAmount} {storeCurrency} = {toPrecision(usdCartAmount,2)} USD</p>
+    <a class="text-sm font-bold text-gray-500" on:click={()=>refresh()}>Refresh </a>
   </div>
   {/if}
   {#if refreshing}
   <Processing label={translations.processingLabel}></Processing>
   {:else}
-  <div style="overflow-y:auto; max-height:100%">
-    <ul class="token_rates__list">
+  <div style="">
+    <p class="font-bold text-lg">Select the token you want to pay with</p>
+    <ul class="grid grid-cols-1 gap-2">
       {#each allowedTokenRates as token }
-      <li >
-        <a aria-roledescription="Select token" class={`${token.enable ? '' : 'disabled'} woow-button button  token_rates__list__render_item`} on:click={()=>selectPayToken(getTokenRateBySymbol(token.symbol),convertFiatPriceToToken(usdCartAmount,token.symbol))}>
-          <img src={token.logo} />
+      <li class="card hover:bg-white shadow-sm rounded-md hover:shadow-lg hover:z-20 border-2 border-gray-50 hover:border-primary p-4 " >
+        <a  aria-roledescription="Select token" class={`grid grid-cols-[40px,1fr,min-content] items-center gap-4 ${token.enable ? '' : 'disabled'}`} on:click={()=>selectPayToken(getTokenRateBySymbol(token.symbol),convertFiatPriceToToken(usdCartAmount,token.symbol))}>
+          <img width="45"  class="max-w-fit" src={token.logo} />
           <div>
-            <h5 class="token_rates__list__render_item__token_price">
+            <p class="font-bold token_rates__list__render_item__token_price">
               {translations.payLabel} {convertFiatPriceToToken(usdCartAmount,token.symbol)} {token.symbol}
-            </h5>
+            </p>
             <p class="token_rates__list__render_item__token_balance">
               Balance 
               {token.availableUserBalance} 
@@ -131,8 +135,11 @@
             </p>
           </div>
           
-          <div class="token_rates__list__render_item__drill_icon">
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#" class="w-6 h-6">
+              <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
+            </svg>
+            
           </div>
         </a>
       </li>  
@@ -141,7 +148,7 @@
   </div>
   
   {/if}
-  <div>{translations.connectedAdLabel} <b>@{actorName}</b>, <a on:click|preventDefault={changeSession} href="#">{translations.changeAccountLabel}</a></div>
+</div>
 
 <style>
 
@@ -187,6 +194,10 @@
     pointer-events: none;
     opacity: 0.3;
     
+  }
+
+  .token_rates__list__render_item__token_logo{
+    max-width: 100%;
   }
   
   .token_rates__list__render_item.disabled  .token_rates__list__render_item__drill_icon {
