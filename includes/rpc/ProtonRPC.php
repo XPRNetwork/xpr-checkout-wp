@@ -8,7 +8,7 @@ class ProtonRPC
     $this->endpoint = $endpoint;
   }
 
-  public function verifyTransaction($transactionId, $paymentKey)
+  public function verifyTransaction($paymentKey)
   {
 
     $endpoint = $this->endpoint . '/v1/history/get_transaction';
@@ -54,10 +54,6 @@ class ProtonRPC
 
     );
 
-    error_log("verify payment");
-    error_log($endpoint);
-    error_log(print_r($data, 1));
-
     $ch = curl_init($endpoint);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -65,7 +61,6 @@ class ProtonRPC
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
-    error_log(print_r($response, 1));
     curl_close($ch);
     if ($response !== false) {
       $responseData = json_decode($response, true);
@@ -73,6 +68,8 @@ class ProtonRPC
       foreach ($responseData['rows'] as $row) {
         if ($row['paymentKey'] == $paymentKey && $row['status'] == 1) return true;
       }
+
+      
       return null;
     } else {
 
@@ -139,6 +136,27 @@ class ProtonRPC
     curl_close($ch);
     if ($response !== false) {
       return json_decode($response, true);
+    } else {
+
+      return null;
+    }
+    return null;
+  }
+
+  public function findTransaction($actor,$afterDate,$paymentKey)
+  {
+
+    $date = urlencode($afterDate);
+    $endpoint = $this->endpoint ."/v2/history/get_actions?limit=999&account=$actor&filter=*:transfer&after=$date";
+    
+    $ch = curl_init($endpoint);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if ($response !== false) {
+      return json_decode($response,true);
     } else {
 
       return null;
