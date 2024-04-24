@@ -33,6 +33,19 @@ class Config
    * @access public
    * @static
    */
+  public static function GetDashbordConfig()
+  {
+    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    return array(
+      "mainnetActor" => $wookeyGateway->get_option('mainwallet'),
+      "testnetActor" => $wookeyGateway->get_option('testwallet'),
+      "appName" => $wookeyGateway->get_option('appName'),
+      "testnet" => 'testnet' === $wookeyGateway->get_option('network'),
+      "network" => $wookeyGateway->get_option('network'),
+      "allowedTokens" => $wookeyGateway->get_option('allowedTokens'),
+      "baseDomain" => get_site_url(),
+    );
+  }
   public static function GetBaseConfig($requestedPaymentKey)
   {
     $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
