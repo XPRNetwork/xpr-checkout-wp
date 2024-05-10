@@ -1,10 +1,10 @@
 <?php
 /*
- * Plugin Name: Wookey - Webauth Gateway for Woocommerce
+ * Plugin Name: WebAuthPay - WebAuth Gateway for Woocommerce
  * Description: Allow user to pay securly with with multiple crypto currencies through Webauth with NO GAS FEE BABY !
  * Author: Rémy Chauveau AKA Rockerone
  * Author URI: hypersolid.io
- * Version: 1.1.0-canary
+ * Version: 1.1.0
  * Text Domain: wookey
  * Domain Path: /i18n/languages/
  */
