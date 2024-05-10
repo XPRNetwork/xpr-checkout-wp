@@ -21,7 +21,6 @@
     session:null,
     appState:'',
     
-
   }
   /*
   */
@@ -57,7 +56,8 @@
 
   async function refundPayment (paymentKey:string){
 
-    const refundActions = generateRefundAction(controllerState.session.auth.actor.toString(),controllerState.session.auth.permission.toString(),paymentKey);
+    const actor = pluginOptions.testnet ? pluginOptions.testnetActor : pluginOptions.mainnetActor;
+    const refundActions = generateRefundAction(actor,"active",paymentKey);
     console.log(refundActions)
     if (controllerState.session){
       const tx = await controllerState.session.transact({
