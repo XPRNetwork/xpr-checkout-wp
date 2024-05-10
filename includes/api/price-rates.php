@@ -27,9 +27,12 @@ function handle_price_rates($request)
   $returnResult = new WP_REST_Response([
     'status' => 200,
     'response' => "prices",
-    'body_response' => $convertedRate
+    'body_response' => $convertedRate,
+    'nonce' => wp_create_nonce('wp_rest')
 
   ]);
+
+
 
   return rest_ensure_response($returnResult);
 }

@@ -19,7 +19,11 @@
     "@eoscafe/light-api": "^3.2.18",
     "@proton/light-api": "^3.3.4",
     "@proton/web-sdk": "^4.2.15",
-    "axios": "^1.4.0"
+    "autoprefixer": "^10.4.19",
+    "axios": "^1.4.0",
+    "daisyui": "^4.10.1",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",

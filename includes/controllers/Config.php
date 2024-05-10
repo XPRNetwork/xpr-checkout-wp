@@ -1,6 +1,7 @@
 <?php
 
 namespace wookey\config;
+use wookey\utils\OrderResolver;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
@@ -32,7 +33,7 @@ class Config
    * @access public
    * @static
    */
-  public static function GetBaseConfig()
+  public static function GetDashbordConfig()
   {
     $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
     return array(
@@ -42,8 +43,32 @@ class Config
       "testnet" => 'testnet' === $wookeyGateway->get_option('network'),
       "network" => $wookeyGateway->get_option('network'),
       "allowedTokens" => $wookeyGateway->get_option('allowedTokens'),
+      "baseDomain" => get_site_url(),
+    );
+  }
+  public static function GetBaseConfig($requestedPaymentKey)
+  {
+    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    $woocommerceCheckoutId = wc_get_page_id( 'checkout' );
+    $woocommerceCheckoutUrl = get_permalink( $woocommerceCheckoutId);
+
+    $woocommerceThankyouId = wc_get_page_id( 'order-received' );
+    $woocommerceThankyouUrl = get_permalink( $woocommerceThankyouId);
+    
+
+    return array(
+      "mainnetActor" => $wookeyGateway->get_option('mainwallet'),
+      "testnetActor" => $wookeyGateway->get_option('testwallet'),
+      "appName" => $wookeyGateway->get_option('appName'),
+      "testnet" => 'testnet' === $wookeyGateway->get_option('network'),
+      "network" => $wookeyGateway->get_option('network'),
+      "allowedTokens" => $wookeyGateway->get_option('allowedTokens'),
       "wooCurrency" => get_woocommerce_currency(),
-      "baseDomain" => get_site_url()
+      "baseDomain" => get_site_url(),
+      "wooCheckoutUrl" => $woocommerceCheckoutUrl,
+      "wooThankYouUrl" => $woocommerceThankyouUrl,
+      'nonce' => wp_create_nonce('wookey'),
+      'requestedPaymentKey'=>$requestedPaymentKey
     );
   }
 
@@ -60,19 +85,14 @@ class Config
    * @access public
    * @static
    */
-  public static function GetConfigWithOrder($orderId)
+  public static function GetConfigWithOrder($requestedPaymentKey)
   {
-    $order = wc_get_order($orderId);
-    $baseConfig = self::GetBaseConfig();
-    $extendedConfig = [];
-    if (!$order) {
-      return array_merge($baseConfig, $extendedConfig);
-    }
-    $extendedConfig["transactionId"] = $order->get_meta('_transactionId');
-    $extendedConfig["network"] = $order->get_meta('_net');
-    $extendedConfig["paymentKey"] = $order->get_meta('_paymentKey');
-    $extendedConfig["orderTotal"] = $order->get_total();
-    return array_merge($baseConfig, $extendedConfig);
+
+    $baseConfig = self::GetBaseConfig($requestedPaymentKey);
+    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    $resolved = OrderResolver::Process($requestedPaymentKey,$wookeyGateway->get_option('network'));
+    return array_merge($baseConfig, ['order'=>$resolved]);
+
   }
 
   /**
@@ -84,16 +104,5 @@ class Config
    * @access public
    * @static
    */
-  public static function GetConfigWithCart()
-  {
-    $baseConfig = self::GetBaseConfig();
-    $extendedConfig = [];
-    if (!isset(WC()->cart)) {
-      return array_merge($baseConfig, $extendedConfig);
-    }
-    $extendedConfig['cartSession']["cartTotal"] = WC()->cart->total;
-    $extendedConfig['cartSession']["paymentKey"] = WC()->session->get('paymentKey');
-
-    return array_merge($baseConfig, $extendedConfig);
-  }
+  
 }

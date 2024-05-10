@@ -36,12 +36,15 @@ interface BaseConfig {
   mainnetActor: string;
   testnetActor: string;
   appName: string;
-  testnet: boolean;
+  testnet: string;
   network: string;
   allowedTokens: string; 
   wooCurrency: string;
   baseDomain: string;
   translations: any;
+  wooCheckoutUrl: string;
+  nonce: string;
+  
 }
 
 interface ConfigWithOrder extends BaseConfig {
@@ -49,6 +52,70 @@ interface ConfigWithOrder extends BaseConfig {
   paymentKey: string;
   orderTotal: number;
 }
+
+import {LinkSession, TransactResult} from "@proton/web-sdk";
+
+
+export interface Translation {
+  payInviteTitle: string;
+  payInviteText: string;
+  payInviteButtonLabel: string;
+
+  orderStatusTitle: string;
+  orderStatusText: string;
+
+  selectTokenDialogTitle: string;
+  selectTokenDialogText: string;
+  selectTokenDialogConnectedAs: string;
+  selectTokenDialogChangeAccountLabel: string;
+  selectTokenPayButtonLabel: string;
+  selectTokenPayProcessingLabel: string;
+
+  verifyPaymentDialogTitle: string;
+  verifyPaymentDialogText: string;
+  verifyPaymentDialogProcessLabel: string;
+
+  verifySuccessPaymentDialogTitle: string;
+  verifySuccessPaymentDialogText: string;
+}
+
+export interface CartSession {
+  paymentKey: string;
+  cartTotal: string;
+}
+
+export interface Order {
+  paymentKey: string;
+  transactionId: string;
+  payer: string;
+  paymentVerified: boolean;
+  currency: string;
+  fillRatio: number;
+  status: string;
+  total: number;
+  token: string;
+  orderKey: string;
+  orderId: number;
+  cancelRedirect: string;
+  continueRedirect:string
+}
+
+interface ConfigWithCart extends BaseConfig {
+  cartSession: CartSession;
+}
+
+interface ConfigWithOrder extends BaseConfig {
+  order: Order;
+}
+
+export interface ProtonCheckOutState {
+  appState?: number;
+  isRunning: boolean;
+  session?: LinkSession;
+  tx?: TransactResult;
+  order?: any;
+}
+
 
 
 

@@ -56,7 +56,7 @@ class Dashboard
     if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wookey-dashboard') {
       wp_enqueue_style('wookey_admin_dashboard_style', WOOKEY_ROOT_URL . 'dist/admin/dashboard/wookey.admin.dashboard.css?v=' . uniqid());
       wp_register_script('wookey_admin_dashboard', WOOKEY_ROOT_URL . 'dist/admin/dashboard/wookey.admin.dashboard.iife.js?v=' . uniqid(), [], time(), true);
-      wp_localize_script('wookey_admin_dashboard', 'wookeyDashboardParams', Config::GetBaseConfig());
+      wp_localize_script('wookey_admin_dashboard', 'wookeyDashboardParams', Config::GetDashbordConfig());
       wp_enqueue_script('wookey_admin_dashboard');
     };
   }

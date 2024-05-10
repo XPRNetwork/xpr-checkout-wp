@@ -187,7 +187,7 @@
   </div>
   
   {#if refreshing}
-    <Processing label="Fetching balances for solid"></Processing>
+    <Processing label={`Fetching balances for`}></Processing>
   {/if}
   <div class="withdaw-app">
 

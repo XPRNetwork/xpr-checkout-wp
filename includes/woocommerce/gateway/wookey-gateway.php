@@ -33,9 +33,19 @@ class WC_WookeyGateway extends WC_Payment_Gateway
     $this->appLogo = $this->get_option('appLogo');
     $this->allowedTokens = $this->get_option('allowedTokens');
 
+    
+    
+    
+    add_action( 'template_redirect', array($this,'wookey_template_redirect'));
     add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
     add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
     add_action('woocommerce_email_before_order_table', array($this, 'wookey_email_instructions'), 10, 3);
+    add_filter( 'wc_order_statuses', array($this,'wookey_add_partial_fill_order_status') );
+    
+    
+    
+    
+    
   }
 
   /**
@@ -181,14 +191,14 @@ class WC_WookeyGateway extends WC_Payment_Gateway
   public function process_payment($order_id)
   {
 
+    error_log('PASS THROUGHT PROCESS PAYMENT');
     $order = wc_get_order($order_id);
-    $order->update_meta_data('_paymentKey', WC()->session->get('paymentKey'));
-    $order->update_meta_data('_transactionId', WC()->session->get('transactionId'));
+    
 
     if ($order->get_total() > 0) {
-      $order->update_status(apply_filters('woocommerce_cod_process_payment_order_status', $order->has_downloadable_item() ? 'on-hold' : 'processing', $order), __('Payment to be made upon delivery.', 'wookey'));
+      //$order->update_status(apply_filters('woocommerce_cod_process_payment_order_status', $order->has_downloadable_item() ? 'on-hold' : 'processing', $order), __('Payment to be made upon delivery.', 'wookey'));
     } else {
-      $order->payment_complete();
+      //$order->payment_complete();
     }
     WC()->cart->empty_cart();
     return array(
@@ -211,7 +221,6 @@ class WC_WookeyGateway extends WC_Payment_Gateway
         $desc .= $this->description;
         $desc  = trim($desc);
       }
-      echo wpautop('<div id="wookey-checkout"></div>');
       echo wpautop(wp_kses_post($desc));
     }
   }
@@ -223,19 +232,15 @@ class WC_WookeyGateway extends WC_Payment_Gateway
   {
     global $woocommerce;
     $cart = $woocommerce->cart;
+    
     if ('no' === $this->enabled) {
       return;
     };
 
     if (!$this->is_available()) return;
 
-    $paymentKey = WC()->session->get('paymentKey');
-    $cart = WC()->cart;
-    $baseConfig = Config::GetConfigWithCart();
-    $translations = ["translations" => Translations::getPublicTranslations()];
-
     wp_register_script('wookey_public', WOOKEY_ROOT_URL . 'dist/public/checkout/wookey.public.iife.js?v=' . uniqid(), [], time(), true);
-    wp_localize_script('wookey_public', 'params', array_merge($baseConfig, $translations));
+    
     wp_enqueue_script('wookey_public');
     wp_enqueue_style('wookey_public_style', WOOKEY_ROOT_URL . 'dist/public/checkout/wookey.public.css?v=' . uniqid());
     wp_enqueue_style('wookey_layout_style', WOOKEY_ROOT_URL . 'dist/public/public.css?v=' . uniqid());
@@ -345,5 +350,58 @@ class WC_WookeyGateway extends WC_Payment_Gateway
     </tr>
 <?php
     return ob_get_clean();
+  }
+  
+function wookey_redirect_on_new_order($order) {
+  
+    error_log('wookey_redirect_on_order_pay');
+    error_log(print_r($posted_data,1));
+    if(WC()->session->chosen_payment_method == 'wookey'){
+   $this->wookey_redirect_to_payment_page();
+   
+    }
+    
+}
+
+public function wookey_redirect_on_order_pay($posted_data) {
+  
+  
+    //Is the payment key exists ?
+    
+    
+    //Is payment key belong to an order ?
+    // Is order status is complete
+    // Turn cart to order ?
+    $paymentKey = WC()->session->get('paymentKey');
+    if( is_wc_endpoint_url( 'order-received' )) {
+      wp_redirect(home_url('/wookey/payments/'.WC()->session->get('paymentKey')));
+      exit;
+    }
+    
+}
+
+public function wookey_add_partial_fill_order_status( $order_statuses ) {
+  $new_order_statuses = $order_statuses;
+  $new_order_statuses['wc-partial-fill'] = 'Partially filled payment';
+  return $new_order_statuses;
+}
+
+
+private function wookey_redirect_to_payment_page(){
+
+    if ( ! is_ajax() ) {
+			wp_safe_redirect(
+				apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', home_url('/wookey/payments/'.WC()->session->get('paymentKey')), $order )
+			);
+			exit;
+		}
+
+		wp_send_json(
+			array(
+				'result'   => 'success',
+				'redirect' => apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', home_url('/wookey/payments/'.WC()->session->get('paymentKey')), $order ),
+			)
+		);
+    exit();
   }
 }

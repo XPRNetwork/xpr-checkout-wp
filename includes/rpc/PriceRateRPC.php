@@ -14,7 +14,7 @@ class PriceRateRPC
   public function getUSDConvertionRate($currency = "EUR", $usdAmount = 10)
   {
 
-    // Do your code checking stuff here e.g. 
+    global $wpdb;
     $myPluginGateway = WC()->payment_gateways->payment_gateways()['wookey'];
 
     $now = time();
@@ -44,7 +44,15 @@ class PriceRateRPC
 
     $rates = unserialize($savedPriceRates);
     $prices = [];
+    $sql = "INSERT INTO wp_".WOOKEY_TABLE_FIAT_RATES." (symbol,rate) VALUES (%s,%.8f) ON DUPLICATE KEY UPDATE rate = %.8f";
+      $sql = $wpdb->prepare($sql,'USD',1,'USD');
+      $res = $wpdb->query($sql);
+      
     foreach ($rates as $symbol => $rate) {
+      
+      $sql = "INSERT INTO wp_".WOOKEY_TABLE_FIAT_RATES." (symbol,rate) VALUES (%s,%.8f) ON DUPLICATE KEY UPDATE rate = %.8f";
+      $sql = $wpdb->prepare($sql,$symbol,$rate,$rate);
+      $res = $wpdb->query($sql);
       if ($currency == $symbol) return $usdAmount / $rate;
     }
     return $usdAmount;

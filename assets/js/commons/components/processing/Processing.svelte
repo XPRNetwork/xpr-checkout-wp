@@ -7,7 +7,7 @@
   <div class="processing__icon">
     
   </div>
-  <h4 class="processing__label">{label}</h4>
+  <p class="text-sm font-bold text-primary">{label}</p>
 </div>
 <style>
   

@@ -71,11 +71,21 @@ class Translations
       "selectTokenDialogChangeAccountLabel" => __("change account ?", 'wookey'),
       "selectTokenPayButtonLabel" => __("Pay", 'wookey'),
       "selectTokenPayProcessingLabel" => __("Fetching tokens rates", 'wookey'),
+
+      "paymentProcessingLabel" => __("Waiting for transaction to complete", 'wookey'),
+      "paymentFailureDialogTitle" => __("Something wrong with your transfer.", 'wookey'),
+      "paymentFailureDialogText" => __("The transfer fail. The issue came from the chain side, but do not worry, no tokens have been transferred. Please retry or save your order to pay it later.", 'wookey'),
+      
+      "invalidOrderDialogTitle" => __("No order found.", 'wookey'),
+      "invalidOrderDialogText" => __("Not order has been found at the given url. ", 'wookey'),
+
       "verifyPaymentDialogTitle" => __("Payment verification", 'wookey'),
       "verifyPaymentDialogText" => __("Please wait while we check payment information.", 'wookey'),
       "verifyPaymentDialogProcessLabel" => __("Verifying payment", 'wookey'),
       "verifySuccessPaymentDialogTitle" => __("Payment verified", 'wookey'),
       "verifySuccessPaymentDialogText" => __("Great, your payment has be verified, order is now completed! ", 'wookey'),
+      "verifyFailurePaymentDialogTitle" => __("Payment verification failed", 'wookey'),
+      "verifyFailurePaymentDialogText" => __("Your payment could'nt been verified , order is pending! ", 'wookey'),
     ];
   }
 }
