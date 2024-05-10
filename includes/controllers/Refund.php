@@ -56,7 +56,7 @@ class Refund
       $order = wc_get_order($post->ID);
       wp_enqueue_style('wookey_admin_refund_style', WOOKEY_ROOT_URL . 'dist/admin/refund/wookey.admin.refund.css?v=' . uniqid());
       wp_register_script('wookey_admin_refund', WOOKEY_ROOT_URL . 'dist/admin/refund/wookey.admin.refund.iife.js?v=' . uniqid(), [], time(), true);
-      wp_localize_script('wookey_admin_refund', 'wookeyRefundParams', Config::GetConfigWithOrder($order->get_id()));
+      wp_localize_script('wookey_admin_refund', 'wookeyRefundParams', Config::GetConfigWithOrderById($order->get_id()));
       wp_enqueue_script('wookey_admin_refund');
     };
   }

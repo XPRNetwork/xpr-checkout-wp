@@ -35,7 +35,7 @@
   })
 
   async function refreshData (){
-    payment = await getPayment(pluginOptions.paymentKey,pluginOptions.testnet)
+    payment = await getPayment(pluginOptions.order.paymentKey,pluginOptions.testnet)
   }
 
   async function  connectProton(restoreSession = false) {
@@ -57,7 +57,8 @@
 
   async function refundPayment (paymentKey:string){
 
-    const refundActions = generateRefundAction(controllerState.session.auth.actor.toString(),controllerState.session.auth.permission.toString(),paymentKey)
+    const refundActions = generateRefundAction(controllerState.session.auth.actor.toString(),controllerState.session.auth.permission.toString(),paymentKey);
+    console.log(refundActions)
     if (controllerState.session){
       const tx = await controllerState.session.transact({
         actions:[refundActions]
@@ -90,11 +91,11 @@
       </li>
       <li class="wookey-refund__order-info__render-item">
         <h4>Payment Key</h4>
-        <a class="button" target="_blank" href={pluginOptions.testnet ? `https://testnet.protonscan.io/account/wookey?loadContract=true&tab=Tables&table=payments&account=wookey&scope=wookey&limit=100&lower_bound=${payment.key}&upper_bound=${payment.key}`: `https://protonscan.io/account/wookey?loadContract=true&tab=Tables&table=payments&account=wookey&scope=wookey&limit=100&lower_bound=${payment.key}&upper_bound=${payment.key}`}>{pluginOptions.paymentKey}</a>
+        <a class="button" target="_blank" href={pluginOptions.testnet ? `https://testnet.explorer.xprnetwork.org/account/wookey?loadContract=true&tab=Tables&table=payments&account=wookey&scope=wookey&limit=100&lower_bound=${payment.key}&upper_bound=${payment.key}`: `https://explorer.xprnetwork.org/account/wookey?loadContract=true&tab=Tables&table=payments&account=wookey&scope=wookey&limit=100&lower_bound=${payment.key}&upper_bound=${payment.key}`}>{pluginOptions.order.paymentKey}</a>
       </li>
       <li class="wookey-refund__order-info__render-item">
         <h4>Transaction Id</h4>
-        <a class="button" target="_blank" href={pluginOptions.testnet ? `https://testnet.protonscan.io/transaction/${pluginOptions.transactionId}`: `https://protonscan.io/transaction/${pluginOptions.transactionId}`}>{pluginOptions.transactionId}</a>
+        <a class="button" target="_blank" href={pluginOptions.testnet ? `https://testnet.explorer.xprnetwork.org/transaction/${pluginOptions.order.transactionId}`: `https://explorer.xprnetwork.org/transaction/${pluginOptions.order.transactionId}`}>{pluginOptions.order.transactionId}</a>
       </li>
       
     </ul>
@@ -111,7 +112,7 @@
 
       {/if}
     {#if controllerState.session}
-    <button disabled={payment.status != 1 } on:click|preventDefault={()=>{refundPayment(pluginOptions.paymentKey)}} class="woow-button button-primary full-width">Refund from {pluginOptions.testnetActor}</button>
+    <button disabled={payment.status != 1 } on:click|preventDefault={()=>{refundPayment(pluginOptions.order.paymentKey)}} class="woow-button button-primary full-width">Refund from {pluginOptions.testnetActor}</button>
     {:else }
     <button on:click|preventDefault={()=>{connectProton(false)}} class="woow-button button-primary full-width">Connect WebAuth to refund</button>
     {/if}
