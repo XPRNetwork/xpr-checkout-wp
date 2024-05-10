@@ -25,6 +25,7 @@ class ProtonWcGateway
     require_once WOOKEY_ROOT_DIR . 'includes/controllers/Orders.php';
     
     require_once WOOKEY_ROOT_DIR . 'includes/controllers/Refund.php';
+    require_once WOOKEY_ROOT_DIR . 'includes/controllers/RegStore.php';
 
     require_once WOOKEY_ROOT_DIR . 'includes/rpc/ProtonRPC.php';
     require_once WOOKEY_ROOT_DIR . 'includes/rpc/PriceRateRPC.php';
@@ -47,6 +48,7 @@ class ProtonWcGateway
     $gateway    = new \wookey\gateway\GatewayWrapper();
     $dashboard  = new \wookey\admin\Dashboard();
     $refund     = new \wookey\admin\Refund();
+    $regStore     = new \wookey\admin\RegStore();
     
     $orders     = new \wookey\admin\Orders();
     $notices    = new \wookey\admin\Notices();

@@ -36,6 +36,7 @@ class RegStore
    */
   private function registerActions()
   {
+    
     add_action('admin_enqueue_scripts', [$this, 'registerScripts']);
   }
 
@@ -48,12 +49,13 @@ class RegStore
   {
 
     global $current_screen;
-    $baseConfig = Config::GetBaseConfig();
+    $baseConfig = Config::GetDashbordConfig();
     $extendedConfig = [
       "networkCheckBoxSelector" => "#woocommerce_wookey_testnet",
       "mainnetAccountFieldSelector" => "#woocommerce_wookey_mainwallet",
       "testnetAccountFieldSelector" => "#woocommerce_wookey_testwallet",
     ];
+    
     if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wc-settings') {
       wp_register_script('wookey_admin_regstore', WOOKEY_ROOT_URL . 'dist/admin/regstore/wookey.admin.regstore.iife.js?v=' . uniqid(), [], time(), true);
       wp_localize_script('wookey_admin_regstore', 'wookeyRegStoreParams', array_merge($baseConfig, $extendedConfig));
