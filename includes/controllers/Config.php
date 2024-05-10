@@ -94,6 +94,18 @@ class Config
     return array_merge($baseConfig, ['order'=>$resolved]);
 
   }
+  
+  public static function GetConfigWithOrderById($orderId)
+  {
+
+    $order = new \WC_Order( $orderId );
+    $requestedPaymentKey = $order->get_meta('_payment_key');
+    $baseConfig = self::GetBaseConfig($requestedPaymentKey);
+    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    $resolved = OrderResolver::Process($requestedPaymentKey,$wookeyGateway->get_option('network'));
+    return array_merge($baseConfig, ['order'=>$resolved]);
+
+  }
 
   /**
    * Retrieves configuration values for WooKey payment gateway merged with cart details.

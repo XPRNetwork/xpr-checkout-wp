@@ -44,6 +44,7 @@
 
   onMount(async ()=>{
 
+    console.log(pluginOptions)
     const networkCheckbox = document.querySelector(pluginOptions.networkCheckBoxSelector);
     mainnetAccountNameField = document.querySelector(pluginOptions.mainnetAccountFieldSelector);
     testnetAccountNameField = document.querySelector(pluginOptions.testnetAccountFieldSelector);
