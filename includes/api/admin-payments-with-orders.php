@@ -50,7 +50,7 @@ function handle_payments_with_orders($request)
     $args = array(
       'post_type'      => 'shop_order',
       'post_status'    => 'any',
-      'meta_key'       => '_paymentKey', // Meta key for paymentKey
+      'meta_key'       => '_payment_key', // Meta key for paymentKey
       'meta_value'     => $row['paymentKey'],
       'meta_compare'   => '=',
       'posts_per_page' => 1,

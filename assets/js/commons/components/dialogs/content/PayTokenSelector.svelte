@@ -38,7 +38,7 @@
 
   })
 
-  async function refresh (){
+  export async function refresh (){
 
     console.log(isTestnet,'isTestnet,')
     refreshing = true

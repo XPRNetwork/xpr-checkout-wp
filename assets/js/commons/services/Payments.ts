@@ -3,7 +3,6 @@ import { MAINNET_ENDPOINTS, TESTNET_ENDPOINTS } from '../constants/endpoints';
 import axios from 'axios';
 import { toEOSIOSha256 } from '../utils/sha256';
 export async function getPayments(baseDomain:string,store:string,isTestnet:boolean) {
-  
 
 
   let config = {
@@ -19,7 +18,12 @@ export async function getPayments(baseDomain:string,store:string,isTestnet:boole
     }
     
   };
-
+  console.log('get payment', config)
+  await axios(config).then((res) => { 
+    console.log(res)
+    return res
+  }
+    )
   return axios(config)
 
   

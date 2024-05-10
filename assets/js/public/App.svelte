@@ -19,6 +19,7 @@
   
   let params: ConfigWithOrder = window['params'] as ConfigWithOrder;
   let protonCheckoutState:ProtonCheckOutState = {isRunning:false};
+  let tokenSelector;
   
   
   onMount(async ()=>{
@@ -44,9 +45,9 @@
   async function connectProton(restoreSession = false,silentRestore=false) {
     
     console.log("connect proton")
-    if (protonCheckoutState.session)  {
-        return protonCheckoutState.session;
-    };
+    // if (protonCheckoutState.session)  {
+    //     return protonCheckoutState.session;
+    // };
     const session = await webauthConnect(
       params.testnet ? params.testnetActor : params.mainnetActor,
       params.appName,
@@ -56,16 +57,23 @@
     protonCheckoutState.isRunning = !!session
     if (session) {
       protonCheckoutState.session = session;
+      protonCheckoutState.appState = APP_STATE_TOKEN_SELECT;
       
+    }else {
+      protonCheckoutState.appState = APP_STATE_PENDING_LOGIN;
     }
     return session
 
   }
 
-  function changeAccount (){
+  async function changeAccount (){
 
-    protonCheckoutState.session = undefined;
-    connectProton(false)
+    await connectProton(false);
+    console.log(tokenSelector)
+    if (tokenSelector) {
+      tokenSelector.refresh()
+      
+    }
 
   }
 
@@ -172,25 +180,25 @@
   <ol class="grid grid-cols-[1fr,1fr,1fr,max-content] items-center w-full text-sm text-gray-500 font-medium sm:text-base">
     <li class="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
         <div class="flex items-center whitespace-nowrap">
-            <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_PENDING_LOGIN ? 'bg-primary border-indigo-200': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>1</span> 
+            <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_PENDING_LOGIN ? 'bg-purple-500 border-purple-600': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>1</span> 
             <p class={`${protonCheckoutState.appState >= APP_STATE_PENDING_LOGIN ? 'text-primary font-bold': ''} md:block hidden ml-3`}>Connect Webauth</p>
         </div>
     </li>
     <li class="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
         <div class="flex items-center whitespace-nowrap ">
-            <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_TOKEN_SELECT ? 'bg-primary border-indigo-200': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>2</span> 
+            <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_TOKEN_SELECT ? 'bg-purple-500 border-purple-600': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>2</span> 
             <p class={`${protonCheckoutState.appState >= APP_STATE_TOKEN_SELECT ? 'text-primary font-bold': ''} md:block hidden ml-3`}>Select token</p>
         </div>
     </li>
     <li class="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
         <div class="flex items-center whitespace-nowrap ">
-          <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_TRANSFER_PROCESSING ? 'bg-primary border-indigo-200': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>3</span> 
+          <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_TRANSFER_PROCESSING ? 'bg-purple-500 border-purple-600': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>3</span> 
             <p class={`${protonCheckoutState.appState >= APP_STATE_TRANSFER_PROCESSING ? 'text-primary font-bold': ''} md:block hidden ml-3`}>Pay order</p>
         </div>
     </li>
     <li class="flex text-sm items-center text-gray-400 ">
         <div class="flex items-center  ">
-          <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_TRANSFER_VERIFICATION ? 'bg-primary border-indigo-200': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>4</span> 
+          <span class={`w-8 h-8 ${protonCheckoutState.appState >= APP_STATE_TRANSFER_VERIFICATION ? 'bg-purple-500 border-purple-600': 'bg-gray-200 border-gray-200'}  border  rounded-full flex justify-center items-center text-sm text-white `}>4</span> 
             <p class={`${protonCheckoutState.appState >= APP_STATE_TRANSFER_VERIFICATION ? 'text-primary font-bold': ''} md:block hidden ml-3`}>Verify payment</p>
         </div>
     </li>
@@ -285,6 +293,7 @@
     
     {#if protonCheckoutState.appState == APP_STATE_TOKEN_SELECT}
     <PayTokenSelector 
+        bind:this={tokenSelector}
         isTestnet={params.testnet.toString()=="1"}
         storeCurrency={params.wooCurrency} 
         cartAmount={params.order.total.toString()} 
