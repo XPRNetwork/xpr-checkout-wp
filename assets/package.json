@@ -18,7 +18,7 @@
   "dependencies": {
     "@eoscafe/light-api": "^3.2.18",
     "@proton/light-api": "^3.3.4",
-    "@proton/web-sdk": "^4.2.15",
+    "@proton/web-sdk": "^4.2.18",
     "autoprefixer": "^10.4.19",
     "axios": "^1.4.0",
     "daisyui": "^4.10.1",

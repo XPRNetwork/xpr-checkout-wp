@@ -276,9 +276,9 @@
                     />
                   </svg> -->
                   
-                  <button class="btn rounded-lg bg-white w-full font-normal">
+                  <a href="https://webauth.com/" target="_blank" class="btn rounded-lg bg-white w-full font-normal">
                     Get it Now
-                  </button>
+                  </a>
                 </div>
                 
               </div>
