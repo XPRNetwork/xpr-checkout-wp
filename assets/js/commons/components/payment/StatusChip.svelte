@@ -24,6 +24,6 @@
   {/if}
   {#if status  == 2}
   <span class={`status-chip payed-out ${variant}`}>
-    Payed out
+    Paid out
   </span>
   {/if}
