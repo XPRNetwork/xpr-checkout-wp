@@ -22,7 +22,7 @@
     <div class="dialog__content__body">
       <slot  name="content" class="dialog__content__slot" />
       {#if footerClose}
-        <button on:click={closeCheckoutModal} class="wookey-button button full-width">Close</button>
+        <button on:click={closeCheckoutModal} class="xprcheckout-button button full-width">Close</button>
       {/if}
     </div>
   </div>

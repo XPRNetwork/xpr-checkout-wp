@@ -1,11 +1,11 @@
 define MANIFEST_BODY
 {
-	"name" : "Wookey: WooCommerce WebAuth gateway",
-	"slug" : "wookey_woocommerce_webauth_gateway",
-	"author" : "<a href='https://hypersolid.io'>RockerOne</a>",
+	"name" : "XPRCheckout: WooCommerce WebAuth gateway",
+	"slug" : "xprcheckout_woocommerce_webauth_gateway",
+	"author" : "<a href='https://rockerone.io'>RockerOne</a>",
 	"author_profile" : "http://profiles.wordpress.org/rocker0ne",
 	"version" : "$(VERSION)",
-	"download_url" : "https://github.com/ProtonProtocol/wookey-woocommerce-webauth/releases/tag/$(VERSION)",
+	"download_url" : "https://github.com/XPRNetwork/xpr-checkout-wp/releases/tag/$(VERSION)",
 	"requires" : "5.0",
 	"tested" : "5.0",
 	"requires_php" : "7.0",

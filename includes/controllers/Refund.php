@@ -1,16 +1,16 @@
 <?php
 
-namespace wookey\admin;
+namespace xprcheckout\admin;
 
-use wookey\config\Config;
+use xprcheckout\config\Config;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 /**
- * Admin Refund Handler for Wookey Payment Gateway.
+ * Admin Refund Handler for XPRCheckout Payment Gateway.
  *
- * Manages the custom refund functionality, styles, and scripts related to the Wookey payment method in the WooCommerce backend.
+ * Manages the custom refund functionality, styles, and scripts related to the XPRCheckout payment method in the WooCommerce backend.
  * 
  */
 
@@ -45,7 +45,7 @@ class Refund
   /**
    * Enqueues the necessary scripts and styles when on the WooCommerce order screen.
    * 
-   * The scripts are only loaded for orders with Wookey as the payment method.
+   * The scripts are only loaded for orders with XPRCheckout as the payment method.
    */
   public function registerScript()
   {
@@ -54,23 +54,23 @@ class Refund
     if (isset($current_screen) && $current_screen->id == 'shop_order') {
       global $post;
       $order = wc_get_order($post->ID);
-      wp_enqueue_style('wookey_admin_refund_style', WOOKEY_ROOT_URL . 'dist/admin/refund/wookey.admin.refund.css?v=' . uniqid());
-      wp_register_script('wookey_admin_refund', WOOKEY_ROOT_URL . 'dist/admin/refund/wookey.admin.refund.iife.js?v=' . uniqid(), [], time(), true);
-      wp_localize_script('wookey_admin_refund', 'wookeyRefundParams', Config::GetConfigWithOrderById($order->get_id()));
-      wp_enqueue_script('wookey_admin_refund');
+      wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/admin/refund/xprcheckout.admin.refund.css?v=' . uniqid());
+      wp_register_script('xprcheckout_admin_refund', XPRCHECKOUT_ROOT_URL . 'dist/admin/refund/xprcheckout.admin.refund.iife.js?v=' . uniqid(), [], time(), true);
+      wp_localize_script('xprcheckout_admin_refund', 'xprcheckoutRefundParams', Config::GetConfigWithOrderById($order->get_id()));
+      wp_enqueue_script('xprcheckout_admin_refund');
     };
   }
 
   /**
-   * Registers a new meta box for displaying Wookey payment information on the WooCommerce order screen.
+   * Registers a new meta box for displaying XPRCheckout payment information on the WooCommerce order screen.
    * 
-   * The meta box is only displayed for orders with Wookey as the payment method.
+   * The meta box is only displayed for orders with XPRCheckout as the payment method.
    */
   public function registerMetabox()
   {
     add_meta_box(
-      'woocommerce-wookey-payment',
-      __('Wookey payment', 'wookey'),
+      'woocommerce-xprcheckout-payment',
+      __('XPRCheckout payment', 'xprcheckout'),
       [$this, 'renderMetabox'],
       'shop_order',
       'advanced',
@@ -79,7 +79,7 @@ class Refund
     );
   }
   /**
-   * Renders the content of the Wookey payment meta box on the WooCommerce order screen.
+   * Renders the content of the XPRCheckout payment meta box on the WooCommerce order screen.
    * 
    * @param WP_Post $post The post object of the current post screen.
    */
@@ -87,10 +87,10 @@ class Refund
   {
 
     $order = wc_get_order($post->ID);
-    if ($order->get_payment_method() !== "wookey") return;
+    if ($order->get_payment_method() !== "xprcheckout") return;
 
 ?>
-    <div id="wookey-refund"></div>
+    <div id="xprcheckout-refund"></div>
 <?php
 
   }
@@ -107,7 +107,7 @@ class Refund
   }
 
   /**
-   * Disables the default WooCommerce refund functionality for Wookey payment orders.
+   * Disables the default WooCommerce refund functionality for XPRCheckout payment orders.
    * 
    * @param bool $enableRefund Whether to enable the default WooCommerce refund functionality.
    * @param WC_Order $order The WooCommerce order object.
@@ -116,7 +116,7 @@ class Refund
   public function disableDefaultRefund($enableRefund, $order)
   {
     $order = wc_get_order($order);
-    if ($order->get_payment_method() == "wookey") return false;
+    if ($order->get_payment_method() == "xprcheckout") return false;
     return $enableRefund;
   }
 }

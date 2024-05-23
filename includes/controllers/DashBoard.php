@@ -1,8 +1,8 @@
 <?php
 
-namespace wookey\admin;
+namespace xprcheckout\admin;
 
-use wookey\config\Config;
+use xprcheckout\config\Config;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
@@ -10,10 +10,10 @@ if (!defined('ABSPATH')) {
 
 
 /**
- * Represents the WooKey dashboard functionality within the WordPress admin.
+ * Represents the XPRCheckout dashboard functionality within the WordPress admin.
  * 
- * This class is responsible for managing the WooKey dashboard interface in the WordPress admin section,
- * including registering necessary scripts and adding menu items for the WooKey dashboard.
+ * This class is responsible for managing the XPRCheckout dashboard interface in the WordPress admin section,
+ * including registering necessary scripts and adding menu items for the XPRCheckout dashboard.
  */
 
 class Dashboard
@@ -44,55 +44,55 @@ class Dashboard
   }
 
   /**
-   * Registers and enqueues scripts for the WooKey dashboard.
+   * Registers and enqueues scripts for the XPRCheckout dashboard.
    * 
-   * This method checks the current screen ID and if it matches the WooKey dashboard, it registers 
+   * This method checks the current screen ID and if it matches the XPRCheckout dashboard, it registers 
    * and enqueues necessary scripts and styles for the dashboard.
    */
   public function registerScript()
   {
 
     global $current_screen;
-    if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wookey-dashboard') {
-      wp_enqueue_style('wookey_admin_dashboard_style', WOOKEY_ROOT_URL . 'dist/admin/dashboard/wookey.admin.dashboard.css?v=' . uniqid());
-      wp_register_script('wookey_admin_dashboard', WOOKEY_ROOT_URL . 'dist/admin/dashboard/wookey.admin.dashboard.iife.js?v=' . uniqid(), [], time(), true);
-      wp_localize_script('wookey_admin_dashboard', 'wookeyDashboardParams', Config::GetDashbordConfig());
-      wp_enqueue_script('wookey_admin_dashboard');
+    if (isset($current_screen) && $current_screen->id == 'woocommerce_page_xprcheckout-dashboard') {
+      wp_enqueue_style('xprcheckout_admin_dashboard_style', XPRCHECKOUT_ROOT_URL . 'dist/admin/dashboard/xprcheckout.admin.dashboard.css?v=' . uniqid());
+      wp_register_script('xprcheckout_admin_dashboard', XPRCHECKOUT_ROOT_URL . 'dist/admin/dashboard/xprcheckout.admin.dashboard.iife.js?v=' . uniqid(), [], time(), true);
+      wp_localize_script('xprcheckout_admin_dashboard', 'xprcheckoutDashboardParams', Config::GetDashbordConfig());
+      wp_enqueue_script('xprcheckout_admin_dashboard');
     };
   }
 
   /**
-   * Adds a submenu item for the WooKey dashboard in the WooCommerce menu.
+   * Adds a submenu item for the XPRCheckout dashboard in the WooCommerce menu.
    */
   public function addMenuItem()
   {
-    add_submenu_page('woocommerce', 'Wookey dashboard', 'Wookey dashboard', 'manage_options', 'wookey-dashboard', [$this, 'render']);
+    add_submenu_page('woocommerce', 'XPRCheckout dashboard', 'XPRCheckout dashboard', 'manage_options', 'xprcheckout-dashboard', [$this, 'render']);
   }
 
   /**
-   * Renders the WooKey dashboard interface.
+   * Renders the XPRCheckout dashboard interface.
    * 
-   * Displays the WooKey dashboard contents. It checks if the WooKey gateway is available and displays 
+   * Displays the XPRCheckout dashboard contents. It checks if the XPRCheckout gateway is available and displays 
    * either the main dashboard interface or a misconfiguration warning.
    */
   public function render()
 
   {
 
-    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
     ob_start();
 ?>
     <div class="wrap ">
       <div id="poststuff">
-        <?php if ($wookeyGateway->is_available()) : ?>
-          <div id="wookey-payout"></div>
+        <?php if ($xprcheckoutGateway->is_available()) : ?>
+          <div id="xprcheckout-payout"></div>
         <?php else : ?>
           <div class="misconfig-warning">
-            <h3>Wookey misconfiguration</h3>
+            <h3>XPRCheckout misconfiguration</h3>
             <p>
-              Wookey configuration doesn't have registered store account for <?php echo  $wookeyGateway->is_testnet() ? 'testnet' : 'mainnet' ?>.
+              XPRCheckout configuration doesn't have registered store account for <?php echo  $xprcheckoutGateway->is_testnet() ? 'testnet' : 'mainnet' ?>.
             </p>
-            <a href="<?php echo admin_url('admin.php?page=wc-settings&tab=checkout&section=wookey') ?>" class="button button-warning">Please fix it </a>
+            <a href="<?php echo admin_url('admin.php?page=wc-settings&tab=checkout&section=xprcheckout') ?>" class="button button-warning">Please fix it </a>
           </div>
         <?php endif ?>
 

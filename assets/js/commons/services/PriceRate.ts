@@ -10,7 +10,7 @@ export function getConvertedToUSD(baseDomain:string,storeCurrency:string,orderAm
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `${baseDomain}/wp-json/wookey/v1/price-rates`,
+    url: `${baseDomain}/wp-json/xprcheckout/v1/price-rates`,
     headers: { 
       'Content-Type': 'application/json', 
     },

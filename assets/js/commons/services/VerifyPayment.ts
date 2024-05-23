@@ -13,7 +13,7 @@ export function verifyPayment(baseDomain:string,paymentKey: string,actor:string,
   let config:AxiosRequestConfig = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `${baseDomain}/wp-json/wookey/v1/verify-transaction`,
+    url: `${baseDomain}/wp-json/xprcheckout/v1/verify-transaction`,
     headers: { 
       'Content-Type': 'application/json', 
     },

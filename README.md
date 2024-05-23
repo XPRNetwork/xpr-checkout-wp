@@ -11,7 +11,7 @@ Overall, this plugin helps to expand the use of cryptocurrencies through the pro
 
 ## Code structure
 
-The gateway itself follows the rules of each WooCommerce gateway. It binds the WooCommerce and WordPress event flow to functions through the use of hooks and filters that trigger methods from the **Wookey_Gateway** class.
+The gateway itself follows the rules of each WooCommerce gateway. It binds the WooCommerce and WordPress event flow to functions through the use of hooks and filters that trigger methods from the **XPRCheckout_Gateway** class.
 
 The front-end checkout widget and back-office utility widgets run exclusively on JS, composed of several apps compiled independently but sharing the same code base. 
 

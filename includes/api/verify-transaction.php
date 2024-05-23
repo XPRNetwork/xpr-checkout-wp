@@ -1,15 +1,15 @@
 <?php
-use wookey\utils\OrderResolver;
+use xprcheckout\utils\OrderResolver;
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
-add_action('rest_api_init', 'wookey_register_transaction_verification_routes');
+add_action('rest_api_init', 'xprcheckout_register_transaction_verification_routes');
 
-function wookey_register_transaction_verification_routes()
+function xprcheckout_register_transaction_verification_routes()
 {
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
-  register_rest_route('wookey/v1', '/verify-transaction', array(
+  register_rest_route('xprcheckout/v1', '/verify-transaction', array(
     'methods'  => 'POST',
     'callback' => 'handle_transaction_check',
     'permission_callback' => '__return_true'

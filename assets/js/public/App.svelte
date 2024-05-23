@@ -96,7 +96,7 @@
     
     if (!protonCheckoutState || !protonCheckoutState.session) return;
     
-    await updateOrder(params.baseDomain,params.order.paymentKey,token.pair_base);
+    await updateOrder(params.baseDomain,params.order.paymentKey,token.pair_base,protonCheckoutState.session.auth.actor.toString());
     const registerPaymentAction = generateRegisterPaymentAction(
       params.testnet ? params.testnetActor : params.mainnetActor ,
       protonCheckoutState.session.auth.actor.toString(),

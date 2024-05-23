@@ -3,12 +3,12 @@ if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
-add_action('rest_api_init', 'wookey_register_payment_verification_routes');
+add_action('rest_api_init', 'xprcheckout_register_payment_verification_routes');
 
-function wookey_register_payment_verification_routes()
+function xprcheckout_register_payment_verification_routes()
 {
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
-  register_rest_route('wookey/v1', '/verify-payment', array(
+  register_rest_route('xprcheckout/v1', '/verify-payment', array(
     'methods'  => 'POST',
     'callback' => 'handle_payment_check',
     'permission_callback' => '__return_true'
@@ -56,7 +56,7 @@ function handle_payment_check($request)
   error_log(print_r(get_current_user_id(), 1));
 
 
-  $rpcEndpoint = $params['network'] == 'testnet' ? WOOKEY_TESTNET_ENDPOINT : WOOKEY_MAINNET_ENDPOINT;
+  $rpcEndpoint = $params['network'] == 'testnet' ? XPRCHECKOUT_TESTNET_ENDPOINT : XPRCHECKOUT_MAINNET_ENDPOINT;
   $rpc = new ProtonRPC($rpcEndpoint);
   $isTransactionVerified = $rpc->verifyTransaction($params['transactionId'], $params['paymentKey']);
   if (!$isTransactionVerified) {

@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 
 import type{ WPResponse,Order } from '../type';
 
-export function updateOrder(baseDomain:string,paymentKey:string,symbol:string) {
+export function updateOrder(baseDomain:string,paymentKey:string,symbol:string,payer:string) {
   
   const headers = {
     'Content-Type': 'application/json',
@@ -12,10 +12,11 @@ export function updateOrder(baseDomain:string,paymentKey:string,symbol:string) {
   let config:AxiosRequestConfig = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `${baseDomain}/wp-json/wookey/v1/update-order`,
+    url: `${baseDomain}/wp-json/xprcheckout/v1/update-order`,
     data: {
       paymentKey: paymentKey,
-      symbol:symbol
+      symbol: symbol,
+      payer:payer
     },
     withCredentials:true,
     headers

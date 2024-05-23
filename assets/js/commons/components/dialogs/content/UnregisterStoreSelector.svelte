@@ -20,7 +20,7 @@
 
 <div class="register_store">
     <div class="warning">
-      <p>You are about to unregister your <b>{actorName}</b>'s' account as store account nearby the Wookey escrow smart contract.</p>
+      <p>You are about to unregister your <b>{actorName}</b>'s' account as store account nearby the XPRCheckout escrow smart contract.</p>
       <p>Please be sure to withdraw all amount from the smart contract in order to change the registered account.</p>
     </div>
     

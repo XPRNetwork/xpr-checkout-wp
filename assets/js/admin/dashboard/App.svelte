@@ -18,7 +18,7 @@
   let tokenPrice:any;
   let priceRate:any;
   let refreshing:boolean = false;
-  let pluginOptions: PayoutControllerOption = window['wookeyDashboardParams'] as PayoutControllerOption;
+  let pluginOptions: PayoutControllerOption = window['xprcheckoutDashboardParams'] as PayoutControllerOption;
   
   let payoutState:PayoutState = {
     isRunning:false,
@@ -59,7 +59,7 @@
         payoutState.isRunning = true
         return payoutState.session;
     };
-    const session = await webauthConnect("wookey","Wookey",pluginOptions.testnet,restoreSession)
+    const session = await webauthConnect("wookey","XPRCheckout",pluginOptions.testnet,restoreSession)
     payoutState.isRunning = !!session
     if (session) {
       payoutState.session = session
@@ -121,17 +121,17 @@
   
 
 </script>
-<main class='wookey-dashboard wookey-app'>
-  <div class="wookey-dashboard__header">
-    <div class="wookey-dashboard__title">
-      <h3>Wookey Dashboard</h3>
+<main class='xprcheckout-dashboard xprcheckout-app'>
+  <div class="xprcheckout-dashboard__header">
+    <div class="xprcheckout-dashboard__title">
+      <h3>XPRCheckout Dashboard</h3>
     </div>
-    <div class="wookey-dashboard__actions">
+    <div class="xprcheckout-dashboard__actions">
       
     </div>
   </div>
-  <div class="wookey-dashboard__body">
-    <div class="wookey-dashboard__payments">
+  <div class="xprcheckout-dashboard__body">
+    <div class="xprcheckout-dashboard__payments">
       {#if !refreshing && balances} 
     <table class="wp-list-table widefat fixed striped table-view-list posts">
       <thead>
@@ -160,11 +160,11 @@
     {/if}
     
     </div>
-    <div class="wookey-dashboard__withdraws">
+    <div class="xprcheckout-dashboard__withdraws">
     {#if !refreshing && balances}
-      <ul class="wookey-dashboard__withdraws__balances">
+      <ul class="xprcheckout-dashboard__withdraws__balances">
         {#each balances as balance }
-        <li class="wookey-dashboard__withdraws__balances__render-item"> 
+        <li class="xprcheckout-dashboard__withdraws__balances__render-item"> 
           <img width="40" src={getSymbolLogo(getSymbolCode(balance.key))}/>
           <div class="amounts">
             <span class="token">{balance.amount}</span>

@@ -1,11 +1,11 @@
 import App from "./App.svelte";
 import  "./app.css";
 
-const target = document.getElementById("wookey-checkout")
+const target = document.getElementById("xprcheckout-checkout")
 if (target) {
   
   new App({
-    target: document.getElementById("wookey-checkout"),
+    target: document.getElementById("xprcheckout-checkout"),
   });
 }
 

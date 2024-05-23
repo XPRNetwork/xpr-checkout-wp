@@ -28,7 +28,7 @@
   let isTestnet:boolean = false;
   let hasMainnetAccount:boolean = false;
   let hasTestnetAccount:boolean = false;
-  let pluginOptions: ControllerOptions = window['wookeyRegStoreParams'] as ControllerOptions;
+  let pluginOptions: ControllerOptions = window['xprcheckoutRegStoreParams'] as ControllerOptions;
   let mainnetAccountNameField = null;
   let testnetAccountNameField = null;
   let currentAccount = '';
@@ -45,16 +45,17 @@
   onMount(async ()=>{
 
     console.log(pluginOptions,'pluginOptions')
-    const networkCheckbox = document.querySelector(pluginOptions.networkCheckBoxSelector);
+    const networkCheckbox:HTMLSelectElement = document.querySelector(pluginOptions.networkSelector);
     mainnetAccountNameField = document.querySelector(pluginOptions.mainnetAccountFieldSelector);
     testnetAccountNameField = document.querySelector(pluginOptions.testnetAccountFieldSelector);
-    isTestnet = networkCheckbox.checked;
+    
+    isTestnet = networkCheckbox.value == "testnet";
     hasMainnetAccount = !isTestnet && pluginOptions.mainnetActor && pluginOptions.mainnetActor !== '' 
     hasTestnetAccount = isTestnet && pluginOptions.testnetActor && pluginOptions.testnetActor !== '' 
     currentAccount = isTestnet ? pluginOptions.testnetActor : pluginOptions.mainnetActor
     if (networkCheckbox){
       networkCheckbox.addEventListener('change',async (e)=>{
-        isTestnet = networkCheckbox.checked;
+        isTestnet = networkCheckbox.value == "testnet";
         hasMainnetAccount = !isTestnet && pluginOptions.mainnetActor && pluginOptions.mainnetActor !== '' 
         hasTestnetAccount = isTestnet && pluginOptions.testnetActor && pluginOptions.testnetActor !== '' 
         storeRegistered = await isStoreRegistered(isTestnet ? pluginOptions.testnetActor : pluginOptions.mainnetActor,isTestnet)
@@ -69,12 +70,12 @@
 
   async function  connectProton(restoreSession = false) {
     
-    const session = await webauthConnect('wookey','Wookey',isTestnet,restoreSession)
+    const session = await webauthConnect('wookey','XPRCheckout',isTestnet,restoreSession)
+    console.log('connectProton',session,restoreSession)
     controllerState.isRunning = !!session
     if (session) {
       controllerState.session = session
       controllerState.appState = storeRegistered ? APP_STATE_STORE_UNREGISTER :APP_STATE_STORE_REGISTER;
-      console.log('let register')
     }
     return session
 
@@ -113,10 +114,10 @@
   }
   async function onStoreRegister(){
 
+    console.log('register store')
 
     controllerState.appState = "";
     const registerAction = generateRegisterStoreAction(controllerState.session.auth.actor,controllerState.session.auth.permission)
-    console.log(registerAction);
     const tx:TransactResult = await controllerState.session.transact(
       {
         actions:[registerAction]
@@ -144,7 +145,7 @@
   }
 
 </script>
-<main class='woow_register_store wookey-app'>
+<main class='xprcheckout_register_store xprcheckout-app'>
   <Dialog open={controllerState.appState == APP_STATE_STORE_REGISTER}>
     <div slot="head">
       <h3 class="modal_title">Register your Store</h3>
@@ -163,9 +164,9 @@
   </Dialog>
   
   {#if storeRegistered}
-  <button class="woow-button button-primary" on:click|preventDefault={()=>connectProton(canRestoreSession())}>Unregister <b>{currentAccount}</b> on {isTestnet ? 'testnet' : 'mainnet'}</button>
+  <button class="xprcheckout-button button-primary" on:click|preventDefault={()=>connectProton(canRestoreSession())}>Unregister <b>{currentAccount}</b> on {isTestnet ? 'testnet' : 'mainnet'}</button>
   {:else}
-  <button class="woow-button button-primary" on:click|preventDefault={()=>connectProton(canRestoreSession())}>Register <b>{currentAccount}</b> on {isTestnet ? 'testnet' : 'mainnet'}</button>
+  <button class="xprcheckout-button button-primary" on:click|preventDefault={()=>connectProton(canRestoreSession())}>Register <b>{currentAccount}</b> on {isTestnet ? 'testnet' : 'mainnet'}</button>
   {/if}
 </main>
 
