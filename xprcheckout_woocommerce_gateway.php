@@ -2,10 +2,10 @@
 
 /*
  * Plugin Name: XPRCheckout - WebAuth Gateway for Woocommerce
- * Description: Allow user to pay securly with with multiple crypto currencies through Webauth with NO GAS FEE BABY !
+ * Description: Allow user to pay securly with with multiple crypto currencies through Webauth
  * Author: Rémy Chauveau AKA Rockerone
- * Author URI: hypersolid.io
- * Version: 1.1.0
+ * Author URI: rockerone.io
+ * Version: 1.1.2
  * Text Domain: xprcheckout
  * Domain Path: /i18n/languages/
  */
