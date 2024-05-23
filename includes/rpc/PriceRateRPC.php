@@ -1,4 +1,5 @@
 <?php
+
 class PriceRateRPC
 {
 
@@ -20,19 +21,21 @@ class PriceRateRPC
     if (is_null($savedPriceRates) || $now > $savedPriceRatesValidity) {
 
       $url = "https://api.freecurrencyapi.com/v1/latest";
-      $ch = curl_init($url);
       $headers = array(
         "apikey: " . $this->apiKey,
         'Content-Type: application/json'
       );
 
-      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-      curl_setopt($ch, CURLOPT_POSTFIELDS, '{"base_currency": "USD"}');
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      $response = curl_exec($ch);
-      curl_close($ch);
-      $responseData = json_decode($response, true);
+      $response = wp_remote_get($url, array(
+        'headers' => $headers,
+        'body' => json_encode(array('base_currency' => 'USD'))
+      ));
+
+      if (is_wp_error($response)) {
+        return $usdAmount; // Handle error
+      }
+
+      $responseData = json_decode(wp_remote_retrieve_body($response), true);
 
       $myPluginGateway->update_option('price_rates_validity', $now + $this->priceValidityInterval);
       $myPluginGateway->update_option('price_rates', serialize($responseData['data']));
