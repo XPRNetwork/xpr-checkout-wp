@@ -15,7 +15,7 @@ class TokenPrices
 
     global $wpdb;
     // Do your code checking stuff here e.g. 
-    $myPluginGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    $myPluginGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
 
     $now = time();
     $savedPriceRatesValidity = $myPluginGateway->get_option('price_rates_validity');
@@ -54,7 +54,7 @@ class TokenPrices
         if (isset($prices[0])) {
           $mergedToken = array_merge($prices[0], $tokenBase);
           if ($mergedToken['pair_base'] == "XPR")error_log(print_r($mergedToken['quote']['price_usd'],1));
-          $sql = "INSERT INTO wp_".WOOKEY_TABLE_TOKEN_RATES." (symbol,contract,token_precision,rate) VALUES (%s,%s,%d,%.12f) ON DUPLICATE KEY UPDATE rate = %.12f";
+          $sql = "INSERT INTO wp_".XPRCHECKOUT_TABLE_TOKEN_RATES." (symbol,contract,token_precision,rate) VALUES (%s,%s,%d,%.12f) ON DUPLICATE KEY UPDATE rate = %.12f";
           $sql = $wpdb->prepare($sql,$mergedToken['pair_base'],$mergedToken['contract'],$mergedToken['decimals'],$mergedToken['quote']['price_usd'],$mergedToken['quote']['price_usd']);
           $res = $wpdb->query($sql);
           

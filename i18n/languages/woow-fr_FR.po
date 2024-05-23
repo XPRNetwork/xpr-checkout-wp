@@ -18,8 +18,8 @@ msgid "Mainnet/testnet"
 msgstr "Mainnet/testnet"
 
 #: woow-gateway.php:151
-msgid "Webauth for woocommerce"
-msgstr "Webauth pour WooCommerce"
+msgid "XPRCheckout"
+msgstr "XPRCheckout"
 
 #: woow-gateway.php:152
 msgid "Provides a Webauth Payment Gateway for your customer."

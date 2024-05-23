@@ -13,7 +13,7 @@ export function getCart(baseDomain:string) {
   let config:AxiosRequestConfig = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `${baseDomain}/wp-json/wookey/v1/cart`,
+    url: `${baseDomain}/wp-json/xprcheckout/v1/cart`,
     withCredentials:true,
     headers
     

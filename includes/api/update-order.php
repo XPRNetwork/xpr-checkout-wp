@@ -2,15 +2,15 @@
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
-use wookey\config\Config;
-use wookey\i18n\Translations;
+use xprcheckout\config\Config;
+use xprcheckout\i18n\Translations;
 
-add_action('rest_api_init', 'wookey_register_order_routes');
+add_action('rest_api_init', 'xprcheckout_register_order_routes');
 
-function wookey_register_order_routes()
+function xprcheckout_register_order_routes()
 {
   
-  register_rest_route('wookey/v1', '/update-order', array(
+  register_rest_route('xprcheckout/v1', '/update-order', array(
     'methods'  => 'POST',
     'callback' => 'handle_get_order',
     'permission_callback' => '__return_true'
@@ -40,12 +40,12 @@ function handle_get_order($request)
   error_log(print_r($ordersQuery[0],1));
   $existingOrder = $ordersQuery[0];
   $orderCurrency = $existingOrder->get_currency();
-  $sql = "SELECT * FROM wp_".WOOKEY_TABLE_TOKEN_RATES." where symbol = %s";
+  $sql = "SELECT * FROM wp_".XPRCHECKOUT_TABLE_TOKEN_RATES." where symbol = %s";
   $sql = $wpdb->prepare($sql,$params['symbol']);
   $tokens = $wpdb->get_results($sql);
   $existingToken = $tokens[0];
 
-  $sql = "SELECT * FROM wp_".WOOKEY_TABLE_FIAT_RATES." where symbol = %s";
+  $sql = "SELECT * FROM wp_".XPRCHECKOUT_TABLE_FIAT_RATES." where symbol = %s";
   $sql = $wpdb->prepare($sql,$orderCurrency);
   $currencyRes = $wpdb->get_results($sql);
   $existingCurrency = $currencyRes[0];
@@ -56,6 +56,7 @@ function handle_get_order($request)
     $existingOrder->update_meta_data ('_payment_token',$existingToken->symbol);
     $existingOrder->update_meta_data('_payment_rate',$existingToken->rate);
     $existingOrder->update_meta_data('_fiat_rate',$existingCurrency->rate);
+    $existingOrder->update_meta_data('_payer',$params['payer']);
     $existingOrder->save();
     $verifiedPaymentOrder = $existingOrder->get_meta('_verified',true);
     $verifiedPaymentKey = $existingOrder->get_meta('_payment_key',true);

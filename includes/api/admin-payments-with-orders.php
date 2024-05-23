@@ -3,12 +3,12 @@ if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
-add_action('rest_api_init', 'wookey_register_payments_with_orders_routes');
+add_action('rest_api_init', 'xprcheckout_register_payments_with_orders_routes');
 
-function wookey_register_payments_with_orders_routes()
+function xprcheckout_register_payments_with_orders_routes()
 {
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
-  register_rest_route('wookey/v1', 'admin/payments', array(
+  register_rest_route('xprcheckout/v1', 'admin/payments', array(
     'methods'  => 'POST',
     'callback' => 'handle_payments_with_orders',
     //'permission_callback' => 'prefix_get_private_data_permissions_check'
@@ -42,7 +42,7 @@ function handle_payments_with_orders($request)
       'body_response' => null
     ]);
   }
-  $rpcEndpoint = $params['network'] == 'testnet' ? WOOKEY_TESTNET_ENDPOINT : WOOKEY_MAINNET_ENDPOINT;
+  $rpcEndpoint = $params['network'] == 'testnet' ? XPRCHECKOUT_TESTNET_ENDPOINT : XPRCHECKOUT_MAINNET_ENDPOINT;
   $protonRPC = new ProtonRPC($rpcEndpoint);
   $payments = $protonRPC->fetchPayments($params['actor']);
   $paymentsWithOrder = [];

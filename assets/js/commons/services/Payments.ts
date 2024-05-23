@@ -8,7 +8,7 @@ export async function getPayments(baseDomain:string,store:string,isTestnet:boole
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `${baseDomain}/wp-json/wookey/v1/admin/payments`,
+    url: `${baseDomain}/wp-json/xprcheckout/v1/admin/payments`,
     headers: { 
       'Content-Type': 'application/json', 
     },

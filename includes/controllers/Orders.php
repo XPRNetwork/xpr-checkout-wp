@@ -1,6 +1,6 @@
 <?php
 
-namespace wookey\admin;
+namespace xprcheckout\admin;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
  * Admin Orders Handler.
  *
  * Enhances the WooCommerce orders table in the admin dashboard by adding 
- * columns for transaction IDs and network (mainnet/testnet) from the Wookey payment gateway.
+ * columns for transaction IDs and network (mainnet/testnet) from the XPRCheckout payment gateway.
  * 
  */
 
@@ -107,8 +107,8 @@ class Orders
     foreach ($columns as $column_name => $column_info) {
       $new_columns[$column_name] = $column_info;
       if ('order_status' === $column_name) {
-        $new_columns['transactionId'] = __('Transaction', 'wookey'); // title
-        $new_columns['net'] = __('Mainnet/testnet', 'wookey'); // title
+        $new_columns['transactionId'] = __('Transaction', 'xprcheckout'); // title
+        $new_columns['net'] = __('Mainnet/testnet', 'xprcheckout'); // title
       }
     }
     return $new_columns;

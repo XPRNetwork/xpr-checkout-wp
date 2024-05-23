@@ -2,9 +2,6 @@
   import './../../../styles/base.scss';
   import './../../../styles/refund.scss';
   import { onMount } from 'svelte';
-  import Dialog from '../../commons/components/dialogs/Dialog.svelte'
-  import {APP_STATE_STORE_REGISTRATION, APP_STATE_STORE_REGISTRATION_SUCCEED} from './constants';
-  import { MAINNET_CHAIN_ID, MAINNET_ENDPOINTS, TESTNET_CHAIN_ID, TESTNET_ENDPOINTS} from '../../commons/constants';
   import { generateRefundAction } from '../../commons/proton/actions/refund';
   import type { RefundControllerOption, RefundState } from './refund.type';
   import { canRestoreSession } from '../../commons/utils';
@@ -15,7 +12,7 @@
   
   
   let payment = null
-  let pluginOptions: RefundControllerOption = window['wookeyRefundParams'] as RefundControllerOption;
+  let pluginOptions: RefundControllerOption = window['xprcheckoutRefundParams'] as RefundControllerOption;
   let controllerState:RefundState = {
     isRunning:false,
     session:null,
@@ -41,7 +38,7 @@
     
     const  session = await webauthConnect(
       pluginOptions.testnet ? pluginOptions.testnetActor : pluginOptions.mainnetActor,
-      'Wookey',
+      'XPRCheckout',
       pluginOptions.testnet,
       restoreSession
       )
@@ -69,43 +66,37 @@
     refreshData();
   }
 
-  
-
 </script>
-<main class='wookey-app wookey-app__grid  wookey-refund'>
+<main class='xprcheckout-app xprcheckout-app__grid  xprcheckout-refund'>
   {#if !payment}
   <Processing label="Fetching payment"></Processing>
   {:else}
-    <ul class="wookey-refund__order-info">
-      <li class="wookey-refund__order-info__render-item">
+    <ul class="xprcheckout-refund__order-info">
+      <li class="xprcheckout-refund__order-info__render-item">
         <h4>On chain status</h4>
         <StatusChip variant='large' status={payment.status}></StatusChip>
       </li>
-      <li class="wookey-refund__order-info__render-item">
+      <li class="xprcheckout-refund__order-info__render-item">
         <h4>Token amount</h4>
         <p>{payment.amount}</p>
       </li>
-      <li class="wookey-refund__order-info__render-item">
+      <li class="xprcheckout-refund__order-info__render-item">
         <h4>Network</h4>
         <p>{pluginOptions.network}</p>
       </li>
-      <li class="wookey-refund__order-info__render-item">
+      <li class="xprcheckout-refund__order-info__render-item">
         <h4>Payment Key</h4>
         <a class="button" target="_blank" href={pluginOptions.testnet ? `https://testnet.explorer.xprnetwork.org/account/wookey?loadContract=true&tab=Tables&table=payments&account=wookey&scope=wookey&limit=100&lower_bound=${payment.key}&upper_bound=${payment.key}`: `https://explorer.xprnetwork.org/account/wookey?loadContract=true&tab=Tables&table=payments&account=wookey&scope=wookey&limit=100&lower_bound=${payment.key}&upper_bound=${payment.key}`}>{pluginOptions.order.paymentKey}</a>
       </li>
-      <li class="wookey-refund__order-info__render-item">
+      <li class="xprcheckout-refund__order-info__render-item">
         <h4>Transaction Id</h4>
         <a class="button" target="_blank" href={pluginOptions.testnet ? `https://testnet.explorer.xprnetwork.org/transaction/${pluginOptions.order.transactionId}`: `https://explorer.xprnetwork.org/transaction/${pluginOptions.order.transactionId}`}>{pluginOptions.order.transactionId}</a>
       </li>
-      
     </ul>
-  
- 
-  
-  <footer class="wookey-refund__refund-option">
+  <footer class="xprcheckout-refund__refund-option">
     {#if payment.status == -2 && pluginOptions.order.status != 'refunded'}
 
-        <div class="wookey-refund__refund-option__warning">
+        <div class="xprcheckout-refund__refund-option__warning">
           <h4>Order status mismatch</h4> 
           <p>This order has been refunded on-chain, but still marked as {pluginOptions.order.status} in WooCommerce. Please change status manually to <b>"Refunded"</b> in <b>"Order #{pluginOptions.order.id} details"</b>  when done.</p> 
         </div>

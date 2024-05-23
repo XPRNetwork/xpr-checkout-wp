@@ -1,6 +1,6 @@
 import App from './App.svelte'
 const app = new App({
-  target: document.getElementById('wookey-refund'),
+  target: document.getElementById('xprcheckout-refund'),
 
 })
 

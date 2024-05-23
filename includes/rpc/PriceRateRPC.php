@@ -1,7 +1,4 @@
 <?php
-
-
-
 class PriceRateRPC
 {
 
@@ -15,7 +12,7 @@ class PriceRateRPC
   {
 
     global $wpdb;
-    $myPluginGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    $myPluginGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
 
     $now = time();
     $savedPriceRatesValidity = $myPluginGateway->get_option('price_rates_validity');
@@ -44,13 +41,13 @@ class PriceRateRPC
 
     $rates = unserialize($savedPriceRates);
     $prices = [];
-    $sql = "INSERT INTO wp_".WOOKEY_TABLE_FIAT_RATES." (symbol,rate) VALUES (%s,%.8f) ON DUPLICATE KEY UPDATE rate = %.8f";
+    $sql = "INSERT INTO wp_".XPRCHECKOUT_TABLE_FIAT_RATES." (symbol,rate) VALUES (%s,%.8f) ON DUPLICATE KEY UPDATE rate = %.8f";
       $sql = $wpdb->prepare($sql,'USD',1,'USD');
       $res = $wpdb->query($sql);
       
     foreach ($rates as $symbol => $rate) {
       
-      $sql = "INSERT INTO wp_".WOOKEY_TABLE_FIAT_RATES." (symbol,rate) VALUES (%s,%.8f) ON DUPLICATE KEY UPDATE rate = %.8f";
+      $sql = "INSERT INTO wp_".XPRCHECKOUT_TABLE_FIAT_RATES." (symbol,rate) VALUES (%s,%.8f) ON DUPLICATE KEY UPDATE rate = %.8f";
       $sql = $wpdb->prepare($sql,$symbol,$rate,$rate);
       $res = $wpdb->query($sql);
       if ($currency == $symbol) return $usdAmount / $rate;

@@ -4,7 +4,7 @@ export function getTokensPrices(baseDomain:string) {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `${baseDomain}/wp-json/wookey/v1/tokens-prices`,
+    url: `${baseDomain}/wp-json/xprcheckout/v1/tokens-prices`,
     headers: { 
       'Content-Type': 'application/json', 
     },

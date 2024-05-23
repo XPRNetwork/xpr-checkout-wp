@@ -1,4 +1,4 @@
-# Wookey
+# XPRCheckout
 
 ## 1.0.7
 

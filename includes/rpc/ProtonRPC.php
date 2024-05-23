@@ -64,7 +64,7 @@ class ProtonRPC
     curl_close($ch);
     if ($response !== false) {
       $responseData = json_decode($response, true);
-
+      error_log(print_r($responseData,1));
       foreach ($responseData['rows'] as $row) {
         if ($row['paymentKey'] == $paymentKey && $row['status'] == 1) return true;
       }
@@ -148,7 +148,7 @@ class ProtonRPC
 
     $date = urlencode($afterDate);
     $endpoint = $this->endpoint ."/v2/history/get_actions?limit=999&account=$actor&filter=*:transfer&after=$date";
-    
+    error_log($endpoint);
     $ch = curl_init($endpoint);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

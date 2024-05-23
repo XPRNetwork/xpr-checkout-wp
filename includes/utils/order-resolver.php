@@ -1,5 +1,5 @@
 <?php 
-namespace wookey\utils;
+namespace xprcheckout\utils;
 
 class OrderResolver {
 
@@ -40,6 +40,8 @@ class OrderResolver {
   $verifiedFillRatio = $existingOrder->get_meta('_fill_ratio',true);
   $verifiedTrxId = $existingOrder->get_meta('_tx_id',true);
   $verifiedPayer = $existingOrder->get_meta('_payer',true);
+  error_log("Payer !!");
+  error_log(print_r($existingOrder->get_meta('_payer',true),1));
   $returnResult = [
     'paymentKey'=>!empty($verifiedPaymentKey) ? $verifiedPaymentKey : null,
     'transactionId'=>!empty($verifiedTrxId) ? $verifiedTrxId : null,
@@ -63,22 +65,24 @@ class OrderResolver {
   
   $datetime = new \DateTime($existingOrder->get_date_created());
   $filterAfterDate = $datetime->format(\DateTime::ATOM);
-  $rpcEndpoint = $network == 'testnet' ? WOOKEY_TESTNET_ENDPOINT : WOOKEY_MAINNET_ENDPOINT;
+  $rpcEndpoint = $network == 'testnet' ? XPRCHECKOUT_TESTNET_ENDPOINT : XPRCHECKOUT_MAINNET_ENDPOINT;
   $rpc = new \ProtonRPC($rpcEndpoint);
   $isPaymentVerified = $rpc->verifyPaymentStatusByKey($orderPaymentKey);
   if (!$isPaymentVerified)return $returnResult;
-
+  error_log("payment verified");
+  error_log("payment verified");
   $orderCurrency = $existingOrder->get_currency();
   $orderCurrencyUSDRate = $existingOrder->get_meta('_fiat_rate');
   $orderTotalAsUSD = $existingOrder->get_total()/$orderCurrencyUSDRate;
   error_log($orderTotalAsUSD.' ??');
 
   
-  if (is_null("actor")) return $returnResult;
+  if (is_null($verifiedPayer)) return $returnResult;
 
   $rpcEndpoint = $network == 'testnet' ? 'https://api-xprnetwork-test.saltant.io/' : 'https://api-xprnetwork-main.saltant.io/';
   $rpc = new \ProtonRPC($rpcEndpoint);
-  $foundTransactions = $rpc->findTransaction($actor,$filterAfterDate,$paymentKey);
+  error_log(print_r($verifiedPayer,1));
+  $foundTransactions = $rpc->findTransaction($verifiedPayer,$filterAfterDate,$paymentKey);
   $txMatchPayment = null;
   $txQuantity = null;
   $txTokenMatches = null;

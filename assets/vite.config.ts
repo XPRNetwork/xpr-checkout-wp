@@ -4,23 +4,23 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 const config = {
   checkout: {
     entry: resolve(__dirname, "./js/public/main.ts"),
-    fileName: "wookey.public",
+    fileName: "xprcheckout.public",
     outdir:'public'
   },
   regstore: {
     entry: resolve(__dirname, "./js/admin/regstore/main.ts"),
-    fileName: "wookey.admin.regstore",
+    fileName: "xprcheckout.admin.regstore",
     outdir:'admin'
 
   },
   dashboard: {
     entry: resolve(__dirname, "./js/admin/dashboard/main.ts"),
-    fileName: "wookey.admin.dashboard",
+    fileName: "xprcheckout.admin.dashboard",
     outdir:'admin'
   },
   refund: {
     entry: resolve(__dirname, "./js/admin/refund/main.ts"),
-    fileName: "wookey.admin.refund",
+    fileName: "xprcheckout.admin.refund",
     outdir:'admin'
   },
 };
