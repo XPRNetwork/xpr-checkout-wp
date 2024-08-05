@@ -1,5 +1,11 @@
 # XPRCheckout
 
+## 1.2.1
+
+### Patch Changes
+
+- Fix woo/guttenberg block support
+
 ## 1.2.0
 
 ### Minor Changes
