@@ -40,6 +40,8 @@ class ProtonWcGateway
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/api/admin-payments-with-orders.php';
 
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/utils/order-resolver.php';
+    
+    
   }
 
   private function bootstrap()

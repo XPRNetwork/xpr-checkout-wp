@@ -159,4 +159,16 @@ function xprcheckout_redirect_to_payment (){
 }
 add_action( 'template_redirect', 'xprcheckout_redirect_to_payment' );
 
+add_action( 'woocommerce_blocks_loaded', 'xprcheckout_gateway_block_support');
+function xprcheckout_gateway_block_support(){
+  error_log('block shit loaded');
+  require_once XPRCHECKOUT_ROOT_DIR . 'includes/supports/block-support.php';
+}
+
+add_action( 'woocommerce_blocks_payment_method_type_registration', 'xprcheckout_gateway_block_method_type_registration');
+function xprcheckout_gateway_block_method_type_registration ($payment_method_registry){
+  error_log('Register this block cunt');
+  $payment_method_registry->register( new WC_XPRCheckoutBlocksSupport() );
+}
+
 run_proton_wc_gateway();

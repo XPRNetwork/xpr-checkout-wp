@@ -33,12 +33,14 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     $this->appLogo = $this->get_option('appLogo');
     $this->allowedTokens = $this->get_option('allowedTokens');
 
-    add_action( 'template_redirect', array($this,'xprcheckout_template_redirect'));
+    //add_action( 'template_redirect', array($this,'xprcheckout_template_redirect'));
     add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
     add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
     add_action('woocommerce_email_before_order_table', array($this, 'xprcheckout_email_instructions'), 10, 3);
     add_filter( 'wc_order_statuses', array($this,'xprcheckout_add_partial_fill_order_status') );
-        
+    
+    
+
   }
 
   /**
@@ -369,6 +371,7 @@ public function xprcheckout_add_partial_fill_order_status( $order_statuses ) {
   $new_order_statuses['wc-partial-fill'] = 'Partially filled payment';
   return $new_order_statuses;
 }
+
 
 
 private function xprcheckout_redirect_to_payment_page(){

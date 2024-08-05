@@ -1,5 +1,11 @@
 # XPRCheckout
 
+## 1.2.0
+
+### Minor Changes
+
+- Rename the plugin to XPRCheckout, change curl request to wp remote native method
+
 ## 1.0.7
 
 ### Patch Changes
