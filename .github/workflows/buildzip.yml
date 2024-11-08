@@ -14,13 +14,13 @@ jobs:
       uses: actions/checkout@v3
     - name: Install checkout deps
       working-directory: 'applications/apps/checkout'
-      run: 'npm install'
+      run: 'npm install --legacy-peer-deps'
     - name: Install refund deps
       working-directory: 'applications/apps/refund'
-      run: 'npm install'
+      run: 'npm install --legacy-peer-deps'
     - name: Install regstore deps
       working-directory: 'applications/apps/regstore'
-      run: 'npm install'
+      run: 'npm install --legacy-peer-deps'
     - name: Build apps in dist
       working-directory: '.'
       run: 'make compile_apps'
