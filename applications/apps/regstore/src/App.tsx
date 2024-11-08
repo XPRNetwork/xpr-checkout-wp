@@ -5,7 +5,6 @@ import "xprnkit/build/global.css";
 
 import {RegisterStoreButton} from "./components/register-store-button/register-store-button";
 import {RegStoreConfig} from "./global";
-import {StoreNameField} from "./components/store-name-field/store-name-field";
 import {ConnectButton} from "./components/register-store-button/connect-button";
 import {RegStoreProvider} from "./provider/regstore-provider";
 import {Processing} from "./components/register-store-button/processing";
