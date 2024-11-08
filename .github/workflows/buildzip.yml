@@ -24,7 +24,7 @@ jobs:
         type: 'zip'
         filename: 'xprcheckout_woocomerce_gateway_beta_${{  github.ref_name }}.zip'
         directory: '.'
-        exclusions: '*.git* /*node_modules/* .editorconfig /*assets/*'
+        exclusions: '*.git* /*node_modules/* .editorconfig /*applications/*'
     - name: Generate JSON manifest
       run: 'VERSION=${{  github.ref_name }} make generate_manifest'
     - name: Upload Release
