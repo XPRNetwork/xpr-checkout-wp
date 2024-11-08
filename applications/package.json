@@ -1,5 +1,5 @@
 {
-  "name": "xprcheckout-dapp-suite",
+  "name": "xprcheckoutdapp",
   "module": "index.ts",
   "type": "module",
   "private": true,
