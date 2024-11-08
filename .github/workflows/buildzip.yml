@@ -12,12 +12,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Install deps
-      working-directory: './assets'
+    - name: Install checkout deps
+      working-directory: './applications/apps/checkout'
       run: 'npm install'
-    - name: Build Svelte apps
-      working-directory: './assets'
-      run: 'npm run build'
+    - name: Install refund deps
+      working-directory: './applications/apps/refund'
+      run: 'npm install'
+    - name: Install regstore deps
+      working-directory: './applications/apps/regstore'
+      run: 'npm install'
+    - name: Build apps in dist
+      working-directory: './'
+      run: 'make compile_apps'
     - name: Compile Release
       uses: thedoctor0/zip-release@0.7.1
       with:

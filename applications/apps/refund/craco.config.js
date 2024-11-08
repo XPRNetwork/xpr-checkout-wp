@@ -27,10 +27,7 @@ module.exports = {
 
       // Set the output path to your desired location
       if (process.env.NODE_ENV === "production") {
-        webpackConfig.output.path = path.resolve(
-          __dirname,
-          "../../../dist/refund"
-        );
+        webpackConfig.output.path = path.resolve(__dirname, "build");
 
         // Set the filenames for JS and CSS to your specific file names
         webpackConfig.output.filename = "static/js/app.js";
