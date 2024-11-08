@@ -3,6 +3,7 @@
 use xprcheckout\config\Config;
 use xprcheckout\i18n\Translations;
 
+
 /**
  * Class XPRCheckoutGateway
  *
@@ -26,7 +27,7 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     $this->title = $this->get_option('title');
     $this->description = $this->get_option('description');
     $this->mainwallet = $this->get_option('mainwallet');
-    $this->testwallet = $this->get_option('testwallet');
+    $this->testwallet = $this->get_option('wallet');
     $this->testnet = 'yes' === $this->get_option('testnet');
     $this->enabled = $this->get_option('enabled');
     $this->appName = $this->get_option('appName');
@@ -76,21 +77,20 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
           'testnet' => 'Testnet',
         ],
         'label' => __('Select network', 'xprcheckout'),
-        'default' => 'yes',
+        'default' => 'testnet',
         'value'
       ),
       'registered' => array(
         'title' => __('Register store ', 'xprcheckout'),
         'type' => 'xprcheckout_register',
         'description' => __('Register you store nearby the smart contract', 'xprcheckout'),
-        'default' => __('', 'xprcheckout'),
         'desc_tip'      => true,
       ),
       'title' => array(
         'title' => __('Title', 'xprcheckout'),
         'type' => 'text',
         'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout'),
-        'default' => __('', 'xprcheckout'),
+        
         'desc_tip'      => true,
       ),
       'description' => array(
@@ -101,20 +101,13 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
         'desc_tip'      => true,
       ),
 
-      'mainwallet' => array(
+      'wallet' => array(
         'title' => __('Mainnet account', 'xprcheckout'),
         'type' => 'hidden',
         'description' => __('Set the destination account on mainnet where pay token will be paid. <b>Used only when "Use testnet" option is disabled</b>', 'xprcheckout'),
-        'default' => __('', 'xprcheckout'),
         'desc_tip'      => true,
       ),
-      'testwallet' => array(
-        'title' => __('Testnet account', 'xprcheckout'),
-        'type' => 'hidden',
-        'description' => __('Set the destination account on testnet where pay token will be paid. Used only when "Use testnet" option is enabled.', 'xprcheckout'),
-        'default' => __('', 'xprcheckout'),
-        'desc_tip'      => true,
-      ),
+      
       'appName' => array(
         'title' => __('dApp Name', 'xprcheckout'),
         'type' => 'text',
@@ -126,7 +119,7 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
           'title' => __('dApp Logo', 'xprcheckout'),
           'type' => 'text',
           'description' => __('The application logo displayed in the webauth modal', 'xprcheckout'),
-          'default' => __('', 'xprcheckout'),
+          
           'desc_tip'      => true,
         ),*/
       'allowedTokens' => array(
@@ -139,8 +132,8 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
       'polygonKey' => array(
         'title' => __('Free api key ', 'xprcheckout'),
         'type' => 'text',
-        'description' => __('Your key for currency pricing service on freeapi.io.', 'xprcheckout'),
-        'default' => __('', 'xprcheckout'),
+        'description' => __('Your key for currency pricing service on https://app.freecurrencyapi.com/register.', 'xprcheckout'),
+        
         'desc_tip'      => true,
       ),
     );
@@ -155,11 +148,9 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   {
     
 
-    $mainwallet = $this->get_option('mainwallet');
-    $testwallet = $this->get_option('testwallet');
+    $wallet = $this->get_option('wallet');
     $testnet = 'testnet' === $this->get_option('network');
-    if ($testnet && $testwallet == "") return false;
-    if (!$testnet && $mainwallet == "") return false;
+    if (!$testnet && $wallet == "") return false;
     return parent::is_available();
   }
 
@@ -213,7 +204,11 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
         $desc .= $this->description;
         $desc  = trim($desc);
       }
-      echo wpautop(wp_kses_post($desc));
+      $text = esc_html(wpautop(wp_kses_post($desc)));
+      echo esc_attr(printf(
+        '%s',
+        $text // it can simply be a normal variable 
+    ));
     }
   }
 
@@ -230,12 +225,11 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     };
 
     if (!$this->is_available()) return;
-
-    wp_register_script('xprcheckout_public', XPRCHECKOUT_ROOT_URL . 'dist/public/checkout/xprcheckout.public.iife.js?v=' . uniqid(), [], time(), true);
+    wp_register_script_module('xprcheckout_public', XPRCHECKOUT_ROOT_URL . 'dist/checkout/static/js/app.js?v='. uniqid(), [], time());
+    wp_enqueue_script_module('xprcheckout_public');
     
-    wp_enqueue_script('xprcheckout_public');
-    wp_enqueue_style('xprcheckout_public_style', XPRCHECKOUT_ROOT_URL . 'dist/public/checkout/xprcheckout.public.css?v=' . uniqid());
-    wp_enqueue_style('xprcheckout_layout_style', XPRCHECKOUT_ROOT_URL . 'dist/public/public.css?v=' . uniqid());
+    wp_enqueue_style('xprcheckout_public_style', XPRCHECKOUT_ROOT_URL . 'dist/checkout/static/css/app.css?v='. uniqid(),[], time());
+    // wp_enqueue_style('xprcheckout_layout_style', XPRCHECKOUT_ROOT_URL . 'dist/public/public.css?v=' . uniqid(),[], time(), true);
   }
 
   /**
@@ -280,18 +274,28 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     ob_start();
 ?>
 
+<script>
+        <?php 
+          
+          $baseConfig = Config::GetBaseConfig();
+          $baseConfig['walletInputSelector']= "#woocommerce_xprcheckout_wallet";
+          
+          ?>
+          window.pluginConfig = <?php echo json_encode($baseConfig); ?>;
+      </script>
+      
     <tr valign="top">
+      
       <th scope="row" class="titledesc">
         <label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?>
-          <?php echo $this->get_tooltip_html($data); // WPCS: XSS ok. 
-          ?>
+          <
         </label>
       </th>
       <td class="forminp">
         <fieldset>
           <legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
-          <div id="xprcheckout-regstore"></div>
-          <?php echo $this->get_description_html($data); // WPCS: XSS ok. 
+          <div id="root"></div>
+          <?php echo esc_attr($this->get_description_html($data)); // WPCS: XSS ok. 
           ?>
         </fieldset>
       </td>
@@ -328,15 +332,15 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   ?>
     <tr valign="top" class="hidden">
       <th scope="row" class="titledesc">
-        <label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?> <?php echo $this->get_tooltip_html($data); // WPCS: XSS ok.                                                                                              
+        <label for="<?php echo esc_attr($field_key); ?>"><?php echo esc_attr($data['title']); ?> <?php echo esc_attr($this->get_tooltip_html($data)); // WPCS: XSS ok.                                                                                              
                                                                                                       ?></label>
       </th>
       <td class="forminp">
         <fieldset>
           <legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
-          <input class="input-text regular-input <?php echo esc_attr($data['class']); ?>" type="<?php echo esc_attr($data['type']); ?>" name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" style="<?php echo esc_attr($data['css']); ?>" value="<?php echo esc_attr($this->get_option($key)); ?>" placeholder="<?php echo esc_attr($data['placeholder']); ?>" <?php disabled($data['disabled'], true); ?> <?php echo $this->get_custom_attribute_html($data); // WPCS: XSS ok.                                                                                                                                                                                                                                                                                                                                                                                                                                  
+          <input class="input-text regular-input <?php echo esc_attr($data['class']); ?>" type="<?php echo esc_attr($data['type']); ?>" name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" style="<?php echo esc_attr($data['css']); ?>" value="<?php echo esc_attr($this->get_option($key)); ?>" placeholder="<?php echo esc_attr($data['placeholder']); ?>" <?php disabled($data['disabled'], true); ?> <?php echo esc_attr($this->get_custom_attribute_html($data)); // WPCS: XSS ok.                                                                                                                                                                                                                                                                                                                                                                                                                                  
                                                                                                                                                                                                                                                                                                                                                                                                                                             ?> />
-          <?php echo $this->get_description_html($data); // WPCS: XSS ok.
+          <?php echo esc_attr($this->get_description_html($data)); // WPCS: XSS ok.
           ?>
         </fieldset>
       </td>
