@@ -13,16 +13,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Install checkout deps
-      working-directory: './applications/apps/checkout'
+      working-directory: 'applications/apps/checkout'
       run: 'npm install'
     - name: Install refund deps
-      working-directory: './applications/apps/refund'
+      working-directory: 'applications/apps/refund'
       run: 'npm install'
     - name: Install regstore deps
-      working-directory: './applications/apps/regstore'
+      working-directory: 'applications/apps/regstore'
       run: 'npm install'
     - name: Build apps in dist
-      working-directory: './'
+      working-directory: '.'
       run: 'make compile_apps'
     - name: Compile Release
       uses: thedoctor0/zip-release@0.7.1
