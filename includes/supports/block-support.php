@@ -24,15 +24,16 @@ final class WC_XPRCheckoutBlocksSupport extends AbstractPaymentMethodType {
     
 		wp_register_script(
 			'wc-xprcheckout-blocks',
-			XPRCHECKOUT_ROOT_URL . 'dist/block.js',
+			XPRCHECKOUT_ROOT_URL . 'dist/block/static/js/app.js',
 			array(
 				'wc-blocks-registry',
 				'wc-settings',
 				'wp-element',
 				'wp-html-entities',
 			),
-			null, // or time() or filemtime( ... ) to skip caching
+			time(),
 			true
+			
 		);
 
 		return array( 'wc-xprcheckout-blocks' );
