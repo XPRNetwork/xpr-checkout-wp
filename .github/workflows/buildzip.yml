@@ -10,17 +10,14 @@ jobs:
     name: Build release zip
     runs-on: ubuntu-latest
     steps:
+    - uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
     - name: Checkout
       uses: actions/checkout@v3
     - name: Install checkout deps
-      working-directory: 'applications/apps/checkout'
-      run: 'npm install --legacy-peer-deps'
-    - name: Install refund deps
-      working-directory: 'applications/apps/refund'
-      run: 'npm install --legacy-peer-deps'
-    - name: Install regstore deps
-      working-directory: 'applications/apps/regstore'
-      run: 'npm install --legacy-peer-deps'
+      working-directory: 'applications'
+      run: 'bun install '
     - name: Build apps in dist
       working-directory: '.'
       run: 'make compile_apps'
