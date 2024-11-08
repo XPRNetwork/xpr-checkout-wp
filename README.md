@@ -1,4 +1,12 @@
-# XPR Checkout: Woocommerce Webauth gateway
+=== XPR Checkout: Webauth payment gateway ===
+Requires at least: 6.0
+Tested up to: 6.6.1
+Requires PHP: 7.0
+Stable tag: 1.2.1
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+# XPR Checkout: Webauth payment gateway
 *A WebAuth-Enabled Gateway for WooCommerce*
 
 ## The basic scope
