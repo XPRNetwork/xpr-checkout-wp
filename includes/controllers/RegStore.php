@@ -52,15 +52,14 @@ class RegStore
     $baseConfig = Config::GetDashbordConfig();
     $extendedConfig = [
       "networkSelector" => "#woocommerce_xprcheckout_network",
-      "mainnetAccountFieldSelector" => "#woocommerce_xprcheckout_mainwallet",
-      "testnetAccountFieldSelector" => "#woocommerce_xprcheckout_testwallet",
+      "mainnetAccountFieldSelector" => "#woocommerce_xprcheckout_wallet",
+      
     ];
     
     if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wc-settings') {
-      wp_register_script('xprcheckout_admin_regstore', XPRCHECKOUT_ROOT_URL . 'dist/admin/regstore/xprcheckout.admin.regstore.iife.js?v=' . uniqid(), [], time(), true);
-      wp_localize_script('xprcheckout_admin_regstore', 'xprcheckoutRegStoreParams', array_merge($baseConfig, $extendedConfig));
-      wp_enqueue_script('xprcheckout_admin_regstore');
-      wp_enqueue_style('xprcheckout_admin_regstore_style', XPRCHECKOUT_ROOT_URL . 'dist/admin/regstore/xprcheckout.admin.regstore.css?v=' . uniqid());
+      wp_register_script_module('xprcheckout_admin_regstore', XPRCHECKOUT_ROOT_URL . 'dist/regstore/static/js/app.js?v=' . uniqid(), [], time());
+      wp_enqueue_script_module('xprcheckout_admin_regstore');
+      wp_enqueue_style('xprcheckout_admin_regstore_style', XPRCHECKOUT_ROOT_URL . 'dist/regstore/static/css/app.css?v=' . uniqid(),[], time());
     };
   }
 }

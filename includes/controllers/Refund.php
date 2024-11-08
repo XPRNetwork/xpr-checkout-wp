@@ -54,10 +54,10 @@ class Refund
     if (isset($current_screen) && $current_screen->id == 'shop_order') {
       global $post;
       $order = wc_get_order($post->ID);
-      wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/admin/refund/xprcheckout.admin.refund.css?v=' . uniqid());
-      wp_register_script('xprcheckout_admin_refund', XPRCHECKOUT_ROOT_URL . 'dist/admin/refund/xprcheckout.admin.refund.iife.js?v=' . uniqid(), [], time(), true);
-      wp_localize_script('xprcheckout_admin_refund', 'xprcheckoutRefundParams', Config::GetConfigWithOrderById($order->get_id()));
-      wp_enqueue_script('xprcheckout_admin_refund');
+      wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/refund/static/css/app.css?v=' . uniqid(),[], time());
+      wp_register_script_module('xprcheckout_admin_refund', XPRCHECKOUT_ROOT_URL . 'dist/refund/static/js/app.js?v=' . uniqid(), [], time());
+      
+      wp_enqueue_script_module('xprcheckout_admin_refund');
     };
   }
 
@@ -90,7 +90,19 @@ class Refund
     if ($order->get_payment_method() !== "xprcheckout") return;
 
 ?>
-    <div id="xprcheckout-refund"></div>
+<script>
+        <?php 
+          $adminConfig =Config::GetAdminConfig(); 
+          $baseConfig = Config::GetBaseConfig();
+          $baseConfig['amountToRefund']= $order->get_meta('_paid_tokens',true);
+          $baseConfig['accountToRefund']= $order->get_meta('_buyer_account',true);
+          $baseConfig['requestedPaymentKey']= $order->get_meta('_payment_key',true);
+          $baseConfig['orderStatus']= $order->get_status();
+          $baseConfig['orderStatus']= $order->get_status();
+          ?>
+          window.pluginConfig = <?php echo json_encode(array_merge($baseConfig,$adminConfig)); ?>;
+      </script>
+    <div id="refund"></div>
 <?php
 
   }
