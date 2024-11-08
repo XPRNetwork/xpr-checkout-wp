@@ -19,7 +19,7 @@ class ProtonRPC
     error_log(print_r($data, 1));
 
     $response = wp_remote_post($endpoint, array(
-      'body' => json_encode($data),
+      'body' => wp_json_encode($data),
       'headers' => array('Content-Type' => 'application/json'),
       'timeout' => 45
     ));
@@ -37,8 +37,8 @@ class ProtonRPC
   {
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
     $data = array(
-      'scope' => "wookey",
-      'code' => "wookey",
+      'scope' => "xprcheckout",
+      'code' => "xprcheckout",
       'table' => "payments",
       'json' => true,
       'index_position' => 2,
@@ -49,7 +49,7 @@ class ProtonRPC
     );
 
     $response = wp_remote_post($endpoint, array(
-      'body' => json_encode($data),
+      'body' => wp_json_encode($data),
       'headers' => array('Content-Type' => 'application/json'),
       'timeout' => 45
     ));
@@ -59,11 +59,42 @@ class ProtonRPC
     }
 
     $responseData = json_decode(wp_remote_retrieve_body($response), true);
-    error_log(print_r($responseData, 1));
+    
     foreach ($responseData['rows'] as $row) {
       if ($row['paymentKey'] == $paymentKey && $row['status'] == 1) return true;
     }
 
+    return null;
+  }
+  
+  public function fetchPayment($paymentKey)
+  {
+    $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
+    $data = array(
+      'scope' => "xprcheckout",
+      'code' => "xprcheckout",
+      'table' => "payments",
+      'json' => true,
+      'index_position' => 2,
+      'key_type' => 'sha256',
+      'limit' => 1,
+      'lower_bound' => $this->toEOSIOSha256($paymentKey),
+      'upper_bound' => $this->toEOSIOSha256($paymentKey),
+    );
+
+    $response = wp_remote_post($endpoint, array(
+      'body' => wp_json_encode($data),
+      'headers' => array('Content-Type' => 'application/json'),
+      'timeout' => 45
+    ));
+
+    if (is_wp_error($response)) {
+      return null; // Handle error
+    }
+
+    $responseData = json_decode(wp_remote_retrieve_body($response), true);
+    
+    if ($responseData['rows'] && $responseData['rows'][0])return $responseData['rows'][0];
     return null;
   }
 
@@ -71,8 +102,8 @@ class ProtonRPC
   {
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
     $data = array(
-      'scope' => 'wookey',
-      'code' => 'wookey',
+      'scope' => 'xprcheckout',
+      'code' => 'xprcheckout',
       'table' => 'payments',
       'json' => true,
       'index_position' => 3,
@@ -84,7 +115,7 @@ class ProtonRPC
     );
 
     $response = wp_remote_post($endpoint, array(
-      'body' => json_encode($data),
+      'body' => wp_json_encode($data),
       'headers' => array('Content-Type' => 'application/json'),
       'timeout' => 45
     ));
@@ -101,14 +132,14 @@ class ProtonRPC
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
     $data = array(
       'scope' => $store,
-      'code' => 'wookey',
+      'code' => 'xprcheckout',
       'table' => 'balances',
       'json' => true,
       'limit' => 100,
     );
 
     $response = wp_remote_post($endpoint, array(
-      'body' => json_encode($data),
+      'body' => wp_json_encode($data),
       'headers' => array('Content-Type' => 'application/json'),
       'timeout' => 45
     ));
@@ -124,7 +155,7 @@ class ProtonRPC
   {
     $date = urlencode($afterDate);
     $endpoint = $this->endpoint . "/v2/history/get_actions?limit=999&account=$actor&filter=*:transfer&after=$date";
-    error_log($endpoint);
+    
 
     $response = wp_remote_get($endpoint, array(
       'headers' => array('Content-Type' => 'application/json'),
