@@ -29,7 +29,7 @@ class ProtonWcGateway
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/ProtonRPC.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/PriceRateRPC.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/TokensPricesRPC.php';
-    require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/AlcorPricesRPC.php';
+    
     
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/api/order-payment.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/api/admin-refund.php';
