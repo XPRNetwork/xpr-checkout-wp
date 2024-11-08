@@ -1,0 +1,20 @@
+{
+  "name": "xprcheckout-dapp-suite",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "classnames": "^2.5.1",
+    "xprnkit": "^0.0.37"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "xprcheckout",
+  "source": "src/index.ts",
+  "main": "build/index.js",
+  "type": "module",
+  "version": "0.0.1",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
