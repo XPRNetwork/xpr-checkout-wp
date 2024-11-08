@@ -58,10 +58,10 @@ class Orders
       $order = wc_get_order($post->ID);
       $transactionId = $order->get_meta('_transactionId');
       $net = $order->get_meta('_net');
-      $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
+      $color = $net == esc_attr("mainnet" ? "#7cc67c" : "#f1dd06");
       $link = $net == "mainnet" ? "https://protonscan.io/transaction/" : "https://testnet.protonscan.io/transaction/";
       if ($order->get_payment_method()) {
-        echo '<a class="button-primary" style="color:#50575e;background-color:' . $color . ';" target="_blank" href="' . $link . $transactionId . '">' . substr($transactionId, strlen($transactionId) - 8, strlen($transactionId)) . '</a>';
+        echo esc_attr('<a class="button-primary" style="color:#50575e;background-color:' . $color . ';" target="_blank" href="' . $link . $transactionId . '">' . substr($transactionId, strlen($transactionId) - 8, strlen($transactionId)) . '</a>');
       } else {
         echo '';
       }
@@ -71,11 +71,11 @@ class Orders
       $net = $order->get_meta('_net');
       $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
       if ($net == 'testnet') {
-        echo '<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Testnet</a>';
+        echo esc_attr('<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Testnet</a>');
       } elseif ($net == 'mainnet') {
-        echo '<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Mainnet</a>';
+        echo esc_attr('<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Mainnet</a>');
       }
-      echo '';
+      echo esc_attr('');
     }
   }
 

@@ -51,8 +51,7 @@ class Notices
   {
 
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
-    $mainnetActor = $xprcheckoutGateway->get_option('mainwallet');
-    $testnetActor = $xprcheckoutGateway->get_option('testwallet');
+    $mainnetActor = $xprcheckoutGateway->get_option('wallet');
     $isTestnet = $xprcheckoutGateway->get_option('testnet') == 'yes';
 
     if ($isTestnet) :
@@ -66,7 +65,7 @@ class Notices
     if ($isTestnet && $testnetActor == "") :
     ?>
       <div class="notice notice-error">
-        <p><b>XPRCheckout testnet misconfiguration</b> ! XPRCheckout configuration doesn't have registered store account for testnet. <a href="<?php echo admin_url('admin.php?page=wc-settings&tab=checkout&section=xprcheckout') ?>">Fix it »</a></p>
+        <p><b>XPRCheckout testnet misconfiguration</b> ! XPRCheckout configuration doesn't have registered store account for testnet. <a href="<?php admin_url('admin.php?page=wc-settings&tab=checkout&section=xprcheckout') ?>">Fix it »</a></p>
       </div>
     <?php
     endif;
