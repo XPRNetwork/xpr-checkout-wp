@@ -33,12 +33,38 @@ class Config
    * @access public
    * @static
    */
+
+   public static function GetConfig ($orderPaymentKey){
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $wcCheckoutId = wc_get_page_id( 'checkout' );
+    $wcCheckoutUrl = get_permalink( $wcCheckoutId);
+
+    $order = get_order_by_payment_key($orderPaymentKey);
+    $wcThankyouUrl = $order->get_view_order_url();
+    $baseConfig = self::GetBaseConfig();
+    $extendedConfig =  [
+      "store" => $xprcheckoutGateway->get_option('wallet'),
+      "requestedPaymentKey"=>$orderPaymentKey,
+      "orderTotal"=>$order->get_total(),
+      "allowedTokens" => $xprcheckoutGateway->get_option('allowedTokens'),
+      "baseDomain" => get_site_url(),
+      "wooCurrency" => get_woocommerce_currency(),
+      "wooCheckoutUrl" => $wcCheckoutUrl,
+      "wooThankYouUrl" => $wcThankyouUrl,
+      "appName" => $xprcheckoutGateway->get_option('appName'),
+    ];
+
+    return array_merge($baseConfig,$extendedConfig);
+   }
+
   public static function GetDashbordConfig()
   {
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    
+  
     return array(
-      "mainnetActor" => $xprcheckoutGateway->get_option('mainwallet'),
-      "testnetActor" => $xprcheckoutGateway->get_option('testwallet'),
+      "mainnetActor" => $xprcheckoutGateway->get_option('wallet'),
+      "testnetActor" => $xprcheckoutGateway->get_option('wallet'),
       "appName" => $xprcheckoutGateway->get_option('appName'),
       "testnet" => 'testnet' === $xprcheckoutGateway->get_option('network'),
       "network" => $xprcheckoutGateway->get_option('network'),
@@ -47,29 +73,25 @@ class Config
       "wooCurrency" => get_woocommerce_currency(),
     );
   }
-  public static function GetBaseConfig($requestedPaymentKey)
+  public static function GetBaseConfig()
   {
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
-    $wcCheckoutId = wc_get_page_id( 'checkout' );
-    $wcCheckoutUrl = get_permalink( $wcCheckoutId);
-
-    $wcThankyouId = wc_get_page_id( 'order-received' );
-    $wcThankyouUrl = get_permalink( $wcThankyouId);
     
-
     return array(
-      "mainnetActor" => $xprcheckoutGateway->get_option('mainwallet'),
-      "testnetActor" => $xprcheckoutGateway->get_option('testwallet'),
-      "appName" => $xprcheckoutGateway->get_option('appName'),
-      "testnet" => 'testnet' === $xprcheckoutGateway->get_option('network'),
-      "network" => $xprcheckoutGateway->get_option('network'),
-      "allowedTokens" => $xprcheckoutGateway->get_option('allowedTokens'),
-      "wooCurrency" => get_woocommerce_currency(),
+      "gatewayNetwork" => $xprcheckoutGateway->get_option('network'),
+      "store" => $xprcheckoutGateway->get_option('wallet'),
+      "endpoints" => $xprcheckoutGateway->get_option('network') === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_ENDPOINT : XPRCHECKOUT_TESTNET_ENDPOINT,
+      "chainId" =>  $xprcheckoutGateway->get_option('network') === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_CHAIN_ID : XPRCHECKOUT_TESTNET_CHAIN_ID,
       "baseDomain" => get_site_url(),
-      "wooCheckoutUrl" => $wcCheckoutUrl,
-      "wooThankYouUrl" => $wcThankyouUrl,
-      'nonce' => wp_create_nonce('xprcheckout'),
-      'requestedPaymentKey'=>$requestedPaymentKey
+    );
+  }
+  
+  public static function GetAdminConfig()
+  {
+    
+    
+    return array(
+      "adminNonce" => wp_create_nonce( 'wp_rest' )
     );
   }
 
@@ -91,7 +113,7 @@ class Config
 
     $baseConfig = self::GetBaseConfig($requestedPaymentKey);
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
-    $resolved = OrderResolver::Process($requestedPaymentKey,$xprcheckoutGateway->get_option('network'));
+    
     return array_merge($baseConfig, ['order'=>$resolved]);
 
   }
@@ -103,7 +125,7 @@ class Config
     $requestedPaymentKey = $order->get_meta('_payment_key');
     $baseConfig = self::GetBaseConfig($requestedPaymentKey);
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
-    $resolved = OrderResolver::Process($requestedPaymentKey,$xprcheckoutGateway->get_option('network'));
+    
     return array_merge($baseConfig, ['order'=>$resolved]);
 
   }
