@@ -2,7 +2,7 @@
 Requires at least: 6.0
 Tested up to: 6.6.1
 Requires PHP: 7.0
-Stable tag: 1.2.1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,9 +63,10 @@ It also provides other actions to manage stores, withdrawals, and refunds:
 Register a store to allow payment and multi-balance storage (for different tokens).
 - **Store unregistration (store.unreg)**
 Remove a store from the store list, but keep the balance stored.
+
 - **Refund by the store owner (pay.refund)**
-Allow the refund of payment that is not already a part of a withdrawal, and flag the payment as “REFUNDED”.
-- **Withdraw of payments by the store owner (bal.claim)**
-Allow the user to claim all payments made on his store marked as “PAID” since the last claim. It transfers an amount of {tokens}, defined by a symbol param, from the store-scoped balance table to the registered store account. It also flag concerned payments as “PAID_OUT”, the refund of those payments is not possible anymore for the XPR Checkout smart contract.
+Allow the refund of payment by flaging flag the payment as “REFUNDED”.
+- **No more Withdraw of payments by the store owner (bal.claim)**
+No need to withdraw payment are directly transferred to the store owner through the @xprckechout smart contract.
 
 
