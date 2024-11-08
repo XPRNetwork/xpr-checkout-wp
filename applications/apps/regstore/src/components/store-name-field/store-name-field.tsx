@@ -1,5 +1,4 @@
 import classNames from "classnames"
-import { useXPRN } from "xprnkit"
 import { useRegstore } from "../../provider/regstore-provider";
 
 type StoreNameFieldProps = React.HTMLAttributes<HTMLDivElement> 

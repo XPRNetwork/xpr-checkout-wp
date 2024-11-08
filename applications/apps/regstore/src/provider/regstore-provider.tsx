@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {useXPRN} from "xprnkit";
+
 import {RegStoreConfig} from "../global";
 import {verifyStore} from "../services/verify-store";
 import { wait } from "../utils/wait";
