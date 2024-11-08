@@ -12,6 +12,7 @@ import { wait } from "../utils/wait";
 
 export type RegStoreProviderTypes = {
   verifyChainStore: (storeName: string) => Promise<boolean>;
+  setVerificationStatus:(status:boolean)=>void
   verificationState?: StoreNameStatus;
   verificationStatus?: boolean;
   storeName?: string,
@@ -20,7 +21,8 @@ export type RegStoreProviderTypes = {
 };
 
 const regstoreContext = createContext<RegStoreProviderTypes>({
-  verifyChainStore: (storeName: string):Promise<boolean> => { return new Promise<boolean>(()=>true) },
+  verifyChainStore: (storeName: string): Promise<boolean> => { return new Promise<boolean>(() => true) },
+  setVerificationStatus:(status:boolean)=>{},
   verificationState: 'empty',
   verificationStatus: false,
   storeName: '',
@@ -92,6 +94,7 @@ export const RegStoreProvider: React.FunctionComponent<
     <regstoreContext.Provider
       value={{
         verifyChainStore,
+        setVerificationStatus,
         verificationState,
         verificationStatus,
         storeName,
