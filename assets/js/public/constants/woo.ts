@@ -1,1 +1,0 @@
-export const WOO_CHECKOUT_FORM_SELECTOR = '.checkout.woocommerce-checkout'
