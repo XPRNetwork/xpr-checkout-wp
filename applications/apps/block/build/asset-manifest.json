@@ -1,0 +1,9 @@
+{
+  "files": {
+    "main.js": "/static/js/app.js",
+    "app.js.map": "/static/js/app.js.map"
+  },
+  "entrypoints": [
+    "static/js/app.js"
+  ]
+}

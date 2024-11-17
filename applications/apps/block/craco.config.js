@@ -32,10 +32,7 @@ module.exports = {
 
       // Set the output path and filenames
       if (process.env.NODE_ENV === "production") {
-        webpackConfig.output.path = path.resolve(
-          __dirname,
-          "../../../dist/block"
-        );
+        webpackConfig.output.path = path.resolve(__dirname, "build");
 
         webpackConfig.output.filename = "static/js/app.js";
         webpackConfig.output.chunkFilename = "static/js/[name].chunk.js";

@@ -102,7 +102,7 @@ class Refund
           ?>
           window.pluginConfig = <?php echo json_encode(array_merge($baseConfig,$adminConfig)); ?>;
       </script>
-    <div id="refund"></div>
+    <div id="xpr-refund"></div>
 <?php
 
   }

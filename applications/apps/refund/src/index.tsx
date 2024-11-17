@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('refund') as HTMLElement
+  document.getElementById('xpr-refund') as HTMLElement
 );
 root.render(
   <React.StrictMode>

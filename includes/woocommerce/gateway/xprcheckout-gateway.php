@@ -288,13 +288,14 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
       
       <th scope="row" class="titledesc">
         <label for="<?php echo esc_attr($field_key); ?>"><?php echo wp_kses_post($data['title']); ?>
-          <
+          
         </label>
       </th>
       <td class="forminp">
         <fieldset>
+          
           <legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
-          <div id="root"></div>
+          <div id="xpr-regstore"></div>
           <?php echo esc_attr($this->get_description_html($data)); // WPCS: XSS ok. 
           ?>
         </fieldset>

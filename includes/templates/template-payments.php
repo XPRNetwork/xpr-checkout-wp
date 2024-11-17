@@ -25,7 +25,7 @@ $g->payment_scripts();
   
   ?>
     <div style='max-width:1040px;margin:0 auto' >
-      <div id='root'>
+      <div id='xpr-checkout'>
         
         </div>  
       </div>
