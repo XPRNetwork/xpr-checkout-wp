@@ -54,8 +54,8 @@ class Refund
     if (isset($current_screen) && $current_screen->id == 'shop_order') {
       global $post;
       $order = wc_get_order($post->ID);
-      wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/refund/static/css/app.css?v=' . uniqid(),[], time());
-      wp_register_script_module('xprcheckout_admin_refund', XPRCHECKOUT_ROOT_URL . 'dist/refund/static/js/app.js?v=' . uniqid(), [], time());
+      wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.css?v=' . uniqid(),[], time());
+      wp_register_script_module('xprcheckout_admin_refund', XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.js?v=' . uniqid(), [], time());
       
       wp_enqueue_script_module('xprcheckout_admin_refund');
     };

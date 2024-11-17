@@ -225,10 +225,10 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     };
 
     if (!$this->is_available()) return;
-    wp_register_script_module('xprcheckout_public', XPRCHECKOUT_ROOT_URL . 'dist/checkout/static/js/app.js?v='. uniqid(), [], time());
+    wp_register_script_module('xprcheckout_public', XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.js?v='. uniqid(), [], time());
     wp_enqueue_script_module('xprcheckout_public');
     
-    wp_enqueue_style('xprcheckout_public_style', XPRCHECKOUT_ROOT_URL . 'dist/checkout/static/css/app.css?v='. uniqid(),[], time());
+    wp_enqueue_style('xprcheckout_public_style', XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.css?v='. uniqid(),[], time());
     // wp_enqueue_style('xprcheckout_layout_style', XPRCHECKOUT_ROOT_URL . 'dist/public/public.css?v=' . uniqid(),[], time(), true);
   }
 

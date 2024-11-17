@@ -57,9 +57,9 @@ class RegStore
     ];
     
     if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wc-settings') {
-      wp_register_script_module('xprcheckout_admin_regstore', XPRCHECKOUT_ROOT_URL . 'dist/regstore/static/js/app.js?v=' . uniqid(), [], time());
+      wp_register_script_module('xprcheckout_admin_regstore', XPRCHECKOUT_ROOT_URL . 'dist/regstore/build/app.js?v=' . uniqid(), [], time());
       wp_enqueue_script_module('xprcheckout_admin_regstore');
-      wp_enqueue_style('xprcheckout_admin_regstore_style', XPRCHECKOUT_ROOT_URL . 'dist/regstore/static/css/app.css?v=' . uniqid(),[], time());
+      wp_enqueue_style('xprcheckout_admin_regstore_style', XPRCHECKOUT_ROOT_URL . 'dist/regstore/build/app.css?v=' . uniqid(),[], time());
     };
   }
 }

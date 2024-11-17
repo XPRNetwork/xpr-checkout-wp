@@ -34,13 +34,13 @@ module.exports = {
       if (process.env.NODE_ENV === "production") {
         webpackConfig.output.path = path.resolve(__dirname, "build");
 
-        webpackConfig.output.filename = "static/js/app.js";
-        webpackConfig.output.chunkFilename = "static/js/[name].chunk.js";
+        webpackConfig.output.filename = "app.js";
+        webpackConfig.output.chunkFilename = "[name].chunk.js";
 
         webpackConfig.plugins.forEach(plugin => {
           if (plugin.constructor.name === "MiniCssExtractPlugin") {
-            plugin.options.filename = "static/css/app.css";
-            plugin.options.chunkFilename = "static/css/[name].chunk.css";
+            plugin.options.filename = "app.css";
+            plugin.options.chunkFilename = "[name].chunk.css";
           }
         });
       }
