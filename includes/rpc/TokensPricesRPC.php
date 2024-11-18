@@ -26,7 +26,7 @@ class TokenPrices
     ));
     
     if (is_wp_error($response)) {
-      error_log('WP Remote Get Error: ' . $response->get_error_message());
+      
       return null;
     }
     
@@ -61,65 +61,55 @@ class TokenPrices
     // Use the data
     
     $allowedTokens = explode(',',$paymentGateway->settings['allowedTokens']);
-
-    
-
-    error_log(print_r($allowedTokens,1));
-      $testnetFiltered = array_map(function ($token) use ($wpdb,$allowedTokens) {
-        if (strpos($token['key'], 'test') !== false) {
-          return null;
-        }
-
-        
-        if (in_array($token['symbol'],$allowedTokens)){
-          error_log(in_array($token['symbol'],$allowedTokens));
-
-        }
-        
-        $tokenBase = [
-          'symbol' => $token['symbol'],
-          'contract' => $token['account'],
-          'decimals' => $token['supply']['precision'],
-          'logo' => $token['metadata']['logo']
-        ];
-        
-        $rawPrices = array_filter($token['pairs'], function ($pair) use ($allowedTokens,$token) {
-          return $pair['pair_quote'] == 'USD' && in_array($token['symbol'],$allowedTokens);
-        });
-        
-        $prices = array_values($rawPrices);
-        
-        if (isset($prices[0])) {
-          $mergedToken = array_merge($prices[0], $tokenBase);
-          // Update database
-          $wpdb->query($wpdb->prepare(
-            "INSERT INTO wp_%1s (symbol,contract,token_precision,rate) 
-             VALUES (%s,%s,%d,%.12f) 
-             ON DUPLICATE KEY UPDATE rate = %.12f",
-            XPRCHECKOUT_TABLE_TOKEN_RATES,
-            $mergedToken['pair_base'],
-            $mergedToken['contract'],
-            $mergedToken['decimals'],
-            $mergedToken['quote']['price_usd'],
-            $mergedToken['quote']['price_usd']
-          ));
-          
-          return $mergedToken;
-        }
-        
+    $testnetFiltered = array_map(function ($token) use ($wpdb,$allowedTokens) {
+      if (strpos($token['key'], 'test') !== false) {
         return null;
-      }, $data_array);
+      }
       
-      return array_values(array_filter($testnetFiltered, function ($token) {
-        return !is_null($token);
-      }));
+      $tokenBase = [
+        'symbol' => $token['symbol'],
+        'contract' => $token['account'],
+        'decimals' => $token['supply']['precision'],
+        'logo' => $token['metadata']['logo']
+      ];
       
-    } catch (Exception $e) {
-      error_log('JSON Processing Error: ' . $e->getMessage());
-      error_log('JSON Error Code: ' . json_last_error());
-      error_log('JSON Error Message: ' . json_last_error_msg());
+      $rawPrices = array_filter($token['pairs'], function ($pair) use ($allowedTokens,$token) {
+        return $pair['pair_quote'] == 'USD' && in_array($token['symbol'],$allowedTokens);
+      });
+      
+      $prices = array_values($rawPrices);
+      
+      if (isset($prices[0])) {
+        $mergedToken = array_merge($prices[0], $tokenBase);
+        // Update database
+        $wpdb->query($wpdb->prepare(
+          "INSERT INTO wp_%1s (symbol,contract,token_precision,rate) 
+            VALUES (%s,%s,%d,%.12f) 
+            ON DUPLICATE KEY UPDATE rate = %.12f",
+          XPRCHECKOUT_TABLE_TOKEN_RATES,
+          $mergedToken['pair_base'],
+          $mergedToken['contract'],
+          $mergedToken['decimals'],
+          $mergedToken['quote']['price_usd'],
+          $mergedToken['quote']['price_usd']
+        ));
+        
+        return $mergedToken;
+      }
+      
       return null;
-    }
+    }, $data_array);
+      
+    return array_values(array_filter($testnetFiltered, function ($token) {
+      return !is_null($token);
+    }));
+      
+      } catch (Exception $e) {
+        error_log('JSON Processing Error: ' . $e->getMessage());
+        error_log('JSON Error Code: ' . json_last_error());
+        error_log('JSON Error Message: ' . json_last_error_msg());
+        return null;
+      }
   }
 }
 

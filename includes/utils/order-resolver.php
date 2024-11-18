@@ -30,8 +30,7 @@ class OrderResolver {
       }
     }
     $baseResponse->resolved= true;
-    error_log(print_r($baseResponse,1));
-    
+        
   }else {
     $baseResponse->resolved= false;
     

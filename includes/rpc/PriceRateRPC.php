@@ -27,7 +27,6 @@ class PriceRateRPC
         "apikey"=> $this->apiKey,
         "Content-Type"=>"application/json"
       );
-      error_log($this->apiKey);
       $response = wp_remote_get($url, array(
         'headers' => $headers,
         'body' => array('base_currency' => 'USD')

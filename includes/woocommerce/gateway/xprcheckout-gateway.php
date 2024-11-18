@@ -91,7 +91,6 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
         'type' => 'text',
         'default' => 'Pay with WebAuth',
         'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout'),
-        
         'desc_tip'      => true,
       ),
       'description' => array(
@@ -130,12 +129,11 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
         'default' => __('XPR,XUSDC', 'xprcheckout'),
         'desc_tip'      => true,
       ),
-      'polygonKey' => array(
+      'currencyApi' => array(
         'title' => __('Free api key ', 'xprcheckout'),
         'type' => 'text',
-        'description' => __('Your key for currency pricing service on https://app.freecurrencyapi.com/register.', 'xprcheckout'),
-        
-        'desc_tip'      => true,
+        'description' => __('We provide limited one. You can register yours for free <a target="_blank" style="text-decoration:underline" href="https://app.freecurrencyapi.com/register">here</a>.', 'xprcheckout'), 
+        'desc_tip'      => false,
       ),
     );
   }
@@ -175,15 +173,9 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   public function process_payment($order_id)
   {
 
-    error_log('PASS THROUGHT PROCESS PAYMENT');
+    
     $order = wc_get_order($order_id);
     
-
-    if ($order->get_total() > 0) {
-      //$order->update_status(apply_filters('woocommerce_cod_process_payment_order_status', $order->has_downloadable_item() ? 'on-hold' : 'processing', $order), __('Payment to be made upon delivery.', 'xprcheckout'));
-    } else {
-      //$order->payment_complete();
-    }
     WC()->cart->empty_cart();
     return array(
       'result'   => 'success',
@@ -353,8 +345,6 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   
 function xprcheckout_redirect_on_new_order($order) {
   
-    error_log('xprcheckout_redirect_on_order_pay');
-    error_log(print_r($posted_data,1));
     if(WC()->session->chosen_payment_method == 'xprcheckout'){
    $this->xprcheckout_redirect_to_payment_page();
    

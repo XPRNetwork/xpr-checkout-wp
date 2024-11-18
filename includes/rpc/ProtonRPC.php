@@ -14,10 +14,7 @@ class ProtonRPC
     $data = array(
       'id' => $paymentKey,
     );
-    error_log("check transaction");
-    error_log($endpoint);
-    error_log(print_r($data, 1));
-
+    
     $response = wp_remote_post($endpoint, array(
       'body' => wp_json_encode($data),
       'headers' => array('Content-Type' => 'application/json'),

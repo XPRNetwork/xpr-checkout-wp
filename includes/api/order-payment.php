@@ -41,9 +41,11 @@ if (!isset($params['paymentKey'])) {
 
   $ordersQuery = wc_get_orders($args);
   $existingOrder = $ordersQuery[0] ?? null;
-
+  $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+  $customCurrencyApiKey = $xprcheckoutGateway->get_option('currencyApi');
+  $currencyApiKey = empty($customCurrencyApiKey) ? XPRCHECKOUT_PRICE_RATE_API_KEY : $customCurrencyApiKey;
   //TODO allow user to provide API key and add link under the config page field
-  $priceRPC = new PriceRateRPC(XPRCHECKOUT_PRICE_RATE_API_KEY);
+  $priceRPC = new PriceRateRPC($currencyApiKey);
   $convertedRate = $priceRPC->getUSDConvertionRate(get_woocommerce_currency(), $existingOrder->get_total());
   
   $returnResult = new WP_REST_Response();
