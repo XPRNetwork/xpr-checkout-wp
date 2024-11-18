@@ -50,7 +50,7 @@ export const CheckoutTokenSelect: React.FunctionComponent<
           {orderPayment.base_amount} { orderPayment.base_currency} = {toPrecision(orderPayment.usd_amount, 2)} USD
         </span>
         <button
-          className="text-sm font-bold text-gray-500 p-0 m-0 bg-transparent border-none focus:text-gray-500"
+          className="text-sm font-bold text-gray-500 p-0 m-0 bg-transparent border-none focus:text-gray-500 focus:bg-transparent  hover:text-gray-500 hover:bg-transparent"
           onClick={() => refreshTokensList()}
         >
           Refresh{" "}

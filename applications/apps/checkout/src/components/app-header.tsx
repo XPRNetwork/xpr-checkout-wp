@@ -34,7 +34,7 @@ export const AppHeader = () => {
         { JSON.stringify(profile)}
         {session && (
           <Dialog>
-            <DialogTrigger className="text-sm flex items-center">
+            <DialogTrigger className="text-sm flex items-center border-none focus:bg-transparent hover:bg-transparent">
                 <XPRNAvatar className="w-10 h-10 rounded-full overflow-hidden bg-brand text-white font-bold text-xl uppercase" />
             </DialogTrigger>
             <DialogContent>
