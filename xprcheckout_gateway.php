@@ -5,14 +5,14 @@
  * Description: Allow user to pay securly with with multiple crypto currencies through Webauth
  * Author: Rémy Chauveau AKA Rockerone
  * Author URI: rockerone.io
- * Version: 2.0.19-QA
+ * Version: ##VERSION_TAG##
  * slug: xprcheckout
  * Text Domain: xprcheckout_gateway
  * Domain Path: /i18n/languages/
  * License: GPLv2 or later
  */
 
-define('XPRCHECKOUT_VERSION', '2.0.16');
+define('XPRCHECKOUT_VERSION', '##VERSION_TAG##');
 define('XPRCHECKOUT_ROOT_DIR', plugin_dir_path(__FILE__));
 define('XPRCHECKOUT_ROOT_URL', plugin_dir_url(__FILE__));
 

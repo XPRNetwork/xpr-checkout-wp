@@ -1,10 +1,15 @@
+GITHUB_REPO := https://github.com/XPRNetwork/xpr-checkout-wp
+FILES := README.md info.json xprcheckout_gateway.php  # List your files here
+
+LATEST_TAG := $(shell git ls-remote --tags $(GITHUB_REPO) | awk -F/ '{print $$NF}' | grep -v '{}' | sort -V | tail -n1)
+
 define MANIFEST_BODY
 {
 	"name" : "XPRCheckout: WooCommerce WebAuth gateway",
 	"slug" : "xprcheckout_woocommerce_webauth_gateway",
 	"author" : "<a href='https://rockerone.io'>RockerOne</a>",
 	"author_profile" : "http://profiles.wordpress.org/rocker0ne",
-	"version" : "$(VERSION)",
+	"version" : "$(LATEST_TAG)",
 	"download_url" : "https://github.com/XPRNetwork/xpr-checkout-wp/releases/tag/$(VERSION)",
 	"requires" : "5.0",
 	"tested" : "5.0",
@@ -25,6 +30,20 @@ export MANIFEST_BODY
 
 generate_manifest:
 	@echo "$$MANIFEST_BODY" > info.json
+
+
+
+.PHONY: update_version
+update_version:
+	@if [ -z "$(LATEST_TAG)" ]; then \
+		echo "No tag found in the repository"; \
+		exit 1; \
+	fi
+	@echo "Replacing ##VERSION_TAG## with the latest tag: $(LATEST_TAG)"
+	@for file in $(FILES); do \
+		sed -i '' -e "s/##VERSION_TAG##/$(LATEST_TAG)/g" $$file; \
+		echo "Updated $$file"; \
+	done
 
 compile_apps:
 	rm -rf ./dist

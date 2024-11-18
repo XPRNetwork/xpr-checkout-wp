@@ -21,6 +21,9 @@ jobs:
     - name: Build apps in dist
       working-directory: '.'
       run: 'make compile_apps'
+    - name: Bump tag
+      working-directory: '.'
+      run: 'make update_version'
     - name: Compile Release
       uses: thedoctor0/zip-release@0.7.1
       with:
