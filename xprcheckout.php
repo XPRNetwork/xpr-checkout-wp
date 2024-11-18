@@ -4,7 +4,7 @@
  * Plugin Name: XPRCheckout - WebAuth Gateway for Woocommerce
  * Description: Allow user to pay securly with with multiple crypto currencies through Webauth
  * Author: Rémy Chauveau AKA Rockerone
- * Author URI: rockerone.io
+ * Author URI: https://rockerone.io
  * Version: ##VERSION_TAG##
  * slug: xprcheckout_gateway
  * Text Domain: xprcheckout_gateway
@@ -83,7 +83,7 @@ function run_proton_wc_gateway()
 function sample_admin_notice_success() {
   ?>
   <div  class="notice notice-error">
-      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'sample-text-domain' ); ?></b></p>
+      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout_gateway' ); ?></b></p>
       <a href="/wp-admin/plugin-install.php?s=woo&tab=search&type=term">Install Woocommerce </a>
       <p></p>
   </div>

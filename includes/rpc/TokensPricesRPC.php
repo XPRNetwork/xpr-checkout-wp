@@ -83,6 +83,7 @@ class TokenPrices
         $mergedToken = array_merge($prices[0], $tokenBase);
         //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
         $wpdb->query($wpdb->prepare(
+          //phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder
           "INSERT INTO wp_%1s (symbol,contract,token_precision,rate) 
             VALUES (%s,%s,%d,%.12f) 
             ON DUPLICATE KEY UPDATE rate = %.12f",
