@@ -31,7 +31,6 @@ export const AppHeader = () => {
             </span>
           </div>
         </div>
-        { JSON.stringify(profile)}
         {session && (
           <Dialog>
             <DialogTrigger className="text-sm flex items-center border-none focus:bg-transparent hover:bg-transparent">
