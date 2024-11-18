@@ -89,6 +89,7 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
       'title' => array(
         'title' => __('Title', 'xprcheckout'),
         'type' => 'text',
+        'default' => 'Pay with WebAuth',
         'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout'),
         
         'desc_tip'      => true,
@@ -204,7 +205,7 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
         $desc .= $this->description;
         $desc  = trim($desc);
       }
-      $text = esc_html(wpautop(wp_kses_post($desc)));
+      $text = esc_html(wp_kses_post($desc));
       echo esc_attr(printf(
         '%s',
         $text // it can simply be a normal variable 
@@ -229,7 +230,7 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     wp_enqueue_script_module('xprcheckout_public');
     
     wp_enqueue_style('xprcheckout_public_style', XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.css?v='. uniqid(),[], time());
-    // wp_enqueue_style('xprcheckout_layout_style', XPRCHECKOUT_ROOT_URL . 'dist/public/public.css?v=' . uniqid(),[], time(), true);
+    
   }
 
   /**
