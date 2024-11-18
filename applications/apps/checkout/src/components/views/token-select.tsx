@@ -46,20 +46,20 @@ export const CheckoutTokenSelect: React.FunctionComponent<
     <div className="grid grid-cols-1 gap-6 relative bg-white p-4">
       { asyncStatus === "pending" && <Processing className="absolute right-0 top-0 bottom-0 left-0 bg-white bg-opacity-80" />}
       <div className="usd_cart_amount grid grid-cols-[1fr,min-content] items-center">
-        <p className="text-sm font-bold text-gray-500">
+        <span className="text-sm font-bold text-gray-500">
           {orderPayment.base_amount} { orderPayment.base_currency} = {toPrecision(orderPayment.usd_amount, 2)} USD
-        </p>
+        </span>
         <button
-          className="text-sm font-bold text-gray-500"
+          className="text-sm font-bold text-gray-500 p-0 m-0 bg-transparent border-none focus:text-gray-500"
           onClick={() => refreshTokensList()}
         >
           Refresh{" "}
         </button>
       </div>
       <div>
-        <p className="font-bold text-lg">
+        <span className="font-bold text-lg">
           Select the token you want to pay with
-        </p>
+        </span>
         <ul className="grid grid-cols-1 gap-2 p-0 m-0 list-none">
           {tokensWithUserBalances &&
             tokensWithUserBalances.map((token, index) => {

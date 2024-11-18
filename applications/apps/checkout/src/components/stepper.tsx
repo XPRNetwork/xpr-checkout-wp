@@ -53,9 +53,9 @@ export const Stepper = () => {
                 >
                   1
                 </span>
-                <p className={connectClassesText}>
+                <span className={connectClassesText}>
                   Connect Webauth
-                </p>
+                </span>
               </div>
             </span>
             <span className="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
@@ -65,9 +65,9 @@ export const Stepper = () => {
                 >
                   2
                 </span>
-                <p className={tokenSelectClassesText}>
+                <span className={tokenSelectClassesText}>
                   Pay with token
-                </p>
+                </span>
               </div>
             </span>
             
@@ -78,9 +78,9 @@ export const Stepper = () => {
                 >
                   3
                 </span>
-                <p className={verifyClassesText}>
+                <span className={verifyClassesText}>
                   Verify payment
-                </p>
+                </span>
               </div>
             </span>
           </div>
