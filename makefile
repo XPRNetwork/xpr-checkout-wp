@@ -1,5 +1,5 @@
 GITHUB_REPO := https://github.com/XPRNetwork/xpr-checkout-wp
-FILES := README.md info.json xprcheckout_gateway.php  # List your files here
+FILES := README.md info.json xprcheckout.php  # List your files here
 
 LATEST_TAG := $(shell git ls-remote --tags $(GITHUB_REPO) | awk -F/ '{print $$NF}' | grep -v '{}' | sort -V | tail -n1)
 
