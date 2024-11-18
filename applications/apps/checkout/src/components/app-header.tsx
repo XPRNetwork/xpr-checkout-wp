@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import logo from './../assets/brand_logo.png'
 import {useXPRN, XPRNAvatar} from "xprnkit";
 import {
