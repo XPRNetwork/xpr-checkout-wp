@@ -55,7 +55,7 @@ class TokenPrices
     $data_array = json_decode($json_data, true);
     
     if ($data_array === null && json_last_error() !== JSON_ERROR_NONE) {
-        die('JSON Decode Error: ' . json_last_error_msg());
+        return null;
     }
     
     // Use the data
@@ -81,7 +81,7 @@ class TokenPrices
       
       if (isset($prices[0])) {
         $mergedToken = array_merge($prices[0], $tokenBase);
-        // Update database
+        //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
         $wpdb->query($wpdb->prepare(
           "INSERT INTO wp_%1s (symbol,contract,token_precision,rate) 
             VALUES (%s,%s,%d,%.12f) 
@@ -105,9 +105,6 @@ class TokenPrices
     }));
       
       } catch (Exception $e) {
-        error_log('JSON Processing Error: ' . $e->getMessage());
-        error_log('JSON Error Code: ' . json_last_error());
-        error_log('JSON Error Message: ' . json_last_error_msg());
         return null;
       }
   }

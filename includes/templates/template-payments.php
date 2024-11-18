@@ -16,12 +16,12 @@
   <?php wp_head() ?>
   <script type='text/javascript'>
 
-window.pluginConfig = <?php echo json_encode($baseConfig); ?>;
+window.pluginConfig = <?php echo wp_json_encode($baseConfig); ?>;
 
 </script>
 <?php $g->payment_scripts(); ?>
   </head>
-  <body class="<?php echo join(" ",get_body_class()) ?>">
+  <body class="<?php echo esc_html(join(" ",get_body_class())) ?>">
   
    
     <div style='max-width:1040px;margin:0 auto' >

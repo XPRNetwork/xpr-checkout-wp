@@ -107,8 +107,8 @@ class Orders
     foreach ($columns as $column_name => $column_info) {
       $new_columns[$column_name] = $column_info;
       if ('order_status' === $column_name) {
-        $new_columns['transactionId'] = __('Transaction', 'xprcheckout'); // title
-        $new_columns['net'] = __('Mainnet/testnet', 'xprcheckout'); // title
+        $new_columns['transactionId'] = __('Transaction', 'xprcheckout_gateway'); // title
+        $new_columns['net'] = __('Mainnet/testnet', 'xprcheckout_gateway'); // title
       }
     }
     return $new_columns;

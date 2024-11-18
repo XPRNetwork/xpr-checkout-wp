@@ -70,7 +70,7 @@ class Refund
   {
     add_meta_box(
       'woocommerce-xprcheckout-payment',
-      __('XPRCheckout payment', 'xprcheckout'),
+      __('XPRCheckout payment', 'xprcheckout_gateway'),
       [$this, 'renderMetabox'],
       'shop_order',
       'advanced',
@@ -100,7 +100,7 @@ class Refund
           $baseConfig['orderStatus']= $order->get_status();
           $baseConfig['orderStatus']= $order->get_status();
           ?>
-          window.pluginConfig = <?php echo json_encode(array_merge($baseConfig,$adminConfig)); ?>;
+          window.pluginConfig = <?php echo wp_json_encode(array_merge($baseConfig,$adminConfig)); ?>;
       </script>
     <div id="xpr-refund"></div>
 <?php

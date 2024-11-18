@@ -6,7 +6,7 @@
  * Author: Rémy Chauveau AKA Rockerone
  * Author URI: rockerone.io
  * Version: ##VERSION_TAG##
- * slug: xprcheckout
+ * slug: xprcheckout_gateway
  * Text Domain: xprcheckout_gateway
  * Domain Path: /i18n/languages/
  * License: GPLv2 or later

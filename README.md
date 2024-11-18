@@ -1,19 +1,19 @@
-=== XPR Checkout: Webauth payment gateway ===
+=== XPRCheckout - WebAuth Gateway for Woocommerce ===
 Requires at least: 6.0
-Tested up to: 6.6.1
+Tested up to: 6.7
 Requires PHP: 7.0
 Stable tag: ##VERSION_TAG##
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-# XPR Checkout: Webauth payment gateway
+# XPRCheckout - WebAuth Gateway for Woocommerce
 *A WebAuth-Enabled Gateway for WooCommerce*
 
 ## The basic scope
 
 This plugin provides a payment gateway for WooCommerce that enables users to pay for their purchases using any cryptocurrency available in the WebAuth wallet. With this feature, users can enjoy a seamless and secure shopping experience, thank Proton, as they can easily pay for their purchases using their preferred digital currency.
 
-XPR Checkout, through a hassle-free configuration, provides additional features to help store owners manage payment reconciliation, withdrawal, and refund inside the WooCommerce regular flow also driven by Webauth authentification. 
+XPR Checkout, through a hassle-free configuration, provides additional features to help store owners manage payment reconciliation, withdrawal, and refund inside the WooCommerce regular flow also driven by Webauth authentication. 
 
 Overall, this plugin helps to expand the use of cryptocurrencies through the proton chain in e-commerce, making it easier and more convenient for users to use their digital assets for online shopping.
 
@@ -65,7 +65,7 @@ Register a store to allow payment and multi-balance storage (for different token
 Remove a store from the store list, but keep the balance stored.
 
 - **Refund by the store owner (pay.refund)**
-Allow the refund of payment by flaging flag the payment as “REFUNDED”.
+Allow the refund of payment by flagging flag the payment as “REFUNDED”.
 - **No more Withdraw of payments by the store owner (bal.claim)**
 No need to withdraw payment are directly transferred to the store owner through the @xprckechout smart contract.
 
