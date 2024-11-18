@@ -84,9 +84,7 @@ class TokenPrices
         //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
         $wpdb->query($wpdb->prepare(
           //phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder
-          "INSERT INTO wp_%1s (symbol,contract,token_precision,rate) 
-            VALUES (%s,%s,%d,%.12f) 
-            ON DUPLICATE KEY UPDATE rate = %.12f",
+          "INSERT INTO wp_%1s (symbol,contract,token_precision,rate) VALUES (%s,%s,%d,%.12f) ON DUPLICATE KEY UPDATE rate = %.12f",
           XPRCHECKOUT_TABLE_TOKEN_RATES,
           $mergedToken['pair_base'],
           $mergedToken['contract'],
