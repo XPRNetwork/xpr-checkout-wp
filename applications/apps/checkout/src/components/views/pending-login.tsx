@@ -32,7 +32,7 @@ export const PendingLoginView = () => {
           </span>
           <button
             style={{textDecoration: "none"}}
-            className="btn rounded-lg bg-black text-white flex justify-center items-center gap-4 h-12"
+            className="btn rounded-lg bg-black text-white flex justify-center items-center gap-4 h-12 border-none hover:bg-brand hover:text-white"
             onClick={() => {
               onConnect();
             }}
@@ -63,7 +63,7 @@ export const PendingLoginView = () => {
             href="https://webauth.com/"
             target="_blank"
             rel={"noreferrer"}
-            className="flex justify-center items-center rounded-lg text-center font-bold p-2 no-underline bg-white w-full h-12"
+            className="flex justify-center items-center rounded-lg text-center font-bold p-2 no-underline bg-white w-full h-12 border-none hover:bg-brand hover:text-white"
           >
             Get it Now
           </a>

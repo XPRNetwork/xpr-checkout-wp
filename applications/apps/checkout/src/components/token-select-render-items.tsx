@@ -9,6 +9,7 @@ export const TokenSelectRenderItem: React.FunctionComponent<TokenSelectRenderIte
   const { userBalances } = useCheckout()
   
   const rootClasses = classNames({
+    'token-select-item-renderer':true,
     'grid grid-cols-[40px,1fr,min-content] items-center gap-4 select-none card  p-4': true,
     'hover:bg-white shadow-sm rounded-md hover:shadow-lg hover:z-20 border-2 border-gray-50 hover:border-brand':token.enabled,
     'opacity-30 disabled':!token.enabled

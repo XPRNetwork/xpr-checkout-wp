@@ -54,7 +54,7 @@ export const PaymentSucceed = () => {
         </div>
       </div>
       <div className="flex flex-col md:flex-row justify-end gap-4">
-        <a href={ config?.wooThankYouUrl} className="p-2 bg-purple-600 rounded-md font-bold text-white ">
+        <a href={ config?.wooThankYouUrl} className="p-2 bg-black rounded-md font-bold text-white hover:bg-brand hover:text-white text-center">
           Continue
         </a>
       </div>

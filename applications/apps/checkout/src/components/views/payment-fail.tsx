@@ -32,13 +32,15 @@ export const PaymentFail = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="lucide lucide-circle-x w-16 h-16 fill-red-400 stroke-white block md:hidden"
-                >
+              >
                 <circle cx="12" cy="12" r="10" />
                 <path d="m15 9-6 6" />
                 <path d="m9 9 6 6" />
               </svg>
-                
-              <span className="text-2xl font-bold text-red-400">Payment fail</span>
+
+              <span className="text-2xl font-bold text-red-400">
+                Payment fail
+              </span>
             </div>
           </div>
           <div>
@@ -59,10 +61,7 @@ export const PaymentFail = () => {
         >
           Retry
         </button>
-        <button
-          className="p-2 border-brand border-2 rounded-md font-bold text-brand "
-          
-        >
+        <button className="p-2 bg-black rounded-md font-bold text-white hover:bg-brand hover:text-white text-center">
           Save
         </button>
       </div>
