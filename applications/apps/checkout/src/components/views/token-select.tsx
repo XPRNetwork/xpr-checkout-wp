@@ -60,7 +60,7 @@ export const CheckoutTokenSelect: React.FunctionComponent<
         <p className="font-bold text-lg">
           Select the token you want to pay with
         </p>
-        <ul className="grid grid-cols-1 gap-2">
+        <ul className="grid grid-cols-1 gap-2 p-0 m-0 list-none">
           {tokensWithUserBalances &&
             tokensWithUserBalances.map((token, index) => {
               return (

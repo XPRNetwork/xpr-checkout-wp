@@ -27,13 +27,13 @@ export const TokenSelectRenderItem: React.FunctionComponent<TokenSelectRenderIte
         src={token.logo}
       />
       <div>
-        <p className="font-bold token_rates__list__render_item__token_price">
+        <span className="font-bold token_rates__list__render_item__token_price">
           {"Pay"} {token.amount} {token.symbol}
-        </p>
-        <p className="token_rates__list__render_item__token_balance">
+        </span>
+        <span className="token_rates__list__render_item__token_balance">
           Balance {getUserBalanceForToken(token.symbol, userBalances)}{" "}
           {token.symbol}
-        </p>
+        </span>
       </div>
 
       <div>

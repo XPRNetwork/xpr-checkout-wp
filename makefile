@@ -29,8 +29,8 @@ generate_manifest:
 compile_apps:
 	rm -rf ./dist
 	mkdir dist
-	cd ./applications/apps/block && rm -rf ./build && bun run build && cd ./../../../dist && mkdir block && cd ../ && cp -r ./applications/apps/block/build/ ./dist/block
-	cd ./applications/apps/checkout && rm -rf ./build && bun run build && cd ./../../../dist && mkdir checkout && cd ../ && cp -r ./applications/apps/checkout/build/ ./dist/checkout
-	cd ./applications/apps/regstore && rm -rf ./build && bun run build && cd ./../../../dist && mkdir regstore && cd ../ && cp -r ./applications/apps/regstore/build/ ./dist/regstore
-	cd ./applications/apps/refund && rm -rf ./build && bun run build && cd ./../../../dist && mkdir refund && cd ../ && cp -r ./applications/apps/refund/build/ ./dist/refund
+	cd ./applications/apps/block && rm -rf ./build && bun run build && cd ./../../../dist && mkdir block && cd ../ && cp -r ./applications/apps/block/build ./dist/block
+	cd ./applications/apps/checkout && rm -rf ./build && bun run build && cd ./../../../dist && mkdir checkout && cd ../ && cp -r ./applications/apps/checkout/build ./dist/checkout
+	cd ./applications/apps/regstore && rm -rf ./build && bun run build && cd ./../../../dist && mkdir regstore && cd ../ && cp -r ./applications/apps/regstore/build ./dist/regstore
+	cd ./applications/apps/refund && rm -rf ./build && bun run build && cd ./../../../dist && mkdir refund && cd ../ && cp -r ./applications/apps/refund/build ./dist/refund
 	

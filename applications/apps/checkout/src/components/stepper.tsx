@@ -45,8 +45,8 @@ export const Stepper = () => {
   return (
     <div className="bg-white w-full p-4 ">
       
-          <ol className="grid grid-cols-[1fr,1fr,max-content] items-center w-full text-sm text-gray-500 font-medium sm:text-base">
-            <li className="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
+          <div className="grid grid-cols-[1fr,1fr,max-content] items-center w-full text-sm text-gray-500 font-medium sm:text-base">
+            <span className="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
               <div className="flex items-center whitespace-nowrap">
                 <span
                   className={connectClasses}
@@ -57,8 +57,8 @@ export const Stepper = () => {
                   Connect Webauth
                 </p>
               </div>
-            </li>
-            <li className="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
+            </span>
+            <span className="flex text-sm md:w-full items-center after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:inline-block after:mx-4 xl:after:mx-8 ">
               <div className="flex items-center whitespace-nowrap ">
                 <span
                   className={tokenSelectClasses}
@@ -69,9 +69,9 @@ export const Stepper = () => {
                   Pay with token
                 </p>
               </div>
-            </li>
+            </span>
             
-            <li className="flex text-sm items-center text-gray-400 ">
+            <span className="flex text-sm items-center text-gray-400 ">
               <div className="flex items-center  ">
                 <span
                   className={verifyClasses}
@@ -82,8 +82,8 @@ export const Stepper = () => {
                   Verify payment
                 </p>
               </div>
-            </li>
-          </ol>
+            </span>
+          </div>
         </div>
   )
 }
