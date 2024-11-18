@@ -25,6 +25,8 @@ define('XPRCHECKOUT_MAINNET_BLOCK_EXPLORER', 'https://explorer.xprnetwork.org');
 define('XPRCHECKOUT_TESTNET_BLOCK_EXPLORER', 'https://testnet.explorer.xprnetwork.org');
 define('XPRCHECKOUT_MAINNET_CHAIN_ID', '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0');
 define('XPRCHECKOUT_TESTNET_CHAIN_ID', '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd');
+define('XPRCHECKOUT_PRICE_RATE_API_ENDPOINT', 'https://api.freecurrencyapi.com/v1/latest');
+define('XPRCHECKOUT_PRICE_RATE_API_KEY', 'fca_live_10WmLkCu6Xdz9WV8zmkXAuCAkrrbkEoMPG6gaMcu');
 define('XPRCHECKOUT_TABLE_TOKEN_RATES', 'token_rates');
 define('XPRCHECKOUT_TABLE_FIAT_RATES', 'fiat_rates');
 

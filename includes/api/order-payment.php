@@ -42,7 +42,8 @@ if (!isset($params['paymentKey'])) {
   $ordersQuery = wc_get_orders($args);
   $existingOrder = $ordersQuery[0] ?? null;
 
-  $priceRPC = new PriceRateRPC('fca_live_10WmLkCu6Xdz9WV8zmkXAuCAkrrbkEoMPG6gaMcu');
+  //TODO allow user to provide API key and add link under the config page field
+  $priceRPC = new PriceRateRPC(XPRCHECKOUT_PRICE_RATE_API_KEY);
   $convertedRate = $priceRPC->getUSDConvertionRate(get_woocommerce_currency(), $existingOrder->get_total());
   
   $returnResult = new WP_REST_Response();

@@ -22,7 +22,7 @@ class PriceRateRPC
     
     if (is_null($unserializePriceRates) || $now > $savedPriceRatesValidity) {
 
-      $url = "https://api.freecurrencyapi.com/v1/latest";
+      $url = XPRCHECKOUT_PRICE_RATE_API_ENDPOINT;
       $headers = array(
         "apikey"=> $this->apiKey,
         "Content-Type"=>"application/json"
