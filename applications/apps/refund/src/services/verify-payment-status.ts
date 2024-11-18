@@ -16,7 +16,6 @@ export async function verifyPaymentStatus(paymentKey: string, endpoints: string[
     limit:1,
     upper_bound:paymentKey
   }).then((res) => {
-    console.log(res)
     if (!res.rows) return 'pending'
     const rows = res.rows as Tables<'PaymentsTable'>[];
     if (!rows[0]) return 'pending'

@@ -80,7 +80,6 @@ export const RegStoreProvider: React.FunctionComponent<
 
   useEffect(() => {
     if (config.store === "") { 
-      console.log('no store yet')
       setVerificationState('empty');
     }
     if (!config) return;

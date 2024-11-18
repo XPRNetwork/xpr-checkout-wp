@@ -8,7 +8,6 @@ export const PendingLoginView = () => {
 
   const onConnect = useCallback(() => {
     connect(false, false, () => {
-      console.log("connected");
       setViewState(APP_VIEWS.TOKEN_SELECT);
     });
   }, [connect, setViewState]);

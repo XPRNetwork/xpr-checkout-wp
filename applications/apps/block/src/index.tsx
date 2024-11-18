@@ -26,7 +26,6 @@ const settings = getSetting("xprcheckout_data", {}) as {
   supports?: any;
 };
 const label = decodeEntities("XPRCheckout");
-console.log(settings, label);
 
 // Define Content component with settings description
 const Content: React.FC = () => {

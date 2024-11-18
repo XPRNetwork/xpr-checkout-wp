@@ -6,7 +6,6 @@ export async function getStoreBalance(store:string,isTestnet:boolean) {
     isTestnet ? TESTNET_ENDPOINTS : MAINNET_ENDPOINTS
   )
 
-  console.log(TESTNET_ENDPOINTS, MAINNET_ENDPOINTS)
   try {
 
     const balanceQuey = await rpc.get_table_rows({
@@ -15,7 +14,7 @@ export async function getStoreBalance(store:string,isTestnet:boolean) {
       table:'balances'
     })
     return balanceQuey.rows;
-  }catch(e){console.log('balance fetch shit')}
+  }catch(e){console.log(e)}
 
   return []
   

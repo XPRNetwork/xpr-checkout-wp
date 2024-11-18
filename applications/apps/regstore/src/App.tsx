@@ -13,7 +13,6 @@ import { MessageHint } from "./components/message-hint/message-hint";
 import { ClearStoreButton } from "./components/register-store-button/clear-store-button";
 
 const pluginConfig: RegStoreConfig = window.pluginConfig;
-console.log(pluginConfig);
 
 function App() {
   

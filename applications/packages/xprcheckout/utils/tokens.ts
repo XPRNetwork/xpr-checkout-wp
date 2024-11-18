@@ -11,7 +11,6 @@ export function getUserBalanceForToken(token: string, userBalances?: UserBalance
 export function convertFiatPriceToToken (fiatAmount:number,symbol:string,allowedTokenRates:TokenRate[]){
   const rate = getTokenRateBySymbol(symbol, allowedTokenRates);
   if (rate){
-    console.log(fiatAmount,rate.quote.price_usd,rate.decimals)
     return parseFloat(toPrecision(fiatAmount/rate.quote.price_usd,rate.decimals));
   }
   return 0
@@ -23,7 +22,6 @@ export function getTokenRateBySymbol (symbol:string,allowedTokenRates:TokenRate[
 
 export function orderTokensRate (a:TokenRate,b:TokenRate) {
 
-  console.log('order',a,b)
   return 0
 
 }

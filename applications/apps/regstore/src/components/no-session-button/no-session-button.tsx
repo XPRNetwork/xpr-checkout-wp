@@ -27,7 +27,6 @@ export const NoSessionButton = (props: PropsType) => {
     if (!rpc) return;
     if (!props.config) return;
     if (!props.config.store) return;
-    console.log('will get store ?')
     rpc.get_table_rows({
       json: true,
       code: 'xprcheckout',
@@ -37,7 +36,7 @@ export const NoSessionButton = (props: PropsType) => {
       upper_bound:props.config.store,
       lower_bound:props.config.store
     }).then((res) => {
-      console.log(res.rows);
+      
     })
 
   },[props.config,rpc])

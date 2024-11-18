@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from './../assets/brand_logo.png'
 import {useXPRN, XPRNAvatar} from "xprnkit";
 import {
@@ -12,7 +12,7 @@ import {
 import { APP_VIEWS, useCheckout } from "../providers/checkout-provider";
 export const AppHeader = () => {
   const {session, profile, disconnect, connect} = useXPRN();
-  const {setViewState} = useCheckout();
+  const { setViewState } = useCheckout();
 
   return (
     <div className="flex flex-col  my-8 ">
@@ -27,16 +27,15 @@ export const AppHeader = () => {
           </div>
           <div>
             <span className="text-2xl md:text-4xl font-extrabold text-brand">
-              XPRCHECKOUT
+              XPRCHECKOUT ?
             </span>
           </div>
         </div>
-        {session && profile && (
+        { JSON.stringify(profile)}
+        {session && (
           <Dialog>
             <DialogTrigger className="text-sm flex items-center">
-              
                 <XPRNAvatar className="w-10 h-10 rounded-full overflow-hidden bg-brand text-white font-bold text-xl uppercase" />
-              
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -45,7 +44,7 @@ export const AppHeader = () => {
                   <div className="flex gap-2 items-center">
                     <XPRNAvatar className="w-12 h-12 rounded-full overflow-hidden bg-brand text-white font-bold text-xl uppercase" />
                     <div>
-                      <span className="text-lg font-bold">{ profile.displayName}</span>
+                      <span className="text-lg font-bold">{ profile ? profile.displayName : session.auth.actor.toString()}</span>
                       <span className="text-md">@{ session.auth.actor.toString()}</span>
 
                     </div>

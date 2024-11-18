@@ -1,32 +1,34 @@
 <?php 
-$g = new XPRCheckoutGateway(); 
-
-use xprcheckout\config\Config;
+  use xprcheckout\config\Config;
   use xprcheckout\i18n\Translations;
- 
+
+  global $wp_query;
+  $g = new XPRCheckoutGateway(); 
+  
   $orderPaymentKey = $wp_query->query_vars['paymentKey'];
   $baseConfig = Config::GetConfig($orderPaymentKey);
   
 ?>
-<script type='text/javascript'>
+
+<html>
+  <head>
+  <?php wp_head() ?>
+  <script type='text/javascript'>
 
 window.pluginConfig = <?php echo json_encode($baseConfig); ?>;
 
 </script>
-<?php 
-$g->payment_scripts();
-?>
-<?php wp_head() ?>
-<?php 
+<?php $g->payment_scripts(); ?>
+  </head>
+  <body class="<?php echo join(" ",get_body_class()) ?>">
   
-  global $wp_query;
-  
-
-  
-  ?>
+   
     <div style='max-width:1040px;margin:0 auto' >
       <div id='xpr-checkout'>
         
         </div>  
       </div>
     <?php wp_footer() ?>
+  </body>
+</html>
+

@@ -18,9 +18,9 @@ export async function getPayments(baseDomain:string,store:string,isTestnet:boole
     }
     
   };
-  console.log('get payment', config)
+  
   await axios(config).then((res) => { 
-    console.log(res)
+    
     return res
   }
     )
@@ -45,7 +45,7 @@ export async function getPayment(paymentKey:string,isTestnet:boolean) {
     lower_bound: toEOSIOSha256(paymentKey),
     upper_bound:toEOSIOSha256(paymentKey)
   })
-  console.log('have payment?',balanceQuey.rows[0])
+  
   return balanceQuey.rows[0] || null;
 
   

@@ -11,7 +11,7 @@ export const ViewFlow = () => {
   const { viewState } = useCheckout()
 
   const renderView = () => {
-    console.log(viewState,'view state')
+    
     switch (viewState) {
       case APP_VIEWS.TOKEN_SELECT:
         return <CheckoutTokenSelect />
