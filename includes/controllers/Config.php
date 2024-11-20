@@ -114,6 +114,9 @@ class Config
     ];
     if ($rawWallets){
       $unserializedWallet = unserialize($rawWallets);
+      if ($unserializedWallet){
+        $wallets = $unserializedWallet;
+      }
     }
     return array(
       "wallets"=>$wallets,
