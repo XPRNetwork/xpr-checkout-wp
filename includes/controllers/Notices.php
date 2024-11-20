@@ -65,7 +65,7 @@ class Notices
     if ($isTestnet && $testnetActor == "") :
     ?>
       <div class="notice notice-error">
-        <p><b>XPRCheckout testnet misconfiguration</b> ! XPRCheckout configuration doesn't have registered store account for testnet. <a href="<?php admin_url('admin.php?page=wc-settings&tab=checkout&section=xprcheckout') ?>">Fix it »</a></p>
+        <p><b>XPRCheckout testnet misconfiguration</b> ! XPRCheckout configuration doesn't have registered store account for testnet. <a href="<?php admin_url('http://wp-admin/admin.php?page=wc-settings&tab=checkout&section=xprcheckout') ?>">Fix it »</a></p>
       </div>
     <?php
     endif;

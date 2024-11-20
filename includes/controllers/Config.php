@@ -7,8 +7,6 @@ if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
-
-
 /**
  * Configuration handler for XPRCheckout payment gateway.
  * 
@@ -73,8 +71,7 @@ class Config
   public static function GetBaseConfig()
   {
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
-    $rawWallets = $xprcheckoutGateway->get_option('wallets');
-    $wallets = unserialize($rawWallets);
+    $wallets = self::GetWalletConfig();
     $activeNetwork = $xprcheckoutGateway->get_option('network');
     $store = $wallets[$activeNetwork]['store'];    
 
@@ -101,22 +98,7 @@ class Config
   {
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
     $rawWallets = $xprcheckoutGateway->get_option('wallets');
-    $wallets = [
-      'testnet'=>[
-          'store'=>'',
-          'verified'=>false
-      ],
-      'mainnet'=>[
-          'store'=>'',
-          'verified'=>false
-      ],
-    ];
-    if (!is_null($rawWallets)){
-      $unserializedWallet = unserialize($rawWallets);
-      if (!is_null($unserializedWallet)){
-        $wallets = $unserializedWallet;
-      }
-    }
+    $wallets = self::GetWalletConfig();
     return array(
       "wallets"=>$wallets,
       "adminNonce" => wp_create_nonce( 'wp_rest' )
@@ -158,14 +140,25 @@ class Config
 
   }
 
-  /**
-   * Retrieves configuration values for XPRCheckout payment gateway merged with cart details.
-   * 
-   * @return array Associative array containing base configuration from self::GetBaseConfig() merged with:
-   *      - "cartTotal"     => float, The total amount in the cart.
-   *      - "paymentKey"    => string, The payment key associated with the current cart.
-   * @access public
-   * @static
-   */
+  private static function GetWalletConfig (){
+
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $rawWallets = $xprcheckoutGateway->get_option('wallets');
+    $defaultWallet = [
+      'testnet'=>[
+          'store'=>'',
+          'verified'=>false
+      ],
+      'mainnet'=>[
+          'store'=>'',
+          'verified'=>false
+      ],
+    ];
+    if (is_null($rawWallets)) return $defaultWallet;
+    $unserializedWallet = unserialize($rawWallets);
+    if (!is_null($unserializedWallet)) return $defaultWallet;
+    return $unserializedWallet;
+      
+  }
   
 }
