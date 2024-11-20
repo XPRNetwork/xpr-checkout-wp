@@ -21,7 +21,7 @@ window.pluginConfig = <?php echo wp_json_encode($baseConfig); ?>;
 </script>
 <?php $g->payment_scripts(); ?>
   </head>
-  <body class="<?php echo esc_html(join(" ",get_body_class())) ?>">
+  <body class="checkout_body <?php echo esc_html(join(" ",get_body_class())) ?>">
   
    
     <div style='max-width:1040px;margin:0 auto' >

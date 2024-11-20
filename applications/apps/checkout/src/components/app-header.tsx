@@ -27,7 +27,7 @@ export const AppHeader = () => {
           </div>
           <div className="flex flex-col">
             <span className="text-2xl md:text-4xl font-extrabold text-brand leading-4">
-              XPRCHECKOUT ?
+              XPRCHECKOUT
             </span>
             {config && config.gatewayNetwork === 'testnet' &&
             <span className="text-sm text-gray-500">Using Testnet</span>
