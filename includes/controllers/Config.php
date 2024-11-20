@@ -144,6 +144,8 @@ class Config
 
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
     $rawWallets = $xprcheckoutGateway->get_option('wallets');
+    
+    
     $defaultWallet = [
       'testnet'=>[
           'store'=>'',
@@ -154,9 +156,10 @@ class Config
           'verified'=>false
       ],
     ];
-    if (is_null($rawWallets)) return $defaultWallet;
+    if (empty($rawWallets)) return $defaultWallet;
+    
     $unserializedWallet = unserialize($rawWallets);
-    if (!is_null($unserializedWallet)) return $defaultWallet;
+    if (is_null($unserializedWallet)) return $defaultWallet;
     return $unserializedWallet;
       
   }
