@@ -64,7 +64,7 @@ export const CheckoutProvider: React.FunctionComponent<
     (async () => {
       const userBalances = await getUserBalances(
         session.auth.actor.toString(),
-        true
+        config.gatewayNetwork === 'testnet'
       );
       setUserBalances(userBalances);
       const paymentOrder = await getOrderPayment(
