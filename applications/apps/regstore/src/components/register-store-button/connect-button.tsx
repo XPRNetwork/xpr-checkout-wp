@@ -14,10 +14,12 @@ export const ConnectButton = (props: ConnectButtonProps) => {
       verifyChainStore(session.auth.actor.toString()).then(res => {
         console.log('after connect',res)
         if (res) {
+          
           if (!storeWallets || !activeNetwork) return;
           const mutatedWallet = {...storeWallets};
           mutatedWallet[activeNetwork].store = session.auth.actor.toString();
           mutatedWallet[activeNetwork].verified = res;
+          
           setStoreWallets(mutatedWallet)
         }
       })

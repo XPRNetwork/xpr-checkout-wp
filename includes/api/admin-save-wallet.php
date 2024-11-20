@@ -18,17 +18,14 @@ function xprcheckout_register_save_wallet_config_routes()
             'validate_callback' => function($param, $request, $key) {
                 // Ensure the parameter is an array and validate the required keys and their types
                 if (!is_array($param)) {
-                    error_log('No params');
                     return false;
                 }
                 
                 // Validate testnet configuration
                 if (isset($param['testnet'])) {
-                    error_log('Have testnet');
                     if (!is_array($param['testnet']) ||
                         !isset($param['testnet']['store']) || !is_string($param['testnet']['store']) ||
                         !isset($param['testnet']['verified']) || !is_bool($param['testnet']['verified'])) {
-                          error_log('Error testnet');
                         return false;
                     }
                 }
@@ -38,7 +35,6 @@ function xprcheckout_register_save_wallet_config_routes()
                     if (!is_array($param['mainnet']) ||
                         !isset($param['mainnet']['store']) || !is_string($param['mainnet']['store']) ||
                         !isset($param['mainnet']['verified']) || !is_bool($param['mainnet']['verified'])) {
-                          error_log('Error mainnet');
                         return false;
                     }
                 }  
@@ -71,7 +67,6 @@ return new WP_Error('rest_forbidden', __('You do not have permission to access t
 function handle_save_config_request($request){
 
   $walletsJson = $request->get_param('wallets');
-  error_log(print_r($walletsJson,1));
   $baseResponse = new stdClass();
   
   $serializedWallets = serialize($walletsJson);

@@ -75,7 +75,6 @@ class Config
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
     $rawWallets = $xprcheckoutGateway->get_option('wallets');
     $wallets = unserialize($rawWallets);
-    error_log(print_r($wallets,1));
     $activeNetwork = $xprcheckoutGateway->get_option('network');
     $store = $wallets[$activeNetwork]['store'];    
 
@@ -101,7 +100,7 @@ class Config
   public static function GetAdminConfig()
   {
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
-    $rawWallets = $xprcheckoutGateway->get_option('walletsos');
+    $rawWallets = $xprcheckoutGateway->get_option('wallets');
     $wallets = [
       'testnet'=>[
           'store'=>'',
@@ -112,9 +111,9 @@ class Config
           'verified'=>false
       ],
     ];
-    if ($rawWallets){
+    if (!is_null($rawWallets)){
       $unserializedWallet = unserialize($rawWallets);
-      if ($unserializedWallet){
+      if (!is_null($unserializedWallet)){
         $wallets = $unserializedWallet;
       }
     }
