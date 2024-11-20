@@ -33,6 +33,7 @@ class ProtonWcGateway
     
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/api/order-payment.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/api/admin-refund.php';
+    require_once XPRCHECKOUT_ROOT_DIR . 'includes/api/admin-save-wallet.php';
 
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/utils/order-resolver.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/utils/symbol.php';

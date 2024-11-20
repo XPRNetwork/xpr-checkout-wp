@@ -43,7 +43,6 @@ class Config
     $wcThankyouUrl = $order->get_view_order_url();
     $baseConfig = self::GetBaseConfig();
     $extendedConfig =  [
-      "store" => $xprcheckoutGateway->get_option('wallet'),
       "requestedPaymentKey"=>$orderPaymentKey,
       "orderTotal"=>$order->get_total(),
       "allowedTokens" => $xprcheckoutGateway->get_option('allowedTokens'),
@@ -63,8 +62,6 @@ class Config
     
   
     return array(
-      "mainnetActor" => $xprcheckoutGateway->get_option('wallet'),
-      "testnetActor" => $xprcheckoutGateway->get_option('wallet'),
       "appName" => $xprcheckoutGateway->get_option('appName'),
       "testnet" => 'testnet' === $xprcheckoutGateway->get_option('network'),
       "network" => $xprcheckoutGateway->get_option('network'),
@@ -76,21 +73,50 @@ class Config
   public static function GetBaseConfig()
   {
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
-    
+    $rawWallets = $xprcheckoutGateway->get_option('wallets');
+    $wallets = unserialize($rawWallets);
+    error_log(print_r($wallets,1));
+    $activeNetwork = $xprcheckoutGateway->get_option('network');
+    $store = $wallets[$activeNetwork]['store'];    
+
     return array(
-      "gatewayNetwork" => $xprcheckoutGateway->get_option('network'),
-      "store" => $xprcheckoutGateway->get_option('wallet'),
-      "endpoints" => $xprcheckoutGateway->get_option('network') === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_ENDPOINT : XPRCHECKOUT_TESTNET_ENDPOINT,
-      "chainId" =>  $xprcheckoutGateway->get_option('network') === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_CHAIN_ID : XPRCHECKOUT_TESTNET_CHAIN_ID,
+      'networks'=>[
+        'testnet'=>[ 
+          "endpoints" => XPRCHECKOUT_TESTNET_ENDPOINT,
+          "chainId" =>   XPRCHECKOUT_TESTNET_CHAIN_ID
+        ],
+        'mainnet'=>[
+          "endpoints" => XPRCHECKOUT_MAINNET_ENDPOINT ,
+          "chainId" =>  XPRCHECKOUT_MAINNET_CHAIN_ID
+        ]
+      ],
+      "gatewayNetwork" => $activeNetwork,
+      "store" => $store ,
+      "endpoints" => $activeNetwork === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_ENDPOINT : XPRCHECKOUT_TESTNET_ENDPOINT,
+      "chainId" =>  $activeNetwork === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_CHAIN_ID : XPRCHECKOUT_TESTNET_CHAIN_ID,
       "baseDomain" => get_site_url(),
     );
   }
   
   public static function GetAdminConfig()
   {
-    
-    
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $rawWallets = $xprcheckoutGateway->get_option('walletsos');
+    $wallets = [
+      'testnet'=>[
+          'store'=>'',
+          'verified'=>false
+      ],
+      'mainnet'=>[
+          'store'=>'',
+          'verified'=>false
+      ],
+    ];
+    if ($rawWallets){
+      $unserializedWallet = unserialize($rawWallets);
+    }
     return array(
+      "wallets"=>$wallets,
       "adminNonce" => wp_create_nonce( 'wp_rest' )
     );
   }

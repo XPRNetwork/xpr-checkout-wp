@@ -13,11 +13,11 @@ class PriceRateRPC
   {
 
     global $wpdb;
-    $myPluginGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $xprCheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
 
     $now = time();
-    $savedPriceRatesValidity = $myPluginGateway->get_option('price_rates_validity');
-    $savedPriceRates = $myPluginGateway->get_option('price_rates');
+    $savedPriceRatesValidity = $xprCheckoutGateway->get_option('price_rates_validity');
+    $savedPriceRates = $xprCheckoutGateway->get_option('price_rates');
     $unserializePriceRates = unserialize($savedPriceRates);
     
     if (is_null($unserializePriceRates) || $now > $savedPriceRatesValidity) {
@@ -38,9 +38,9 @@ class PriceRateRPC
       
       $responseData = json_decode(wp_remote_retrieve_body($response), true);
 
-      $myPluginGateway->update_option('price_rates_validity', $now + $this->priceValidityInterval);
-      $myPluginGateway->update_option('price_rates', serialize($responseData['data']));
-      $savedPriceRates = $myPluginGateway->get_option('price_rates');
+      $xprCheckoutGateway->update_option('price_rates_validity', $now + $this->priceValidityInterval);
+      $xprCheckoutGateway->update_option('price_rates', serialize($responseData['data']));
+      $savedPriceRates = $xprCheckoutGateway->get_option('price_rates');
     }
 
     $rates = unserialize($savedPriceRates);

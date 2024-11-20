@@ -2,18 +2,19 @@ import {useXPRN} from "xprnkit";
 import {useCallback} from "react";
 import {xprcheckout} from "../../interfaces/xprcheckout";
 import {useRegstore} from "../../provider/regstore-provider";
-import { StoreNameField } from "../store-name-field/store-name-field";
 
-type PropsType = {};
 
-export const RegisterStoreButton = (props: PropsType) => {
+
+type RegisterStoreButtonProps = React.HTMLAttributes<HTMLDivElement>;
+
+export const RegisterStoreButton = (props: RegisterStoreButtonProps) => {
   const {session} = useXPRN();
-  const {verificationState,verifyChainStore,updateField} = useRegstore();
+  const {verifyChainStore,activeNetwork,setStoreWallets,storeWallets,updateWalletConfig} = useRegstore();
 
   const registerStore = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
-      if (!session) return;
+      if (!session || !activeNetwork ) return;
       const action = xprcheckout.store_reg(
         [
           {
@@ -25,21 +26,30 @@ export const RegisterStoreButton = (props: PropsType) => {
       );
       session.transact({ actions: [action] }, { broadcast: true }).then(() => {
         verifyChainStore(session.auth.actor.toString()).then((res) => {
-          if (res)  updateField(session.auth.actor.toString());
+          if (res) {
+            if (!activeNetwork || !storeWallets) return 
+            const mutatedStoreWallets = {...storeWallets} ;
+            mutatedStoreWallets[activeNetwork].store = session.auth.actor.toString();
+            mutatedStoreWallets[activeNetwork].verified = res
+            setStoreWallets(mutatedStoreWallets);
+           
+          }
+        }).then(() => {
+          updateWalletConfig()
         })
        
       })
     },
-    [session, updateField, verifyChainStore]
+    [session, activeNetwork, verifyChainStore, storeWallets, setStoreWallets, updateWalletConfig]
   );
 
-  if (verificationState === "empty" && session) {
+  
     return (
       <button
         className="p-2 bg-brand rounded-md grid grid-cols-[1fr,min-content] items-center"
         onClick={e => registerStore(e)}
       >
-       <StoreNameField ></StoreNameField> 
+       {props.children}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -58,5 +68,4 @@ export const RegisterStoreButton = (props: PropsType) => {
       </button>
     );
   }
-  return <></>;
-};
+

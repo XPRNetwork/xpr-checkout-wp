@@ -62,13 +62,23 @@ export interface PaymentVerifyResponse {
   validated: boolean;  
 }
 
+export type Network = 'mainnet' | 'testnet';
+
+export interface NetworkConfig {
+  store: string;
+  chainId: string;
+  endpoints: string;
+}
+
 export interface PluginBaseConfig {
   store: string;
   chainId: string;
   endpoints: string;
-  gatewayNetwork: 'testnet' | 'mainnet';
+  gatewayNetwork: Network;
   baseDomain: string;
-  
+
+  // Group the dynamic keys into a separate property
+  networks: Record<Network, NetworkConfig>;
 }
 
 export interface OraclePrice {

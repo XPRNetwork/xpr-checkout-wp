@@ -2,7 +2,7 @@ export type AppPluginOptions = {
   isTestnet: boolean;
   networkCheckBoxSelector:string;
   actorFieldSelector:string;
-  mainnetAccountFieldSelector:string;
+  networkFieldSelector:string;
   mainnetActor:string;
   testnetActor: string;
   mainnetAccessToken: string;

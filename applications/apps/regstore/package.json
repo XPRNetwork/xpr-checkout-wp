@@ -17,7 +17,7 @@
     "react-scripts": "5.0.1",
     "typescript": "^5.0.0",
     "web-vitals": "^2.1.4",
-    "xprnkit": "^0.0.36",
+    "xprnkit": "^0.1.1",
     "xprcheckout": "0.0.1"
   },
   "scripts": {

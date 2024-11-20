@@ -49,12 +49,7 @@ class RegStore
   {
 
     global $current_screen;
-    $baseConfig = Config::GetDashbordConfig();
-    $extendedConfig = [
-      "networkSelector" => "#woocommerce_xprcheckout_network",
-      "mainnetAccountFieldSelector" => "#woocommerce_xprcheckout_wallet",
-      
-    ];
+   
     
     if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wc-settings') {
       wp_register_script_module('xprcheckout_admin_regstore', XPRCHECKOUT_ROOT_URL . 'dist/regstore/build/app.js?v=' . uniqid(), [], time());

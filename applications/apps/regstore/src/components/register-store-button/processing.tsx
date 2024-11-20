@@ -1,21 +1,13 @@
-import {RegStoreConfig} from "../../global";
-import { useRegstore } from "../../provider/regstore-provider";
-import { StoreNameField } from "../store-name-field/store-name-field";
 
+type ProcessingProps = React.HTMLAttributes<HTMLDivElement>;
 
-type PropsType = {
-  config?: RegStoreConfig;
-};
-
-export const Processing = (props: PropsType) => {
+export const Processing = (props: ProcessingProps) => {
  
-  const {verificationState} = useRegstore()
-  if (verificationState === 'verifying') {
-    return (
+  return (
       <div
         className="p-2 bg-gray-600 rounded-md inline-grid grid-cols-[1fr,min-content] items-center"
       >
-        <StoreNameField ></StoreNameField>
+        {props.children}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -36,6 +28,4 @@ export const Processing = (props: PropsType) => {
       </div>
     );  
   }
-  return <></>
-  
-};
+

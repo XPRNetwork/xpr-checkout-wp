@@ -3,19 +3,22 @@ import {useCallback} from "react";
 import {useRegstore} from "../../provider/regstore-provider";
 import {StoreNameField} from "../store-name-field/store-name-field";
 
-type PropsType = {};
+type PropsType = {store?:string};
 
 export const ClearStoreButton = (props: PropsType) => {
-  const {session,disconnect} = useXPRN();
-  const { verificationState, updateField } = useRegstore();
+  const { session, disconnect } = useXPRN();
+  const {updateField} = useRegstore()
+  
   
   const onClear = useCallback(() => {
-    updateField("");
+    
+    updateField('');
     disconnect();
 
-  },[updateField,disconnect])
+  },[disconnect])
 
-  if (verificationState === "unverified" && session) {
+
+  
     return (
       <button
         className="p-2 bg-red-500 rounded-md grid grid-cols-[1fr,min-content]"
@@ -38,6 +41,6 @@ export const ClearStoreButton = (props: PropsType) => {
         </svg>
       </button>
     );
-  }
-  return <></>;
+  
+  
 };

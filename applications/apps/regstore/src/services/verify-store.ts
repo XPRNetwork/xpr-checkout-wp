@@ -15,7 +15,7 @@ export async function verifyStore(store: string, endpoints: string[]):Promise<bo
   }).then((res) => {
     if (!res.rows) return false
     const rows = res.rows as Tables<'StoreTable'>[];
-    return rows[0] && rows[0].store === store;
+    return !!rows[0] && rows[0].store === store;
   })
 
 }

@@ -1,14 +1,21 @@
 // globals.d.ts
 import {} from 'xp'
-import { PluginBaseConfig } from 'xprcheckout';
+import { Network, PluginBaseConfig } from 'xprcheckout';
 // Define the structure of params
 export interface RegStoreConfig extends PluginBaseConfig  {
   
   store: string;
   walletInputSelector: string;
-  networkSelectSelector: string;
+  networkFieldSelector: string;
+  adminNonce: string;
+  wallets: StoreWalletConfig;
   // Add other properties as needed
 }
+
+
+export type WalletConfig = {store:string,verified:boolean}
+
+export type StoreWalletConfig =  Record<Network, WalletConfig>;
 
 // Augment the global Window interface
 declare global {

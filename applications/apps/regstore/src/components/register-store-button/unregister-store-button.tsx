@@ -2,13 +2,13 @@ import {useXPRN} from "xprnkit";
 import {useCallback} from "react";
 import {xprcheckout} from "../../interfaces/xprcheckout";
 import {useRegstore} from "../../provider/regstore-provider";
-import { StoreNameField } from "../store-name-field/store-name-field";
 
-type PropsType = {};
 
-export const UnregisterStoreButton = (props: PropsType) => {
+type UnregisterStoreButtonProps = React.HTMLAttributes<HTMLDivElement>;
+
+export const UnregisterStoreButton = (props: UnregisterStoreButtonProps) => {
   const {session} = useXPRN();
-  const {verificationState,updateField} = useRegstore();
+  const {setStoreWallets,storeWallets,activeNetwork,updateWalletConfig} = useRegstore();
 
   const unregisterStore = useCallback(
     (e: React.MouseEvent) => {
@@ -24,21 +24,31 @@ export const UnregisterStoreButton = (props: PropsType) => {
         {storeAccount: session.auth.actor.toString()}
       );
       session.transact({ actions: [action] }, { broadcast: true }).then(() => {
-        updateField("");
+        console.log('after unreg',activeNetwork,storeWallets)
+        if (!activeNetwork || !storeWallets) return;
+        console.log('-> go')
+        const mutatedStoreWallets = {...storeWallets} ;
+        mutatedStoreWallets[activeNetwork].store = "";
+        mutatedStoreWallets[activeNetwork].verified = false
+        setStoreWallets(mutatedStoreWallets);
+        
+      }).then(() => {
+          updateWalletConfig()
+        
       }).catch(() => {
-        updateField("");
+        
       })
     },
-    [session,updateField]
+    [activeNetwork, session, setStoreWallets, storeWallets,updateWalletConfig]
   );
 
-  if (verificationState === "verified" && session) {
+  
     return (
       <button
         className="p-2 bg-brand rounded-md grid grid-cols-[1fr,min-content] items-center"
         onClick={e => unregisterStore(e)}
       >
-        <StoreNameField ></StoreNameField>
+        {props.children}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -48,9 +58,8 @@ export const UnregisterStoreButton = (props: PropsType) => {
           stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
-          strokeLinejoin="round"
-          
-        className="lucide lucideMlus w-6 h-6 stroke-white"
+          strokeLinejoin="round"   
+          className="lucide lucideMlus w-6 h-6 stroke-white"
         >
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
           <circle cx="9" cy="7" r="4" />
@@ -59,5 +68,4 @@ export const UnregisterStoreButton = (props: PropsType) => {
       </button>
     );
   }
-  return <></>;
-};
+

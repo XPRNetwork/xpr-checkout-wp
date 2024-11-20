@@ -3,17 +3,13 @@ import "./App.css";
 import {XPRNProvider} from "xprnkit";
 import "xprnkit/build/global.css";
 
-import {RegisterStoreButton} from "./components/register-store-button/register-store-button";
 import {RegStoreConfig} from "./global";
-import {ConnectButton} from "./components/register-store-button/connect-button";
 import {RegStoreProvider} from "./provider/regstore-provider";
-import {Processing} from "./components/register-store-button/processing";
-import {UnregisterStoreButton} from "./components/register-store-button/unregister-store-button";
-import { MessageHint } from "./components/message-hint/message-hint";
-import { ClearStoreButton } from "./components/register-store-button/clear-store-button";
+import { RegStoreFlowSteps } from "./components/regstore-steps";
+
 
 const pluginConfig: RegStoreConfig = window.pluginConfig;
-
+console.log(pluginConfig);
 function App() {
   
   return (
@@ -28,16 +24,7 @@ function App() {
         }}
       >
         <RegStoreProvider config={pluginConfig}>
-          <div >
-            <Processing />
-            <RegisterStoreButton />
-            <UnregisterStoreButton />
-            <ClearStoreButton />
-            <ConnectButton />
-            
-            
-          </div>
-            <MessageHint></MessageHint>
+          <RegStoreFlowSteps></RegStoreFlowSteps>
         </RegStoreProvider>
       </XPRNProvider>
     </div>

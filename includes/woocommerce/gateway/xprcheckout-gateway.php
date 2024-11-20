@@ -261,9 +261,12 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
           
           $baseConfig = Config::GetBaseConfig();
           $baseConfig['walletInputSelector']= "#woocommerce_xprcheckout_wallet";
+          $baseConfig['networkFieldSelector']= "#woocommerce_xprcheckout_network";
+          $adminConfig =Config::GetAdminConfig(); 
+          $extendedConfig = array_merge($baseConfig,$adminConfig);
           
           ?>
-          window.pluginConfig = <?php echo wp_json_encode($baseConfig); ?>;
+          window.pluginConfig = <?php echo wp_json_encode($extendedConfig); ?>;
       </script>
       
     <tr valign="top">

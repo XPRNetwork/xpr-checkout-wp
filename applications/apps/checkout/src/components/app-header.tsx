@@ -12,23 +12,26 @@ import {
 import { APP_VIEWS, useCheckout } from "../providers/checkout-provider";
 export const AppHeader = () => {
   const {session, profile, disconnect, connect} = useXPRN();
-  const { setViewState } = useCheckout();
+  const { setViewState ,config} = useCheckout();
 
   return (
     <div className="flex flex-col  my-8 ">
       <div className="grid grid-cols-[1fr,max-content] gap-4 items-center w-full">
-        <div className="grid grid-cols-[max-content,1fr] items-center gap-2">
-          <div className="rounded-full overflow-hidden border-2 md:border-4 border-brand  self-start">
+        <div className="grid grid-cols-[max-content,1fr] items-center justify-center gap-2">
+          <div className="rounded-full overflow-hidden border-2 md:border-4 border-brand">
             <img
               className="w-8 h-8 md:w-12 md:h-12"
               src={logo}
               alt=""
             ></img>
           </div>
-          <div>
-            <span className="text-2xl md:text-4xl font-extrabold text-brand">
+          <div className="flex flex-col">
+            <span className="text-2xl md:text-4xl font-extrabold text-brand leading-4">
               XPRCHECKOUT ?
             </span>
+            {config && config.gatewayNetwork === 'testnet' &&
+            <span className="text-sm text-gray-500">Using Testnet</span>
+            }
           </div>
         </div>
         {session && (

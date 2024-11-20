@@ -4,16 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-(window as any).xprcheckoutOptions = {
-  isTestnet:true,
-  networkCheckBoxSelector:"",
-  testnetAccountFieldSelector:"",
-  mainnetAccountFieldSelector:"",
-  mainnetActor:"rockerone",
-  testnetActor:"solid",  
-  mainnetAccessToken:"qqdvdf6v54e6r54v65qf4v65a4zrt4bv65a4er654v",
-  testnetAccessToken:"6qv5465z46zr3v1a3r2e1v654e64ca4r65v4",  
-}
 
 const root = ReactDOM.createRoot(
   document.getElementById('xpr-regstore') as HTMLElement
