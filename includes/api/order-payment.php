@@ -28,6 +28,8 @@ if (!isset($params['paymentKey'])) {
     return rest_ensure_response($returnResult);
 }
 
+
+
   $args = array(
     'post_type'      => 'shop_order',
     'post_status'    => 'any',
@@ -63,10 +65,19 @@ if (!isset($params['paymentKey'])) {
     }
   }
 
+
+
   $existingOrder->update_meta_data('_converted_tokens',serialize($converted));
   $existingOrder->update_meta_data('_verified',$settlement->resolved);
-  $existingOrder->update_meta_data('_paid_tokens',$settlement->payment['settlement']);
-  $existingOrder->update_meta_data('_buyer_account',$settlement->payment['buyer']);
+  if ($settlement->resolved){
+    $existingOrder->update_meta_data('_paid_tokens',$settlement->payment['settlement']);
+    $existingOrder->update_meta_data('_buyer_account',$settlement->payment['buyer']);
+    $txId = $existingOrder->get_meta('_tx_id');
+    if (isset($params['txId']) && empty($txId) ) {
+      $existingOrder->update_meta_data('_tx_id',$params['txId']);
+    }
+    
+  }
   $existingOrder->save();  
 
   

@@ -58,7 +58,7 @@ export const CheckoutProvider: React.FunctionComponent<
   const [orderPayment, setOrderPayment] = useState<OrderPayment>();
   const [lastError,setLastError] = useState<string>();
 
-  const refreshTokensList = useCallback(() => {
+  const refreshTokensList = useCallback((txId?:string) => {
     if (!session) return;
     setAsyncStatus("pending");
     (async () => {
@@ -69,7 +69,8 @@ export const CheckoutProvider: React.FunctionComponent<
       setUserBalances(userBalances);
       const paymentOrder = await getOrderPayment(
         config.baseDomain,
-        config.requestedPaymentKey
+        config.requestedPaymentKey,
+        txId
       );
       setOrderPayment(paymentOrder);
       if (paymentOrder.verified) setViewState(APP_VIEWS.SUCCESS);
@@ -110,8 +111,9 @@ export const CheckoutProvider: React.FunctionComponent<
     (transferAction as any).account = tokenContract;
     try {
       setViewState(APP_VIEWS.VERIFY);
-       session.transact({ actions: [regPaymentAction, transferAction] }, { broadcast: true }).then(() => {
-        refreshTokensList()
+      session.transact({ actions: [regPaymentAction, transferAction] }, { broadcast: true }).then((res) => {
+         
+        refreshTokensList((res as any).transaction_id)
       }).catch((e) => {
         setLastError(e.toString());
         setViewState(APP_VIEWS.FAIL)
