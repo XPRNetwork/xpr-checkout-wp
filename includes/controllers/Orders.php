@@ -56,24 +56,34 @@ class Orders
     global $post;
     if ('transactionId' === $column) {
       $order = wc_get_order($post->ID);
-      $transactionId = $order->get_meta('_transactionId');
+      $transactionId = $order->get_meta('_tx_id');
       $net = $order->get_meta('_net');
       $color = $net == esc_attr("mainnet" ? "#7cc67c" : "#f1dd06");
-      $link = $net == "mainnet" ? "https://protonscan.io/transaction/" : "https://testnet.protonscan.io/transaction/";
-      if ($order->get_payment_method()) {
-        echo esc_attr('<a class="button-primary" style="color:#50575e;background-color:' . $color . ';" target="_blank" href="' . $link . $transactionId . '">' . substr($transactionId, strlen($transactionId) - 8, strlen($transactionId)) . '</a>');
+      $link = $net == "mainnet" ? "https://explorer.xprnetwork.org/transaction/" : "https://testnet.explorer.xprnetwork.org/transaction/";
+      if ($order->get_payment_method() == "xprcheckout") {
+        echo '<a class="button-primary" style="color:#ffffff;background-color:' . esc_attr($color) . ';" target="_blank" href="' . esc_attr($link) . esc_attr($transactionId) . '">' . esc_attr(substr($transactionId, strlen($transactionId) - 8, strlen($transactionId))) . '</a>';
       } else {
         echo '';
       }
     }
-    if ('net' === $column) {
+    if ('network' === $column) {
       $order = wc_get_order($post->ID);
-      $net = $order->get_meta('_net');
+      $net = $order->get_meta('_network');
       $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
       if ($net == 'testnet') {
-        echo esc_attr('<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Testnet</a>');
+        echo '<span class="button-primary" style="color:#50575e;background-color:' . esc_attr($color) . ';" >Testnet</a>';
       } elseif ($net == 'mainnet') {
-        echo esc_attr('<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Mainnet</a>');
+        echo '<span class="button-primary" style="color:#50575e;background-color:' . esc_attr($color) . ';" >Mainnet</a>';
+      }
+      echo esc_attr('');
+    }
+    if ('paid_token' === $column) {
+      $order = wc_get_order($post->ID);
+      $amount = $order->get_meta('_paid_tokens');
+      if (!empty($amount)) {
+        echo '<span  >'.esc_attr($amount).'</a>';
+      } else{
+        echo '';
       }
       echo esc_attr('');
     }
@@ -108,7 +118,8 @@ class Orders
       $new_columns[$column_name] = $column_info;
       if ('order_status' === $column_name) {
         $new_columns['transactionId'] = __('Transaction', 'xprcheckout_gateway'); // title
-        $new_columns['net'] = __('Mainnet/testnet', 'xprcheckout_gateway'); // title
+        $new_columns['network'] = __('Mainnet/testnet', 'xprcheckout_gateway'); // title
+        $new_columns['paid_token'] = __('Received tokens', 'xprcheckout_gateway'); // title
       }
     }
     return $new_columns;

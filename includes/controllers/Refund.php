@@ -50,8 +50,7 @@ class Refund
   public function registerScript()
   {
 
-    global $current_screen;
-    if (isset($current_screen) && $current_screen->id == 'shop_order') {
+    if($this->isCurrentScreenIsOrderEdit()){
       global $post;
       $order = wc_get_order($post->ID);
       wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.css?v=' . uniqid(),[], time());
@@ -72,6 +71,15 @@ class Refund
       'woocommerce-xprcheckout-payment',
       __('XPRCheckout payment', 'xprcheckout_gateway'),
       [$this, 'renderMetabox'],
+      'woocommerce_page_wc-orders',
+      'advanced',
+      'core'
+
+    );
+    add_meta_box(
+      'woocommerce-xprcheckout-payment',
+      __('XPRCheckout payment', 'xprcheckout_gateway'),
+      [$this, 'renderMetabox'],
       'shop_order',
       'advanced',
       'core'
@@ -88,22 +96,56 @@ class Refund
 
     $order = wc_get_order($post->ID);
     if ($order->get_payment_method() !== "xprcheckout") return;
+    
 
 ?>
-<script>
+  <script>
+    <?php 
+      $adminConfig =Config::GetAdminConfig(); 
+      $baseConfig = Config::GetBaseConfig();
+      $baseConfig['amountToRefund']= $order->get_meta('_paid_tokens',true);
+      $baseConfig['accountToRefund']= $order->get_meta('_buyer_account',true);
+      $baseConfig['requestedPaymentKey']= $order->get_meta('_payment_key',true);
+      $baseConfig['orderStatus']= $order->get_status();
+      $baseConfig['orderStatus']= $order->get_status();
+    ?>
+    window.pluginConfig = <?php echo wp_json_encode(array_merge($baseConfig,$adminConfig)); ?>;
+  </script>
+  <?php 
+    $transactionId = $order->get_meta('_tx_id');
+    $network = $order->get_meta('_network');
+    $amount = $order->get_meta('_paid_tokens');
+    $color = $network == "mainnet" ? "#7cc67c" : "#f1dd06";
+    $link = $network == "mainnet" ? "https://explorer.xprnetwork.org/transaction/" : "https://testnet.explorer.xprnetwork.org/transaction/";
+    ?>
+    <div style="display:grid;grid-template-columns:1fr;gap:5px">
+      <div>
+        <h4>Tokens paid</h4>
         <?php 
-          $adminConfig =Config::GetAdminConfig(); 
-          $baseConfig = Config::GetBaseConfig();
-          $baseConfig['amountToRefund']= $order->get_meta('_paid_tokens',true);
-          $baseConfig['accountToRefund']= $order->get_meta('_buyer_account',true);
-          $baseConfig['requestedPaymentKey']= $order->get_meta('_payment_key',true);
-          $baseConfig['orderStatus']= $order->get_status();
-          $baseConfig['orderStatus']= $order->get_status();
-          ?>
-          window.pluginConfig = <?php echo wp_json_encode(array_merge($baseConfig,$adminConfig)); ?>;
-      </script>
-    <div id="xpr-refund"></div>
-<?php
+          
+          
+          if ($order->get_payment_method() == "xprcheckout") {
+            echo '<span style="font-weight:bold">' . esc_attr($amount) . '</span>';
+          } else {
+            echo '';
+          }
+        ?>
+      </div>
+      <div>
+        <h4>View Transaction <?php echo esc_attr($network) ?></h4>
+        <?php 
+          
+          
+          if ($order->get_payment_method() == "xprcheckout") {
+            echo '<a class="button-primary" style="width:100%;color:#ffffff;background-color:' . esc_attr($color) . ';" target="_blank" href="' . esc_attr($link) . esc_attr($transactionId) . '">' . esc_attr(substr($transactionId, strlen($transactionId) - 8, strlen($transactionId))) . '</a>';
+          } else {
+            echo '';
+          }
+        ?>
+      </div>
+      <div id="xpr-refund"></div>
+    </div>
+  <?php
 
   }
 
@@ -130,5 +172,18 @@ class Refund
     $order = wc_get_order($order);
     if ($order->get_payment_method() == "xprcheckout") return false;
     return $enableRefund;
+  }
+
+  public function isCurrentScreenIsOrderEdit (){
+
+    global $current_screen;
+    if (!isset($current_screen)) return false;
+    switch ($current_screen->id) {
+      case 'woocommerce_page_wc-orders':
+        return true;
+      case 'shop_order':
+        return true;
+    }
+   
   }
 }
