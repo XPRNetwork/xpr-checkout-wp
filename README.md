@@ -1,17 +1,25 @@
-# XPR Checkout: Woocommerce Webauth gateway
+=== XPRCheckout - WebAuth Gateway for Woocommerce ===
+Requires at least: 6.0
+Tested up to: 6.7
+Requires PHP: 7.0
+Stable tag: ##VERSION_TAG##
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+# XPRCheckout - WebAuth Gateway for Woocommerce
 *A WebAuth-Enabled Gateway for WooCommerce*
 
 ## The basic scope
 
 This plugin provides a payment gateway for WooCommerce that enables users to pay for their purchases using any cryptocurrency available in the WebAuth wallet. With this feature, users can enjoy a seamless and secure shopping experience, thank Proton, as they can easily pay for their purchases using their preferred digital currency.
 
-XPR Checkout, through a hassle-free configuration, provides additional features to help store owners manage payment reconciliation, withdrawal, and refund inside the WooCommerce regular flow also driven by Webauth authentification. 
+XPR Checkout, through a hassle-free configuration, provides additional features to help store owners manage payment reconciliation, withdrawal, and refund inside the WooCommerce regular flow also driven by Webauth authentication. 
 
 Overall, this plugin helps to expand the use of cryptocurrencies through the proton chain in e-commerce, making it easier and more convenient for users to use their digital assets for online shopping.
 
 ## Code structure
 
-The gateway itself follows the rules of each WooCommerce gateway. It binds the WooCommerce and WordPress event flow to functions through the use of hooks and filters that trigger methods from the **Wookey_Gateway** class.
+The gateway itself follows the rules of each WooCommerce gateway. It binds the WooCommerce and WordPress event flow to functions through the use of hooks and filters that trigger methods from the **XPRCheckout_Gateway** class.
 
 The front-end checkout widget and back-office utility widgets run exclusively on JS, composed of several apps compiled independently but sharing the same code base. 
 
@@ -55,9 +63,10 @@ It also provides other actions to manage stores, withdrawals, and refunds:
 Register a store to allow payment and multi-balance storage (for different tokens).
 - **Store unregistration (store.unreg)**
 Remove a store from the store list, but keep the balance stored.
+
 - **Refund by the store owner (pay.refund)**
-Allow the refund of payment that is not already a part of a withdrawal, and flag the payment as “REFUNDED”.
-- **Withdraw of payments by the store owner (bal.claim)**
-Allow the user to claim all payments made on his store marked as “PAID” since the last claim. It transfers an amount of {tokens}, defined by a symbol param, from the store-scoped balance table to the registered store account. It also flag concerned payments as “PAID_OUT”, the refund of those payments is not possible anymore for the XPR Checkout smart contract.
+Allow the refund of payment by flagging flag the payment as “REFUNDED”.
+- **No more Withdraw of payments by the store owner (bal.claim)**
+No need to withdraw payment are directly transferred to the store owner through the @xprckechout smart contract.
 
 

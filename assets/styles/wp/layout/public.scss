@@ -1,8 +1,0 @@
-.wookey-order-details {
-  display: grid;
-  grid-template-columns: 1fr 40%;
-  gap: 40px;
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-}

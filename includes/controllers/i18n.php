@@ -1,13 +1,13 @@
 <?php
 
-namespace wookey\i18n;
+namespace xprcheckout\i18n;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
 /**
- * Handles the internationalization (i18n) for the Wookey payment gateway plugin.
+ * Handles the internationalization (i18n) for the XPRCheckout payment gateway plugin.
  * 
  * This class provides a mechanism for registering and loading the plugin's text domain 
  * as well as retrieving translated strings intended for public-facing interfaces.
@@ -45,14 +45,14 @@ class Translations
    */
   function initTextDomain()
   {
-    load_plugin_textdomain('wookey', FALSE, WOOKEY_ROOT_DIR . 'i18n/languages');
+    load_plugin_textdomain('xprcheckout_gateway');
   }
 
   /**
    * Retrieves public-facing translated strings.
    * 
    * Provides an array of translated strings that are likely to be used in public-facing interfaces 
-   * related to the Wookey payment gateway. Uses the plugin's text domain for translations.
+   * related to the xprcheckout_gateway payment gateway. Uses the plugin's text domain for translations.
    * 
    * @return array Associative array of public-facing translated strings.
    */
@@ -60,32 +60,32 @@ class Translations
   {
 
     return [
-      "payInviteTitle" => __('Pay with WebAuth', 'wookey'),
-      "payInviteText" => __('Connect your WebAuth wallet to start the payment flow.', 'wookey'),
-      "payInviteButtonLabel" => __('Connect WebAuth', 'wookey', 'wookey'),
-      "orderStatusTitle" => __("Payment succesfull", 'wookey'),
-      "orderStatusText" => __("This order is marked as complete", 'wookey'),
-      "selectTokenDialogTitle" => __("Select token", 'wookey'),
-      "selectTokenDialogText" => __("Select the token you want to pay with.", 'wookey'),
-      "selectTokenDialogConnectedAs" => __("Connected as", 'wookey'),
-      "selectTokenDialogChangeAccountLabel" => __("change account ?", 'wookey'),
-      "selectTokenPayButtonLabel" => __("Pay", 'wookey'),
-      "selectTokenPayProcessingLabel" => __("Fetching tokens rates", 'wookey'),
+      "payInviteTitle" => __('Pay with WebAuth', 'xprcheckout_gateway'),
+      "payInviteText" => __('Connect your WebAuth wallet to start the payment flow.', 'xprcheckout_gateway'),
+      "payInviteButtonLabel" => __('Connect WebAuth', 'xprcheckout_gateway'),
+      "orderStatusTitle" => __("Payment succesfull", 'xprcheckout_gateway'),
+      "orderStatusText" => __("This order is marked as complete", 'xprcheckout_gateway'),
+      "selectTokenDialogTitle" => __("Select token", 'xprcheckout_gateway'),
+      "selectTokenDialogText" => __("Select the token you want to pay with.", 'xprcheckout_gateway'),
+      "selectTokenDialogConnectedAs" => __("Connected as", 'xprcheckout_gateway'),
+      "selectTokenDialogChangeAccountLabel" => __("change account ?", 'xprcheckout_gateway'),
+      "selectTokenPayButtonLabel" => __("Pay", 'xprcheckout_gateway'),
+      "selectTokenPayProcessingLabel" => __("Fetching tokens rates", 'xprcheckout_gateway'),
 
-      "paymentProcessingLabel" => __("Waiting for transaction to complete", 'wookey'),
-      "paymentFailureDialogTitle" => __("Something wrong with your transfer.", 'wookey'),
-      "paymentFailureDialogText" => __("The transfer fail. The issue came from the chain side, but do not worry, no tokens have been transferred. Please retry or save your order to pay it later.", 'wookey'),
+      "paymentProcessingLabel" => __("Waiting for transaction to complete", 'xprcheckout_gateway'),
+      "paymentFailureDialogTitle" => __("Something wrong with your transfer.", 'xprcheckout_gateway'),
+      "paymentFailureDialogText" => __("The transfer fail. The issue came from the chain side, but do not worry, no tokens have been transferred. Please retry or save your order to pay it later.", 'xprcheckout_gateway'),
       
-      "invalidOrderDialogTitle" => __("No order found.", 'wookey'),
-      "invalidOrderDialogText" => __("Not order has been found at the given url. ", 'wookey'),
+      "invalidOrderDialogTitle" => __("No order found.", 'xprcheckout_gateway'),
+      "invalidOrderDialogText" => __("Not order has been found at the given url. ", 'xprcheckout_gateway'),
 
-      "verifyPaymentDialogTitle" => __("Payment verification", 'wookey'),
-      "verifyPaymentDialogText" => __("Please wait while we check payment information.", 'wookey'),
-      "verifyPaymentDialogProcessLabel" => __("Verifying payment", 'wookey'),
-      "verifySuccessPaymentDialogTitle" => __("Payment verified", 'wookey'),
-      "verifySuccessPaymentDialogText" => __("Great, your payment has be verified, order is now completed! ", 'wookey'),
-      "verifyFailurePaymentDialogTitle" => __("Payment verification failed", 'wookey'),
-      "verifyFailurePaymentDialogText" => __("Your payment could'nt been verified , order is pending! ", 'wookey'),
+      "verifyPaymentDialogTitle" => __("Payment verification", 'xprcheckout_gateway'),
+      "verifyPaymentDialogText" => __("Please wait while we check payment information.", 'xprcheckout_gateway'),
+      "verifyPaymentDialogProcessLabel" => __("Verifying payment", 'xprcheckout_gateway'),
+      "verifySuccessPaymentDialogTitle" => __("Payment verified", 'xprcheckout_gateway'),
+      "verifySuccessPaymentDialogText" => __("Great, your payment has be verified, order is now completed! ", 'xprcheckout_gateway'),
+      "verifyFailurePaymentDialogTitle" => __("Payment verification failed", 'xprcheckout_gateway'),
+      "verifyFailurePaymentDialogText" => __("Your payment could'nt been verified , order is pending! ", 'xprcheckout_gateway'),
     ];
   }
 }

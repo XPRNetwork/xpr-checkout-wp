@@ -1,6 +1,6 @@
 <?php
 
-namespace wookey\cart;
+namespace xprcheckout\cart;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 
 
 /**
- * Represents the WooKey cart functionality.
+ * Represents the XPRCheckout cart functionality.
  *
  * This class is responsible for handling cart-related tasks such as generating a unique payment key as SHA256 for the cart to bind with the smart contract.
  */

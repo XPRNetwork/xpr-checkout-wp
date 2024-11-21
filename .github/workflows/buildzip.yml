@@ -10,26 +10,32 @@ jobs:
     name: Build release zip
     runs-on: ubuntu-latest
     steps:
+    - uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Install deps
-      working-directory: './assets'
-      run: 'npm install'
-    - name: Build Svelte apps
-      working-directory: './assets'
-      run: 'npm run build'
+    - name: Install checkout deps
+      working-directory: 'applications'
+      run: 'bun install '
+    - name: Build apps in dist
+      working-directory: '.'
+      run: 'make compile_apps'
+    - name: Bump tag
+      working-directory: '.'
+      run: 'make update_version'
     - name: Compile Release
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
-        filename: 'wookey_woocomerce_gateway_beta_${{  github.ref_name }}.zip'
+        filename: 'xprcheckout_gateway.zip'
         directory: '.'
-        exclusions: '*.git* /*node_modules/* .editorconfig /*assets/*'
+        exclusions: '*.git* /*node_modules/* .editorconfig /*applications/*'
     - name: Generate JSON manifest
       run: 'VERSION=${{  github.ref_name }} make generate_manifest'
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
         tag: '${{  github.ref_name }}'
-        artifacts: "wookey_woocomerce_gateway_beta_${{  github.ref_name }}.zip,info.json"
+        artifacts: "xprcheckout_gateway.zip,info.json"
         token: ${{ secrets.GITHUB_TOKEN }}

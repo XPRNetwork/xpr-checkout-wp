@@ -10,40 +10,32 @@ class ProtonRPC
 
   public function verifyTransaction($paymentKey)
   {
-
     $endpoint = $this->endpoint . '/v1/history/get_transaction';
     $data = array(
-      'id' => $transactionId,
+      'id' => $paymentKey,
     );
-    error_log("check transaction");
-    error_log($endpoint);
-    error_log(print_r($data, 1));
+    
+    $response = wp_remote_post($endpoint, array(
+      'body' => wp_json_encode($data),
+      'headers' => array('Content-Type' => 'application/json'),
+      'timeout' => 45
+    ));
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $response = curl_exec($ch);
-    curl_close($ch);
-    if ($response !== false) {
-      $responseData = json_decode($response, true);
-      $memo = $this->findValueByKey($responseData, "memo");
-      return $memo == $paymentKey;
+    if (is_wp_error($response)) {
+      return false; // Handle error
     }
 
-    return false;
+    $responseData = json_decode(wp_remote_retrieve_body($response), true);
+    $memo = $this->findValueByKey($responseData, "memo");
+    return $memo == $paymentKey;
   }
 
   public function verifyPaymentStatusByKey($paymentKey)
   {
-
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
-
     $data = array(
-      'scope' => "wookey",
-      'code' => "wookey",
+      'scope' => "xprcheckout",
+      'code' => "xprcheckout",
       'table' => "payments",
       'json' => true,
       'index_position' => 2,
@@ -51,39 +43,64 @@ class ProtonRPC
       'limit' => 1,
       'lower_bound' => $this->toEOSIOSha256($paymentKey),
       'upper_bound' => $this->toEOSIOSha256($paymentKey),
-
     );
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = wp_remote_post($endpoint, array(
+      'body' => wp_json_encode($data),
+      'headers' => array('Content-Type' => 'application/json'),
+      'timeout' => 45
+    ));
 
-    $response = curl_exec($ch);
-    curl_close($ch);
-    if ($response !== false) {
-      $responseData = json_decode($response, true);
-
-      foreach ($responseData['rows'] as $row) {
-        if ($row['paymentKey'] == $paymentKey && $row['status'] == 1) return true;
-      }
-
-      
-      return null;
-    } else {
-
-      return null;
+    if (is_wp_error($response)) {
+      return null; // Handle error
     }
+
+    $responseData = json_decode(wp_remote_retrieve_body($response), true);
+    
+    foreach ($responseData['rows'] as $row) {
+      if ($row['paymentKey'] == $paymentKey && $row['status'] == 1) return true;
+    }
+
     return null;
   }
-  public function fetchPayments($store)
+  
+  public function fetchPayment($paymentKey)
   {
-
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
     $data = array(
-      'scope' => 'wookey',
-      'code' => 'wookey',
+      'scope' => "xprcheckout",
+      'code' => "xprcheckout",
+      'table' => "payments",
+      'json' => true,
+      'index_position' => 2,
+      'key_type' => 'sha256',
+      'limit' => 1,
+      'lower_bound' => $this->toEOSIOSha256($paymentKey),
+      'upper_bound' => $this->toEOSIOSha256($paymentKey),
+    );
+
+    $response = wp_remote_post($endpoint, array(
+      'body' => wp_json_encode($data),
+      'headers' => array('Content-Type' => 'application/json'),
+      'timeout' => 45
+    ));
+
+    if (is_wp_error($response)) {
+      return null; // Handle error
+    }
+
+    $responseData = json_decode(wp_remote_retrieve_body($response), true);
+    
+    if ($responseData['rows'] && $responseData['rows'][0])return $responseData['rows'][0];
+    return null;
+  }
+
+  public function fetchPayments($store)
+  {
+    $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
+    $data = array(
+      'scope' => 'xprcheckout',
+      'code' => 'xprcheckout',
       'table' => 'payments',
       'json' => true,
       'index_position' => 3,
@@ -92,78 +109,62 @@ class ProtonRPC
       'lower_bound' => $store,
       'upper_bound' => $store,
       'reverse' => true
-
     );
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = wp_remote_post($endpoint, array(
+      'body' => wp_json_encode($data),
+      'headers' => array('Content-Type' => 'application/json'),
+      'timeout' => 45
+    ));
 
-    $response = curl_exec($ch);
-    curl_close($ch);
-    if ($response !== false) {
-      return json_decode($response, true);
-    } else {
-
-      return null;
+    if (is_wp_error($response)) {
+      return null; // Handle error
     }
-    return null;
+
+    return json_decode(wp_remote_retrieve_body($response), true);
   }
 
   public function fetchBalances($store)
   {
-
     $endpoint = $this->endpoint . '/v1/chain/get_table_rows';
     $data = array(
       'scope' => $store,
-      'code' => 'wookey',
+      'code' => 'xprcheckout',
       'table' => 'balances',
       'json' => true,
       'limit' => 100,
-
-
     );
 
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = wp_remote_post($endpoint, array(
+      'body' => wp_json_encode($data),
+      'headers' => array('Content-Type' => 'application/json'),
+      'timeout' => 45
+    ));
 
-    $response = curl_exec($ch);
-    curl_close($ch);
-    if ($response !== false) {
-      return json_decode($response, true);
-    } else {
-
-      return null;
+    if (is_wp_error($response)) {
+      return null; // Handle error
     }
-    return null;
+
+    return json_decode(wp_remote_retrieve_body($response), true);
   }
 
-  public function findTransaction($actor,$afterDate,$paymentKey)
+  public function findTransaction($actor, $afterDate, $paymentKey)
   {
-
     $date = urlencode($afterDate);
-    $endpoint = $this->endpoint ."/v2/history/get_actions?limit=999&account=$actor&filter=*:transfer&after=$date";
+    $endpoint = $this->endpoint . "/v2/history/get_actions?limit=999&account=$actor&filter=*:transfer&after=$date";
     
-    $ch = curl_init($endpoint);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    $response = curl_exec($ch);
-    curl_close($ch);
-    if ($response !== false) {
-      return json_decode($response,true);
-    } else {
+    $response = wp_remote_get($endpoint, array(
+      'headers' => array('Content-Type' => 'application/json'),
+      'timeout' => 45
+    ));
 
-      return null;
+    if (is_wp_error($response)) {
+      return null; // Handle error
     }
-    return null;
-  }
 
+    return json_decode(wp_remote_retrieve_body($response), true);
+  }
 
   private function toEOSIOSha256($sha256Key)
   {

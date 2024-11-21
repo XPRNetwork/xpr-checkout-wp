@@ -1,6 +1,6 @@
 <?php
 
-namespace wookey\admin;
+namespace xprcheckout\admin;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
  * Admin Orders Handler.
  *
  * Enhances the WooCommerce orders table in the admin dashboard by adding 
- * columns for transaction IDs and network (mainnet/testnet) from the Wookey payment gateway.
+ * columns for transaction IDs and network (mainnet/testnet) from the XPRCheckout payment gateway.
  * 
  */
 
@@ -40,6 +40,9 @@ class Orders
   {
 
     add_action('manage_shop_order_posts_custom_column', [$this, 'mutateOrdersRows'], 20, 2);
+	  add_action('manage_woocommerce_page_wc-orders_custom_column', [$this, 'mutateOrdersRows'], 20, 2);
+	  
+
   }
 
   /**
@@ -50,32 +53,42 @@ class Orders
    *
    * @param string $column The name of the column in the orders table.
    */
-  public function mutateOrdersRows($column)
+  public function mutateOrdersRows($column, $order)
   {
-
-    global $post;
+    if (is_int($order)){
+      $order = wc_get_order($order);
+    }
     if ('transactionId' === $column) {
-      $order = wc_get_order($post->ID);
-      $transactionId = $order->get_meta('_transactionId');
+ $transactionId = $order->get_meta('_tx_id');
       $net = $order->get_meta('_net');
-      $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
-      $link = $net == "mainnet" ? "https://protonscan.io/transaction/" : "https://testnet.protonscan.io/transaction/";
-      if ($order->get_payment_method()) {
-        echo '<a class="button-primary" style="color:#50575e;background-color:' . $color . ';" target="_blank" href="' . $link . $transactionId . '">' . substr($transactionId, strlen($transactionId) - 8, strlen($transactionId)) . '</a>';
+      $color = $net == esc_attr("mainnet" ? "#7cc67c" : "#f1dd06");
+      $link = $net == "mainnet" ? "https://explorer.xprnetwork.org/transaction/" : "https://testnet.explorer.xprnetwork.org/transaction/";
+      if ($order->get_payment_method() == "xprcheckout") {
+        echo '<a class="button-primary" style="color:#ffffff;background-color:' . esc_attr($color) . ';" target="_blank" href="' . esc_attr($link) . esc_attr($transactionId) . '">' . esc_attr(substr($transactionId, strlen($transactionId) - 8, strlen($transactionId))) . '</a>';
       } else {
         echo '';
       }
     }
-    if ('net' === $column) {
-      $order = wc_get_order($post->ID);
-      $net = $order->get_meta('_net');
+    if ('network' === $column) {
+
+      $net = $order->get_meta('_network');
       $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
       if ($net == 'testnet') {
-        echo '<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Testnet</a>';
+        echo '<span class="button-primary" style="color:#50575e;background-color:' . esc_attr($color) . ';" >Testnet</a>';
       } elseif ($net == 'mainnet') {
-        echo '<span class="button-primary" style="color:#50575e;background-color:' . $color . ';" >Mainnet</a>';
+        echo '<span class="button-primary" style="color:#50575e;background-color:' . esc_attr($color) . ';" >Mainnet</a>';
       }
-      echo '';
+      echo esc_attr('');
+    }
+    if ('paid_token' === $column) {
+
+      $amount = $order->get_meta('_paid_tokens');
+      if (!empty($amount)) {
+        echo '<span  >'.esc_attr($amount).'</a>';
+      } else{
+        echo '';
+      }
+      echo esc_attr('');
     }
   }
 
@@ -90,6 +103,8 @@ class Orders
   {
 
     add_filter('manage_edit-shop_order_columns', [$this, 'mutateOrdersColumnsHeader'], 11);
+	add_filter('manage_woocommerce_page_wc-orders_columns', [$this, 'mutateOrdersColumnsHeader'], 11);
+	  
   }
 
   /**
@@ -107,8 +122,9 @@ class Orders
     foreach ($columns as $column_name => $column_info) {
       $new_columns[$column_name] = $column_info;
       if ('order_status' === $column_name) {
-        $new_columns['transactionId'] = __('Transaction', 'wookey'); // title
-        $new_columns['net'] = __('Mainnet/testnet', 'wookey'); // title
+        $new_columns['transactionId'] = __('Transaction', 'xprcheckout_gateway'); // title
+        $new_columns['network'] = __('Mainnet/testnet', 'xprcheckout_gateway'); // title
+        $new_columns['paid_token'] = __('Received tokens', 'xprcheckout_gateway'); // title
       }
     }
     return $new_columns;

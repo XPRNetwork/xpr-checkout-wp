@@ -1,0 +1,9 @@
+{
+  "files": {
+    "main.js": "/app.js",
+    "app.js.map": "/app.js.map"
+  },
+  "entrypoints": [
+    "app.js"
+  ]
+}

@@ -1,15 +1,15 @@
 <?php
 
-namespace wookey\gateway;
+namespace xprcheckout\gateway;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
 /**
- * Handles the integration of the Wookey payment gateway within WooCommerce.
+ * Handles the integration of the XPRCheckout payment gateway within WooCommerce.
  * 
- * This class manages the registration and initialization of the Wookey payment gateway 
+ * This class manages the registration and initialization of the XPRCheckout payment gateway 
  * for WooCommerce, including registering necessary actions and filters.
  *
  * @package WooCommerce\Classes\Gateway
@@ -40,15 +40,15 @@ class GatewayWrapper
   }
 
   /**
-   * Registers the Wookey payment gateway within WooCommerce.
+   * Registers the XPRCheckout payment gateway within WooCommerce.
    * 
    * @param array $gateways List of available WooCommerce payment gateways.
-   * @return array List of payment gateways with the Wookey gateway added.
+   * @return array List of payment gateways with the XPRCheckout gateway added.
    */
   public function registerGatewayClass($gateways)
   {
 
-    $gateways[] = 'WC_WookeyGateway';
+    $gateways[] = 'XPRCheckoutGateway';
     return $gateways;
   }
 
@@ -112,12 +112,12 @@ class GatewayWrapper
   }
 
   /**
-   * Initializes the Wookey payment gateway class.
+   * Initializes the XPRCheckout payment gateway class.
    * 
-   * Requires the necessary file to make the Wookey gateway class available.
+   * Requires the necessary file to make the XPRCheckout gateway class available.
    */
   function initGatewayClass()
   {
-    require_once WOOKEY_ROOT_DIR . 'includes/woocommerce/gateway/wookey-gateway.php';
+    require_once XPRCHECKOUT_ROOT_DIR . 'includes/woocommerce/gateway/xprcheckout-gateway.php';
   }
 }

@@ -1,16 +1,16 @@
 <?php
 
-namespace wookey\admin;
+namespace xprcheckout\admin;
 
-use wookey\config\Config;
+use xprcheckout\config\Config;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 /**
- * Admin Refund Handler for Wookey Payment Gateway.
+ * Admin Refund Handler for XPRCheckout Payment Gateway.
  *
- * Manages the custom refund functionality, styles, and scripts related to the Wookey payment method in the WooCommerce backend.
+ * Manages the custom refund functionality, styles, and scripts related to the XPRCheckout payment method in the WooCommerce backend.
  * 
  */
 
@@ -45,32 +45,40 @@ class Refund
   /**
    * Enqueues the necessary scripts and styles when on the WooCommerce order screen.
    * 
-   * The scripts are only loaded for orders with Wookey as the payment method.
+   * The scripts are only loaded for orders with XPRCheckout as the payment method.
    */
   public function registerScript()
   {
 
-    global $current_screen;
-    if (isset($current_screen) && $current_screen->id == 'shop_order') {
+    if($this->isCurrentScreenIsOrderEdit()){
       global $post;
       $order = wc_get_order($post->ID);
-      wp_enqueue_style('wookey_admin_refund_style', WOOKEY_ROOT_URL . 'dist/admin/refund/wookey.admin.refund.css?v=' . uniqid());
-      wp_register_script('wookey_admin_refund', WOOKEY_ROOT_URL . 'dist/admin/refund/wookey.admin.refund.iife.js?v=' . uniqid(), [], time(), true);
-      wp_localize_script('wookey_admin_refund', 'wookeyRefundParams', Config::GetConfigWithOrderById($order->get_id()));
-      wp_enqueue_script('wookey_admin_refund');
+      wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.css?v=' . uniqid(),[], time());
+      wp_register_script_module('xprcheckout_admin_refund', XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.js?v=' . uniqid(), [], time());
+      
+      wp_enqueue_script_module('xprcheckout_admin_refund');
     };
   }
 
   /**
-   * Registers a new meta box for displaying Wookey payment information on the WooCommerce order screen.
+   * Registers a new meta box for displaying XPRCheckout payment information on the WooCommerce order screen.
    * 
-   * The meta box is only displayed for orders with Wookey as the payment method.
+   * The meta box is only displayed for orders with XPRCheckout as the payment method.
    */
   public function registerMetabox()
   {
     add_meta_box(
-      'woocommerce-wookey-payment',
-      __('Wookey payment', 'wookey'),
+      'woocommerce-xprcheckout-payment',
+      __('XPRCheckout payment', 'xprcheckout_gateway'),
+      [$this, 'renderMetabox'],
+      'woocommerce_page_wc-orders',
+      'advanced',
+      'core'
+
+    );
+    add_meta_box(
+      'woocommerce-xprcheckout-payment',
+      __('XPRCheckout payment', 'xprcheckout_gateway'),
       [$this, 'renderMetabox'],
       'shop_order',
       'advanced',
@@ -79,7 +87,7 @@ class Refund
     );
   }
   /**
-   * Renders the content of the Wookey payment meta box on the WooCommerce order screen.
+   * Renders the content of the XPRCheckout payment meta box on the WooCommerce order screen.
    * 
    * @param WP_Post $post The post object of the current post screen.
    */
@@ -87,11 +95,57 @@ class Refund
   {
 
     $order = wc_get_order($post->ID);
-    if ($order->get_payment_method() !== "wookey") return;
+    if ($order->get_payment_method() !== "xprcheckout") return;
+    
 
 ?>
-    <div id="wookey-refund"></div>
-<?php
+  <script>
+    <?php 
+      $adminConfig =Config::GetAdminConfig(); 
+      $baseConfig = Config::GetBaseConfig();
+      $baseConfig['amountToRefund']= $order->get_meta('_paid_tokens',true);
+      $baseConfig['accountToRefund']= $order->get_meta('_buyer_account',true);
+      $baseConfig['requestedPaymentKey']= $order->get_meta('_payment_key',true);
+      $baseConfig['orderStatus']= $order->get_status();
+      $baseConfig['orderStatus']= $order->get_status();
+    ?>
+    window.pluginConfig = <?php echo wp_json_encode(array_merge($baseConfig,$adminConfig)); ?>;
+  </script>
+  <?php 
+    $transactionId = $order->get_meta('_tx_id');
+    $network = $order->get_meta('_network');
+    $amount = $order->get_meta('_paid_tokens');
+    $color = $network == "mainnet" ? "#7cc67c" : "#f1dd06";
+    $link = $network == "mainnet" ? "https://explorer.xprnetwork.org/transaction/" : "https://testnet.explorer.xprnetwork.org/transaction/";
+    ?>
+    <div style="display:grid;grid-template-columns:1fr;gap:5px">
+      <div>
+        <h4>Tokens paid</h4>
+        <?php 
+          
+          
+          if ($order->get_payment_method() == "xprcheckout") {
+            echo '<span style="font-weight:bold">' . esc_attr($amount) . '</span>';
+          } else {
+            echo '';
+          }
+        ?>
+      </div>
+      <div>
+        <h4>View Transaction <?php echo esc_attr($network) ?></h4>
+        <?php 
+          
+          
+          if ($order->get_payment_method() == "xprcheckout") {
+            echo '<a class="button-primary" style="width:100%;color:#ffffff;background-color:' . esc_attr($color) . ';" target="_blank" href="' . esc_attr($link) . esc_attr($transactionId) . '">' . esc_attr(substr($transactionId, strlen($transactionId) - 8, strlen($transactionId))) . '</a>';
+          } else {
+            echo '';
+          }
+        ?>
+      </div>
+      <div id="xpr-refund"></div>
+    </div>
+  <?php
 
   }
 
@@ -107,7 +161,7 @@ class Refund
   }
 
   /**
-   * Disables the default WooCommerce refund functionality for Wookey payment orders.
+   * Disables the default WooCommerce refund functionality for XPRCheckout payment orders.
    * 
    * @param bool $enableRefund Whether to enable the default WooCommerce refund functionality.
    * @param WC_Order $order The WooCommerce order object.
@@ -116,7 +170,20 @@ class Refund
   public function disableDefaultRefund($enableRefund, $order)
   {
     $order = wc_get_order($order);
-    if ($order->get_payment_method() == "wookey") return false;
+    if ($order->get_payment_method() == "xprcheckout") return false;
     return $enableRefund;
+  }
+
+  public function isCurrentScreenIsOrderEdit (){
+
+    global $current_screen;
+    if (!isset($current_screen)) return false;
+    switch ($current_screen->id) {
+      case 'woocommerce_page_wc-orders':
+        return true;
+      case 'shop_order':
+        return true;
+    }
+   
   }
 }

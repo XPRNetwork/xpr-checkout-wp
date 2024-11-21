@@ -1,18 +1,16 @@
 <?php
 
-namespace wookey\config;
-use wookey\utils\OrderResolver;
+namespace xprcheckout\config;
+use xprcheckout\utils\OrderResolver;
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
 
-
-
 /**
- * Configuration handler for WooKey payment gateway.
+ * Configuration handler for XPRCheckout payment gateway.
  * 
- * This class provides methods to extract configuration details related to the WooKey payment gateway from
+ * This class provides methods to extract configuration details related to the XPRCheckout payment gateway from
  * WooCommerce settings. It also allows to merge these settings with order or cart related details.
  */
 
@@ -20,7 +18,7 @@ class Config
 {
 
   /**
-   * Retrieves base configuration values for WooKey payment gateway.
+   * Retrieves base configuration values for XPRCheckout payment gateway.
    *
    * @return array Associative array containing:
    *      - "mainnetActor"   => string, The main wallet address for transactions.
@@ -33,48 +31,83 @@ class Config
    * @access public
    * @static
    */
+
+   public static function GetConfig ($orderPaymentKey){
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $wcCheckoutId = wc_get_page_id( 'checkout' );
+    $wcCheckoutUrl = get_permalink( $wcCheckoutId);
+
+    $order = get_order_by_payment_key($orderPaymentKey);
+    $wcThankyouUrl = $order->get_view_order_url();
+    $baseConfig = self::GetBaseConfig();
+    $extendedConfig =  [
+      "requestedPaymentKey"=>$orderPaymentKey,
+      "orderTotal"=>$order->get_total(),
+      "allowedTokens" => $xprcheckoutGateway->get_option('allowedTokens'),
+      "baseDomain" => get_site_url(),
+      "wooCurrency" => get_woocommerce_currency(),
+      "wooCheckoutUrl" => $wcCheckoutUrl,
+      "wooThankYouUrl" => $wcThankyouUrl,
+      "appName" => $xprcheckoutGateway->get_option('appName'),
+    ];
+
+    return array_merge($baseConfig,$extendedConfig);
+   }
+
   public static function GetDashbordConfig()
   {
-    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    
+  
     return array(
-      "mainnetActor" => $wookeyGateway->get_option('mainwallet'),
-      "testnetActor" => $wookeyGateway->get_option('testwallet'),
-      "appName" => $wookeyGateway->get_option('appName'),
-      "testnet" => 'testnet' === $wookeyGateway->get_option('network'),
-      "network" => $wookeyGateway->get_option('network'),
-      "allowedTokens" => $wookeyGateway->get_option('allowedTokens'),
+      "appName" => $xprcheckoutGateway->get_option('appName'),
+      "testnet" => 'testnet' === $xprcheckoutGateway->get_option('network'),
+      "network" => $xprcheckoutGateway->get_option('network'),
+      "allowedTokens" => $xprcheckoutGateway->get_option('allowedTokens'),
+      "baseDomain" => get_site_url(),
+      "wooCurrency" => get_woocommerce_currency(),
+    );
+  }
+  public static function GetBaseConfig()
+  {
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $wallets = self::GetWalletConfig();
+    $activeNetwork = $xprcheckoutGateway->get_option('network');
+    $store = $wallets[$activeNetwork]['store'];    
+
+    return array(
+      'networks'=>[
+        'testnet'=>[ 
+          "endpoints" => XPRCHECKOUT_TESTNET_ENDPOINT,
+          "chainId" =>   XPRCHECKOUT_TESTNET_CHAIN_ID
+        ],
+        'mainnet'=>[
+          "endpoints" => XPRCHECKOUT_MAINNET_ENDPOINT ,
+          "chainId" =>  XPRCHECKOUT_MAINNET_CHAIN_ID
+        ]
+      ],
+      "gatewayNetwork" => $activeNetwork,
+      "store" => $store ,
+      "endpoints" => $activeNetwork === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_ENDPOINT : XPRCHECKOUT_TESTNET_ENDPOINT,
+      "chainId" =>  $activeNetwork === XPRCHECKOUT_MAINNET ? XPRCHECKOUT_MAINNET_CHAIN_ID : XPRCHECKOUT_TESTNET_CHAIN_ID,
       "baseDomain" => get_site_url(),
     );
   }
-  public static function GetBaseConfig($requestedPaymentKey)
+  
+  public static function GetAdminConfig()
   {
-    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
-    $woocommerceCheckoutId = wc_get_page_id( 'checkout' );
-    $woocommerceCheckoutUrl = get_permalink( $woocommerceCheckoutId);
-
-    $woocommerceThankyouId = wc_get_page_id( 'order-received' );
-    $woocommerceThankyouUrl = get_permalink( $woocommerceThankyouId);
-    
-
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $rawWallets = $xprcheckoutGateway->get_option('wallets');
+    $wallets = self::GetWalletConfig();
     return array(
-      "mainnetActor" => $wookeyGateway->get_option('mainwallet'),
-      "testnetActor" => $wookeyGateway->get_option('testwallet'),
-      "appName" => $wookeyGateway->get_option('appName'),
-      "testnet" => 'testnet' === $wookeyGateway->get_option('network'),
-      "network" => $wookeyGateway->get_option('network'),
-      "allowedTokens" => $wookeyGateway->get_option('allowedTokens'),
-      "wooCurrency" => get_woocommerce_currency(),
-      "baseDomain" => get_site_url(),
-      "wooCheckoutUrl" => $woocommerceCheckoutUrl,
-      "wooThankYouUrl" => $woocommerceThankyouUrl,
-      'nonce' => wp_create_nonce('wookey'),
-      'requestedPaymentKey'=>$requestedPaymentKey
+      "wallets"=>$wallets,
+      "adminNonce" => wp_create_nonce( 'wp_rest' )
     );
   }
 
 
   /**
-   * Retrieves configuration values for WooKey payment gateway merged with specific order details.
+   * Retrieves configuration values for XPRCheckout payment gateway merged with specific order details.
    * 
    * @param int $orderId The WooCommerce order ID.
    * @return array Associative array containing base configuration from self::GetBaseConfig() merged with:
@@ -89,8 +122,8 @@ class Config
   {
 
     $baseConfig = self::GetBaseConfig($requestedPaymentKey);
-    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
-    $resolved = OrderResolver::Process($requestedPaymentKey,$wookeyGateway->get_option('network'));
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    
     return array_merge($baseConfig, ['order'=>$resolved]);
 
   }
@@ -101,20 +134,34 @@ class Config
     $order = new \WC_Order( $orderId );
     $requestedPaymentKey = $order->get_meta('_payment_key');
     $baseConfig = self::GetBaseConfig($requestedPaymentKey);
-    $wookeyGateway = WC()->payment_gateways->payment_gateways()['wookey'];
-    $resolved = OrderResolver::Process($requestedPaymentKey,$wookeyGateway->get_option('network'));
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    
     return array_merge($baseConfig, ['order'=>$resolved]);
 
   }
 
-  /**
-   * Retrieves configuration values for WooKey payment gateway merged with cart details.
-   * 
-   * @return array Associative array containing base configuration from self::GetBaseConfig() merged with:
-   *      - "cartTotal"     => float, The total amount in the cart.
-   *      - "paymentKey"    => string, The payment key associated with the current cart.
-   * @access public
-   * @static
-   */
+  private static function GetWalletConfig (){
+
+    $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
+    $rawWallets = $xprcheckoutGateway->get_option('wallets');
+    
+    
+    $defaultWallet = [
+      'testnet'=>[
+          'store'=>'',
+          'verified'=>false
+      ],
+      'mainnet'=>[
+          'store'=>'',
+          'verified'=>false
+      ],
+    ];
+    if (empty($rawWallets)) return $defaultWallet;
+    
+    $unserializedWallet = unserialize($rawWallets);
+    if (is_null($unserializedWallet)) return $defaultWallet;
+    return $unserializedWallet;
+      
+  }
   
 }

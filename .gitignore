@@ -16,6 +16,7 @@ vendor
 scripts/js/admin/node_modules
 scripts/js/public/node_modules
 dist
+build
 dist-ssr
 *.local
 
@@ -29,3 +30,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
