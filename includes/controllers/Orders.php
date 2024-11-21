@@ -40,6 +40,9 @@ class Orders
   {
 
     add_action('manage_shop_order_posts_custom_column', [$this, 'mutateOrdersRows'], 20, 2);
+	  add_action('manage_woocommerce_page_wc-orders_custom_column', [$this, 'mutateOrdersRows'], 20, 2);
+	  
+
   }
 
   /**
@@ -50,13 +53,13 @@ class Orders
    *
    * @param string $column The name of the column in the orders table.
    */
-  public function mutateOrdersRows($column)
+  public function mutateOrdersRows($column, $order)
   {
-
-    global $post;
+    if (is_int($order)){
+      $order = wc_get_order($order);
+    }
     if ('transactionId' === $column) {
-      $order = wc_get_order($post->ID);
-      $transactionId = $order->get_meta('_tx_id');
+ $transactionId = $order->get_meta('_tx_id');
       $net = $order->get_meta('_net');
       $color = $net == esc_attr("mainnet" ? "#7cc67c" : "#f1dd06");
       $link = $net == "mainnet" ? "https://explorer.xprnetwork.org/transaction/" : "https://testnet.explorer.xprnetwork.org/transaction/";
@@ -67,7 +70,7 @@ class Orders
       }
     }
     if ('network' === $column) {
-      $order = wc_get_order($post->ID);
+
       $net = $order->get_meta('_network');
       $color = $net == "mainnet" ? "#7cc67c" : "#f1dd06";
       if ($net == 'testnet') {
@@ -78,7 +81,7 @@ class Orders
       echo esc_attr('');
     }
     if ('paid_token' === $column) {
-      $order = wc_get_order($post->ID);
+
       $amount = $order->get_meta('_paid_tokens');
       if (!empty($amount)) {
         echo '<span  >'.esc_attr($amount).'</a>';
@@ -100,6 +103,8 @@ class Orders
   {
 
     add_filter('manage_edit-shop_order_columns', [$this, 'mutateOrdersColumnsHeader'], 11);
+	add_filter('manage_woocommerce_page_wc-orders_columns', [$this, 'mutateOrdersColumnsHeader'], 11);
+	  
   }
 
   /**

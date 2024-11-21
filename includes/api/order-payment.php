@@ -59,7 +59,7 @@ if (!isset($params['paymentKey'])) {
   }
   $network = $existingOrder->get_meta('_network');
   $settlement=OrderResolver::Process($params['paymentKey'],$converted,$network);
-  if ($settlement) {
+  if ($settlement->resolved) {
     if ($existingOrder->get_status() !=="completed"){
       $existingOrder->set_status('processing');
     }
