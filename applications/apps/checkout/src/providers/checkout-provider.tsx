@@ -113,7 +113,7 @@ export const CheckoutProvider: React.FunctionComponent<
       setViewState(APP_VIEWS.VERIFY);
       session.transact({ actions: [regPaymentAction, transferAction] }, { broadcast: true }).then((res) => {
          
-        refreshTokensList((res as any).transaction_id)
+        refreshTokensList((res as any).processed.id)
       }).catch((e) => {
         setLastError(e.toString());
         setViewState(APP_VIEWS.FAIL)
