@@ -7,7 +7,6 @@ export async function getStoreBalance(store:string,isTestnet:boolean) {
   )
 
   try {
-
     const balanceQuey = await rpc.get_table_rows({
       code: 'wookey',
       scope: store,

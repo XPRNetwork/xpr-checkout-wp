@@ -73,7 +73,7 @@ if (!isset($params['paymentKey'])) {
     $existingOrder->update_meta_data('_paid_tokens',$settlement->payment['settlement']);
     $existingOrder->update_meta_data('_buyer_account',$settlement->payment['buyer']);
     $txId = $existingOrder->get_meta('_tx_id');
-    if (isset($params['txId']) && empty($txId) ) {
+    if (isset($params['txId']) && is_null($txId) ) {
       $existingOrder->update_meta_data('_tx_id',$params['txId']);
     }
     
