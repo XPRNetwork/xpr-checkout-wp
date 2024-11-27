@@ -7,7 +7,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 # XPRCheckout - WebAuth Gateway for Woocommerce
-*A WebAuth-Enabled Gateway for WooCommerce*
+*XPR Checkout is a WooCommerce plugin for accepting cryptocurrencies like Bitcoin, Ethereum, and stablecoins without gas fees through webauth wallet. It integrates easily, supports wallet payments via QR codes, and offers real-time conversion rates. Designed for simplicity, it's a seamless solution for enabling crypto payments directly on your WordPress store.*
 
 ## The basic scope
 
