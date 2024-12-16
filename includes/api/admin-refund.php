@@ -26,7 +26,7 @@ function xprcheckout_register_payments_with_orders_routes()
 function admin_only_permission_check($request) {
   
   if (!is_user_logged_in()) {
-    return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout_gateway'), ['status' => 403]);
+    return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
 }
 
 // Get the current user
@@ -37,7 +37,7 @@ if (in_array('administrator', (array) $user->roles, true)) {
     return true;
 }
 
-return new WP_Error('rest_forbidden', __('You do not have permission to access this endpoint.','xprcheckout_gateway'), ['status' => 403]);
+return new WP_Error('rest_forbidden', __('You do not have permission to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
 }
 
 
