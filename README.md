@@ -1,4 +1,5 @@
 === XPRCheckout - WebAuth Gateway for e-commerce ===
+Requires at least: 6.5
 Tested up to: 6.7
 Stable tag: ##VERSION_TAG##
 License: GPLv2 or later
