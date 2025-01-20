@@ -12,7 +12,10 @@ function xprcheckout_register_convert_order()
   register_rest_route('xprcheckout/v2', '/order-payment', array(
     'methods'  => 'POST',
     'callback' => 'xprcheckout_handle_convert_order',
-    'permission_callback' => '__return_true'
+    'permission_callback' => function() {
+      // This endpoint needs to be public for payment processing
+      return true;
+    }
   ));
 }
 

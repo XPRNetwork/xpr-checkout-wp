@@ -122,9 +122,9 @@ class Orders
     foreach ($columns as $column_name => $column_info) {
       $new_columns[$column_name] = $column_info;
       if ('order_status' === $column_name) {
-        $new_columns['transactionId'] = __('Transaction', 'xprcheckout_webauth_gateway'); // title
-        $new_columns['network'] = __('Mainnet/testnet', 'xprcheckout_webauth_gateway'); // title
-        $new_columns['paid_token'] = __('Received tokens', 'xprcheckout_webauth_gateway'); // title
+        $new_columns['transactionId'] = __('Transaction', 'xprcheckout-webauth-gateway-for-woocommerce'); // title
+        $new_columns['network'] = __('Mainnet/testnet', 'xprcheckout-webauth-gateway-for-woocommerce'); // title
+        $new_columns['paid_token'] = __('Received tokens', 'xprcheckout-webauth-gateway-for-woocommerce'); // title
       }
     }
     return $new_columns;

@@ -40,9 +40,9 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   {
     $this->id                 = 'xprcheckout';
     $this->icon               = apply_filters('woocommerce_cod_icon', '');
-    $this->title              = __('XPR Checkout', 'xprcheckout_webauth_gateway');
-    $this->method_title       = __('XPR Checkout', 'xprcheckout_webauth_gateway');
-    $this->method_description = __('Provides a Webauth wallet Payment Gateway for your customer.', 'xprcheckout_webauth_gateway');
+    $this->title              = __('XPR Checkout', 'xprcheckout-webauth-gateway-for-woocommerce');
+    $this->method_title       = __('XPR Checkout', 'xprcheckout-webauth-gateway-for-woocommerce');
+    $this->method_description = __('Provides a Webauth wallet Payment Gateway for your customer.', 'xprcheckout-webauth-gateway-for-woocommerce');
     $this->has_fields         = false;
   }
 
@@ -53,75 +53,75 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   {
     $this->form_fields = array(
       'enabled' => array(
-        'title' => __('Enable/Disable', 'xprcheckout_webauth_gateway'),
+        'title' => __('Enable/Disable', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'checkbox',
-        'label' => __('Enable Webauth Payment', 'xprcheckout_webauth_gateway'),
+        'label' => __('Enable Webauth Payment', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'default' => 'yes'
       ),
       'network' => array(
-        'title' => __('Select network', 'xprcheckout_webauth_gateway'),
+        'title' => __('Select network', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'select',
         'options' => [
           'mainnet' => 'Mainnet',
           'testnet' => 'Testnet',
         ],
-        'label' => __('Select network', 'xprcheckout_webauth_gateway'),
+        'label' => __('Select network', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'default' => 'testnet',
         'value'
       ),
       'registered' => array(
-        'title' => __('Register store ', 'xprcheckout_webauth_gateway'),
+        'title' => __('Register store ', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'xprcheckout_register',
-        'description' => __('Register you store nearby the smart contract', 'xprcheckout_webauth_gateway'),
+        'description' => __('Register you store nearby the smart contract', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       'title' => array(
-        'title' => __('Title', 'xprcheckout_webauth_gateway'),
+        'title' => __('Title', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
         'default' => 'Pay with WebAuth',
-        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout_webauth_gateway'),
+        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       'description' => array(
-        'title' => __('Description', 'xprcheckout_webauth_gateway'),
+        'title' => __('Description', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'textarea',
-        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout_webauth_gateway'),
-        'default' => __('Pay securely with with multiple crypto currencies through WebAuth with zero gas fee', 'xprcheckout_webauth_gateway'),
+        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout-webauth-gateway-for-woocommerce'),
+        'default' => __('Pay securely with with multiple crypto currencies through WebAuth with zero gas fee', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
 
       'wallet' => array(
-        'title' => __('Mainnet account', 'xprcheckout_webauth_gateway'),
+        'title' => __('Mainnet account', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'hidden',
-        'description' => __('Set the destination account on mainnet where pay token will be paid. <b>Used only when "Use testnet" option is disabled</b>', 'xprcheckout_webauth_gateway'),
+        'description' => __('Set the destination account on mainnet where pay token will be paid. <b>Used only when "Use testnet" option is disabled</b>', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       
       'appName' => array(
-        'title' => __('dApp Name', 'xprcheckout_webauth_gateway'),
+        'title' => __('dApp Name', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
-        'description' => __('The application name displayed in the webauth modal', 'xprcheckout_webauth_gateway'),
-        'default' => __('My awesome store', 'xprcheckout_webauth_gateway'),
+        'description' => __('The application name displayed in the webauth modal', 'xprcheckout-webauth-gateway-for-woocommerce'),
+        'default' => __('My awesome store', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       /*'appLogo' => array(
-          'title' => __('dApp Logo', 'xprcheckout_webauth_gateway'),
+          'title' => __('dApp Logo', 'xprcheckout-webauth-gateway-for-woocommerce'),
           'type' => 'text',
-          'description' => __('The application logo displayed in the webauth modal', 'xprcheckout_webauth_gateway'),
+          'description' => __('The application logo displayed in the webauth modal', 'xprcheckout-webauth-gateway-for-woocommerce'),
           
           'desc_tip'      => true,
         ),*/
       'allowedTokens' => array(
-        'title' => __('Allowed Tokens', 'xprcheckout_webauth_gateway'),
+        'title' => __('Allowed Tokens', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
-        'description' => __('Accepted tokens as payment for transfer, will be displayed in the payments process flow. Specify a uppercase only, coma separated, tokens list', 'xprcheckout_webauth_gateway'),
-        'default' => __('XPR,XUSDC', 'xprcheckout_webauth_gateway'),
+        'description' => __('Accepted tokens as payment for transfer, will be displayed in the payments process flow. Specify a uppercase only, coma separated, tokens list', 'xprcheckout-webauth-gateway-for-woocommerce'),
+        'default' => __('XPR,XUSDC', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       'currencyApi' => array(
-        'title' => __('Free api key ', 'xprcheckout_webauth_gateway'),
+        'title' => __('Free api key ', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
-        'description' => __('We provide limited one. You can register yours for free <a target="_blank" style="text-decoration:underline" href="https://app.freecurrencyapi.com/register">here</a>.', 'xprcheckout_webauth_gateway'), 
+        'description' => __('We provide limited one. You can register yours for free <a target="_blank" style="text-decoration:underline" href="https://app.freecurrencyapi.com/register">here</a>.', 'xprcheckout-webauth-gateway-for-woocommerce'), 
         'desc_tip'      => false,
       ),
     );
@@ -335,7 +335,7 @@ wp_enqueue_script('xprcheckout-admin-config', XPRCHECKOUT_ROOT_URL . 'assets/js/
   
 function xprcheckout_redirect_on_new_order($order) {
   
-    if(WC()->session->chosen_payment_method == 'xprcheckout_webauth_gateway'){
+    if(WC()->session->chosen_payment_method == 'xprcheckout-webauth-gateway-for-woocommerce'){
    $this->xprcheckout_redirect_to_payment_page();
    
     }

@@ -12,7 +12,10 @@ function xprcheckout_register_transaction_verification_routes()
   register_rest_route('xprcheckout/v1', '/verify-settlement', array(
     'methods'  => 'POST',
     'callback' => 'xprcheckout_handle_transaction_check',
-    'permission_callback' => '__return_true'
+    'permission_callback' => function() {
+      // This endpoint needs to be public for payment verification
+      return true;
+    }
   ));
 }
 

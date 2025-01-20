@@ -86,7 +86,7 @@ function run_proton_wc_gateway()
 function xprcheckout_admin_notice_success() {
   ?>
   <div  class="notice notice-error">
-      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout_webauth_gateway' ); ?></b></p>
+      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout-webauth-gateway-for-woocommerce' ); ?></b></p>
       <a href="/wp-admin/plugin-install.php?s=woo&tab=search&type=term">Install Woocommerce </a>
       <p></p>
   </div>
@@ -166,13 +166,13 @@ function xprcheckout_redirect_to_payment (){
 
 }
 add_action( 'template_redirect', 'xprcheckout_redirect_to_payment' );
-add_action( 'woocommerce_blocks_loaded', 'xprcheckout_webauth_gateway_block_support');
-function xprcheckout_webauth_gateway_block_support(){
+add_action( 'woocommerce_blocks_loaded', 'xprcheckout-webauth-gateway-for-woocommerce_block_support');
+function xprcheckout-webauth-gateway-for-woocommerce_block_support(){
   require_once XPRCHECKOUT_ROOT_DIR . 'includes/supports/block-support.php';
 }
 
-add_action( 'woocommerce_blocks_payment_method_type_registration', 'xprcheckout_webauth_gateway_block_method_type_registration');
-function xprcheckout_webauth_gateway_block_method_type_registration ($payment_method_registry){
+add_action( 'woocommerce_blocks_payment_method_type_registration', 'xprcheckout-webauth-gateway-for-woocommerce_block_method_type_registration');
+function xprcheckout-webauth-gateway-for-woocommerce_block_method_type_registration ($payment_method_registry){
   $payment_method_registry->register( new XPRCheckout_BlocksSupport() );
 }
 
