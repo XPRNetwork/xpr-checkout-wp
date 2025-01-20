@@ -1,5 +1,5 @@
 <?php 
-function toPrecision($value, $precision, $mode = 'ceil', $forceDecimal = true) {
+function xprcheckout_to_precision($value, $precision, $mode = 'ceil', $forceDecimal = true) {
   $multiplier = pow(10, $precision);
   $powValue = $value * $multiplier;
 

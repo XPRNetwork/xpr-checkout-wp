@@ -1,5 +1,5 @@
 <?php
-class ProtonWcGateway
+class XPRCheckout_WcGateway
 {
 
   function __construct()
@@ -26,8 +26,8 @@ class ProtonWcGateway
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Refund.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/RegStore.php';
 
-    require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/ProtonRPC.php';
-    require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/PriceRateRPC.php';
+    require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/XPRCheckout_ProtonRPC.php';
+    require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/XPRCheckout_PriceRateRPC.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/TokensPricesRPC.php';
     
     

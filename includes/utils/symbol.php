@@ -1,5 +1,5 @@
 <?php
-function symbolFromU64($value) {
+function xprcheckout_symbol_from_u64($value) {
     
     $value = (string)$value;
     $precision = bcmod($value, '256');

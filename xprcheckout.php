@@ -1,4 +1,5 @@
 <?php
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 /*
  * Plugin Name: XPRCheckout - WebAuth Gateway for e-commerce
@@ -6,8 +7,10 @@
  * Author: Metallicus Team
  * Author URI: https://www.metallicus.com/
  * Version: ##VERSION_TAG##
- * slug: xprcheckout-webauth-gateway
- * Text Domain: xprcheckout_webauth_gateway
+ * Requires at least: 6.0
+ * Requires PHP: 7.0
+ * Requires Plugins: woocommerce
+ * Text Domain: xprcheckout-webauth-gateway-for-woocommerce
  * Domain Path: /i18n/languages/
  * License: GPLv2 or later
  */
@@ -35,34 +38,34 @@ define('XPRCHECKOUT_TABLE_FIAT_RATES', 'fiat_rates');
 function xprcheckout_install(){
 
   global $wpdb;
-	global $jal_db_version;
+        global $xprcheckout_db_version;
 
-	$tokenTableName = $wpdb->prefix . XPRCHECKOUT_TABLE_TOKEN_RATES;
-	$fiatTableName = $wpdb->prefix . XPRCHECKOUT_TABLE_FIAT_RATES;
-	
-	$charset_collate = $wpdb->get_charset_collate();
+        $tokenTableName = $wpdb->prefix . XPRCHECKOUT_TABLE_TOKEN_RATES;
+        $fiatTableName = $wpdb->prefix . XPRCHECKOUT_TABLE_FIAT_RATES;
+        
+        $charset_collate = $wpdb->get_charset_collate();
 
-	$tokenRatesSql = "CREATE TABLE $tokenTableName (
+        $tokenRatesSql = "CREATE TABLE $tokenTableName (
     symbol tinytext NOT NULL,
     contract text NOT NULL,
     token_precision int DEFAULT 0 NOT NULL,
     rate float DEFAULT 0 NOT NULL,
     updated datetime DEFAULT NOW() NOT NULL,
     PRIMARY KEY (symbol(12))
-	) $charset_collate;";
-	
+        ) $charset_collate;";
+        
   $fiatRatesSql = "CREATE TABLE $fiatTableName (
     symbol tinytext NOT NULL,
     rate float DEFAULT 0 NOT NULL,
     updated datetime DEFAULT NOW() NOT NULL,
     PRIMARY KEY (symbol(12))
-	) $charset_collate;";
+        ) $charset_collate;";
 
-	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-	dbDelta( $tokenRatesSql );
-	dbDelta( $fiatRatesSql );
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta( $tokenRatesSql );
+        dbDelta( $fiatRatesSql );
 
-	add_option( 'xprcheckout_db_version', XPRCHECKOUT_VERSION );
+        add_option( 'xprcheckout_db_version', XPRCHECKOUT_VERSION );
 
 }
 register_activation_hook( __FILE__, 'xprcheckout_install' );
@@ -72,15 +75,15 @@ function run_proton_wc_gateway()
 {
 
   if ( class_exists( 'WooCommerce' ) ) {
-    $plugin = new ProtonWcGateway();
+    $plugin = new XPRCheckout_WcGateway();
     $plugin->run();
   }else {
-    add_action( 'admin_notices', 'sample_admin_notice_success' );
+    add_action( 'admin_notices', 'xprcheckout_admin_notice_success' );
     
   }
 }
 
-function sample_admin_notice_success() {
+function xprcheckout_admin_notice_success() {
   ?>
   <div  class="notice notice-error">
       <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout_webauth_gateway' ); ?></b></p>
@@ -109,7 +112,7 @@ add_action( 'init', 'xprcheckout_register_endpoint' );
 
 function xprcheckout_register_query_vars($vars){
   $vars[] = 'paymentKey';
-	return $vars;
+        return $vars;
 }
 add_filter( 'query_vars', 'xprcheckout_register_query_vars' );
 
@@ -170,7 +173,7 @@ function xprcheckout_webauth_gateway_block_support(){
 
 add_action( 'woocommerce_blocks_payment_method_type_registration', 'xprcheckout_webauth_gateway_block_method_type_registration');
 function xprcheckout_webauth_gateway_block_method_type_registration ($payment_method_registry){
-  $payment_method_registry->register( new WC_XPRCheckoutBlocksSupport() );
+  $payment_method_registry->register( new XPRCheckout_BlocksSupport() );
 }
 
 run_proton_wc_gateway();

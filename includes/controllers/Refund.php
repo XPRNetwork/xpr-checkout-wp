@@ -99,18 +99,17 @@ class Refund
     
 
 ?>
-  <script>
-    <?php 
-      $adminConfig =Config::GetAdminConfig(); 
-      $baseConfig = Config::GetBaseConfig();
-      $baseConfig['amountToRefund']= $order->get_meta('_paid_tokens',true);
-      $baseConfig['accountToRefund']= $order->get_meta('_buyer_account',true);
-      $baseConfig['requestedPaymentKey']= $order->get_meta('_payment_key',true);
-      $baseConfig['orderStatus']= $order->get_status();
-      $baseConfig['orderStatus']= $order->get_status();
-    ?>
-    window.pluginConfig = <?php echo wp_json_encode(array_merge($baseConfig,$adminConfig)); ?>;
-  </script>
+<?php
+$adminConfig = Config::GetAdminConfig();
+$baseConfig = Config::GetBaseConfig();
+$baseConfig['amountToRefund'] = $order->get_meta('_paid_tokens', true);
+$baseConfig['accountToRefund'] = $order->get_meta('_buyer_account', true);
+$baseConfig['requestedPaymentKey'] = $order->get_meta('_payment_key', true);
+$baseConfig['orderStatus'] = $order->get_status();
+
+wp_localize_script('xprcheckout-refund-config', 'xprcheckoutConfig', array_merge($baseConfig, $adminConfig));
+wp_enqueue_script('xprcheckout-refund-config', XPRCHECKOUT_ROOT_URL . 'assets/js/xprcheckout-config.js', array(), XPRCHECKOUT_VERSION, true);
+?>
   <?php 
     $transactionId = $order->get_meta('_tx_id');
     $network = $order->get_meta('_network');

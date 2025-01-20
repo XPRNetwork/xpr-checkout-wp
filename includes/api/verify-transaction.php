@@ -11,12 +11,12 @@ function xprcheckout_register_transaction_verification_routes()
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
   register_rest_route('xprcheckout/v1', '/verify-settlement', array(
     'methods'  => 'POST',
-    'callback' => 'handle_transaction_check',
+    'callback' => 'xprcheckout_handle_transaction_check',
     'permission_callback' => '__return_true'
   ));
 }
 
-function handle_transaction_check($request)
+function xprcheckout_handle_transaction_check($request)
 {
 
   global $wpdb;

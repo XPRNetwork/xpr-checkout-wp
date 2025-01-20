@@ -1,6 +1,6 @@
 <?php
 
-class TokenPrices
+class XPRCheckout_XPRCheckout_TokenPrices
 {
   private $priceValidityInterval = 21600000;
 
@@ -8,7 +8,7 @@ class TokenPrices
   {
   }
 
-  public function getTokenPrices()
+  public function getXPRCheckout_TokenPrices()
   {
     global $wpdb;
     $paymentGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];

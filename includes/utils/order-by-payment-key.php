@@ -1,5 +1,5 @@
 <?php 
-function get_order_by_payment_key ($paymentKey){
+function xprcheckout_get_order_by_payment_key ($paymentKey){
   $args = array(
     'post_type'      => 'shop_order',
     'post_status'    => 'any',
