@@ -1,5 +1,5 @@
 <?php
-class ProtonRPC
+class XPRCheckout_XPRCheckout_ProtonRPC
 {
   private $endpoint;
 

@@ -256,18 +256,16 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     ob_start();
 ?>
 
-<script>
-        <?php 
-          
-          $baseConfig = Config::GetBaseConfig();
-          $baseConfig['walletInputSelector']= "#woocommerce_xprcheckout_wallet";
-          $baseConfig['networkFieldSelector']= "#woocommerce_xprcheckout_network";
-          $adminConfig =Config::GetAdminConfig(); 
-          $extendedConfig = array_merge($baseConfig,$adminConfig);
-          
-          ?>
-          window.pluginConfig = <?php echo wp_json_encode($extendedConfig); ?>;
-      </script>
+<?php
+$baseConfig = Config::GetBaseConfig();
+$baseConfig['walletInputSelector'] = "#woocommerce_xprcheckout_wallet";
+$baseConfig['networkFieldSelector'] = "#woocommerce_xprcheckout_network";
+$adminConfig = Config::GetAdminConfig();
+$extendedConfig = array_merge($baseConfig, $adminConfig);
+
+wp_localize_script('xprcheckout-admin-config', 'xprcheckoutConfig', $extendedConfig);
+wp_enqueue_script('xprcheckout-admin-config', XPRCHECKOUT_ROOT_URL . 'assets/js/xprcheckout-config.js', array(), XPRCHECKOUT_VERSION, true);
+?>
       
     <tr valign="top">
       
@@ -365,18 +363,18 @@ public function xprcheckout_add_partial_fill_order_status( $order_statuses ) {
 private function xprcheckout_redirect_to_payment_page(){
 
     if ( ! is_ajax() ) {
-			wp_safe_redirect(
-				apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', home_url('/xprcheckout/payments/'.WC()->session->get('paymentKey')), $order )
-			);
-			exit;
-		}
+                        wp_safe_redirect(
+                                apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', home_url('/xprcheckout/payments/'.WC()->session->get('paymentKey')), $order )
+                        );
+                        exit;
+                }
 
-		wp_send_json(
-			array(
-				'result'   => 'success',
-				'redirect' => apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', home_url('/xprcheckout/payments/'.WC()->session->get('paymentKey')), $order ),
-			)
-		);
+                wp_send_json(
+                        array(
+                                'result'   => 'success',
+                                'redirect' => apply_filters( 'woocommerce_checkout_no_payment_needed_redirect', home_url('/xprcheckout/payments/'.WC()->session->get('paymentKey')), $order ),
+                        )
+                );
     exit();
   }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class PriceRateRPC
+class XPRCheckout_XPRCheckout_PriceRateRPC
 {
 
   private $priceValidityInterval = 21600000;

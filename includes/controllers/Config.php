@@ -37,7 +37,7 @@ class Config
     $wcCheckoutId = wc_get_page_id( 'checkout' );
     $wcCheckoutUrl = get_permalink( $wcCheckoutId);
 
-    $order = get_order_by_payment_key($orderPaymentKey);
+    $order = xprcheckout_get_order_by_payment_key($orderPaymentKey);
     $wcThankyouUrl = $order->get_view_order_url();
     $baseConfig = self::GetBaseConfig();
     $extendedConfig =  [

@@ -11,12 +11,12 @@ function xprcheckout_register_convert_order()
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
   register_rest_route('xprcheckout/v2', '/order-payment', array(
     'methods'  => 'POST',
-    'callback' => 'handle_convert_order',
+    'callback' => 'xprcheckout_handle_convert_order',
     'permission_callback' => '__return_true'
   ));
 }
 
-function handle_convert_order ($request){
+function xprcheckout_xprcheckout_handle_convert_order ($request){
   $params = $request->get_params();
 
   $returnResult = new WP_Error("order_not_found", "Order not found", [
@@ -47,15 +47,15 @@ if (!isset($params['paymentKey'])) {
   $customCurrencyApiKey = $xprcheckoutGateway->get_option('currencyApi');
   $currencyApiKey = empty($customCurrencyApiKey) ? XPRCHECKOUT_PRICE_RATE_API_KEY : $customCurrencyApiKey;
   //TODO allow user to provide API key and add link under the config page field
-  $priceRPC = new PriceRateRPC($currencyApiKey);
+  $priceRPC = new XPRCheckout_PriceRateRPC($currencyApiKey);
   $convertedRate = $priceRPC->getUSDConvertionRate(get_woocommerce_currency(), $existingOrder->get_total());
   
   $returnResult = new WP_REST_Response();
-  $tokenRPC = new TokenPrices(XPRCHECKOUT_TESTNET_ENDPOINT);
-  $tokensPrices = $tokenRPC->getTokenPrices();
+  $tokenRPC = new XPRCheckout_TokenPrices(XPRCHECKOUT_TESTNET_ENDPOINT);
+  $tokensPrices = $tokenRPC->getXPRCheckout_TokenPrices();
   $converted = [];
   foreach ($tokensPrices as $tPrice){
-    $converted[] = convertedTokenFactory($tPrice,$convertedRate);
+    $converted[] = xprcheckout_converted_token_factory($tPrice,$convertedRate);
   }
   $network = $existingOrder->get_meta('_network');
   $settlement=OrderResolver::Process($params['paymentKey'],$converted,$network);
@@ -103,12 +103,12 @@ if (!isset($params['paymentKey'])) {
   return $returnResult;
 };
 
-function convertedTokenFactory ($token,$usdAmount){
+function xprcheckout_converted_token_factory ($token,$usdAmount){
 
   $rawConversion = floatval($token['quote']['price_usd']) > 0 ? $usdAmount/$token['quote']['price_usd'] : 0;
   $converted = new stdClass ();
   $converted->symbol=$token['symbol'];
-  $converted->amount = toPrecision($rawConversion,$token['decimals'],'ceil',true);
+  $converted->amount = xprcheckout_to_precision($rawConversion,$token['decimals'],'ceil',true);
   $converted->logo = $token['logo'];
   $converted->contract = $token['contract'];
   return $converted;       
