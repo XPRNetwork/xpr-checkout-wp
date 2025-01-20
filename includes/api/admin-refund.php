@@ -23,7 +23,7 @@ function xprcheckout_register_payments_with_orders_routes()
 ]);
 }
 
-function xprcheckout_xprcheckout_admin_only_permission_check($request) {
+function xprcheckout_admin_only_permission_check($request) {
   
   if (!is_user_logged_in()) {
     return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
@@ -41,7 +41,7 @@ return new WP_Error('rest_forbidden', __('You do not have permission to access t
 }
 
 
-function xprcheckout_xprcheckout_handle_refund_request($request)
+function xprcheckout_handle_refund_request($request)
 {
 
 

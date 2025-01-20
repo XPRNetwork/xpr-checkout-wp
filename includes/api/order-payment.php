@@ -16,7 +16,7 @@ function xprcheckout_register_convert_order()
   ));
 }
 
-function xprcheckout_xprcheckout_handle_convert_order ($request){
+function xprcheckout_handle_convert_order ($request){
   $params = $request->get_params();
 
   $returnResult = new WP_Error("order_not_found", "Order not found", [

@@ -16,7 +16,7 @@ function xprcheckout_register_transaction_verification_routes()
   ));
 }
 
-function xprcheckout_xprcheckout_handle_transaction_check($request)
+function xprcheckout_handle_transaction_check($request)
 {
 
   global $wpdb;

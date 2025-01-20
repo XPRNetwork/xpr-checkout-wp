@@ -46,7 +46,7 @@ function xprcheckout_register_save_wallet_config_routes()
 
 }
 
-function xprcheckout_xprcheckout_admin_only_save_wallet_permission_check($request) {
+function xprcheckout_admin_only_save_wallet_permission_check($request) {
   
   if (!is_user_logged_in()) {
     return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
@@ -64,7 +64,7 @@ return new WP_Error('rest_forbidden', __('You do not have permission to access t
 }
 
 
-function xprcheckout_xprcheckout_handle_save_config_request($request){
+function xprcheckout_handle_save_config_request($request){
 
   $walletsJson = $request->get_param('wallets');
   $baseResponse = new stdClass();
