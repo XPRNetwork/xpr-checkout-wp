@@ -1,47 +1,38 @@
-(function (factory) {
-  typeof define === 'function' && define.amd ? define(factory) :
-  factory();
-})((function () { 'use strict';
-
-  var _react = _interopRequireDefault(require("react"));
-  function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
-  // Ensure TypeScript understands window properties
-
-  // Extract functions and settings from the global objects
+(function(factory) {
+  typeof define === "function" && define.amd ? define(factory) : factory();
+})(function() {
+  "use strict";
+  var _jsxRuntime = require("react/jsx-runtime");
   var registerPaymentMethod = window.wc.wcBlocksRegistry.registerPaymentMethod;
   var decodeEntities = window.wp.htmlEntities.decodeEntities;
   var getSetting = window.wc.wcSettings.getSetting;
-
-  // Retrieve settings and define the label
   var settings = getSetting("xprcheckout_data", {});
   var label = decodeEntities("XPRCheckout");
-
-  // Define Content component with settings description
-  var Content = function Content() {
-    return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, decodeEntities(settings.description || ""));
+  var Content = function Content2() {
+    return /* @__PURE__ */ (0, _jsxRuntime.jsx)(_jsxRuntime.Fragment, {
+      children: decodeEntities(settings.description || "")
+    });
   };
-
-  // Define Label component to display the payment method label
-  var Label = function Label(props) {
+  var Label = function Label2(props) {
     var PaymentMethodLabel = props.components.PaymentMethodLabel;
-    return /*#__PURE__*/_react["default"].createElement(PaymentMethodLabel, {
+    return /* @__PURE__ */ (0, _jsxRuntime.jsx)(PaymentMethodLabel, {
       text: label
     });
   };
-
-  // Register the payment method with TypeScript typing
   registerPaymentMethod({
     name: "xprcheckout",
-    label: /*#__PURE__*/_react["default"].createElement(Label, {
+    label: /* @__PURE__ */ (0, _jsxRuntime.jsx)(Label, {
       components: {
         PaymentMethodLabel: function PaymentMethodLabel(_ref) {
           var text = _ref.text;
-          return /*#__PURE__*/_react["default"].createElement("span", null, text);
+          return /* @__PURE__ */ (0, _jsxRuntime.jsx)("span", {
+            children: text
+          });
         }
       }
     }),
-    content: /*#__PURE__*/_react["default"].createElement(Content, null),
-    edit: /*#__PURE__*/_react["default"].createElement(Content, null),
+    content: /* @__PURE__ */ (0, _jsxRuntime.jsx)(Content, {}),
+    edit: /* @__PURE__ */ (0, _jsxRuntime.jsx)(Content, {}),
     canMakePayment: function canMakePayment() {
       return true;
     },
@@ -50,6 +41,5 @@
       features: settings.supports
     }
   });
-
-}));
+});
 //# sourceMappingURL=index.js.map
