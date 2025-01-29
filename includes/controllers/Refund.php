@@ -53,10 +53,17 @@ class Refund
     if($this->isCurrentScreenIsOrderEdit()){
       global $post;
       $order = wc_get_order($post->ID);
+      wp_register_script(XPRCHECKOUT_REFUND_APP_HANDLE, XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.js?v=' . uniqid(), [], time(),['in_footer'=>true]);
+      $adminConfig =Config::GetAdminConfig(); 
+      $baseConfig = Config::GetBaseConfig();
+      $baseConfig['amountToRefund']= $order->get_meta('_paid_tokens',true);
+      $baseConfig['accountToRefund']= $order->get_meta('_buyer_account',true);
+      $baseConfig['requestedPaymentKey']= $order->get_meta('_payment_key',true);
+      $baseConfig['orderStatus']= $order->get_status();
+      $baseConfig['orderStatus']= $order->get_status();
+      wp_localize_script(XPRCHECKOUT_REFUND_APP_HANDLE,'pluginConfig',array_merge($baseConfig,$adminConfig));
+      wp_enqueue_script(XPRCHECKOUT_REFUND_APP_HANDLE);
       wp_enqueue_style('xprcheckout_admin_refund_style', XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.css?v=' . uniqid(),[], time());
-      wp_register_script_module('xprcheckout_admin_refund', XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.js?v=' . uniqid(), [], time());
-      
-      wp_enqueue_script_module('xprcheckout_admin_refund');
     };
   }
 
@@ -109,7 +116,6 @@ class Refund
       $baseConfig['orderStatus']= $order->get_status();
       $baseConfig['orderStatus']= $order->get_status();
     ?>
-    window.pluginConfig = <?php echo wp_json_encode(array_merge($baseConfig,$adminConfig)); ?>;
   </script>
   <?php 
     $transactionId = $order->get_meta('_tx_id');
@@ -122,8 +128,6 @@ class Refund
       <div>
         <h4>Tokens paid</h4>
         <?php 
-          
-          
           if ($order->get_payment_method() == "xprcheckout") {
             echo '<span style="font-weight:bold">' . esc_attr($amount) . '</span>';
           } else {

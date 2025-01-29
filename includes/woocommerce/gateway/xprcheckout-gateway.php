@@ -207,9 +207,15 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     };
 
     if (!$this->is_available()) return;
-    wp_register_script_module('xprcheckout_public', XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.js?v='. uniqid(), [], time());
-    wp_enqueue_script_module('xprcheckout_public');
-    
+
+    global $wp_query;
+  $g = new XPRCheckoutGateway(); 
+  
+  $orderPaymentKey = $wp_query->query_vars['paymentKey'];
+  $baseConfig = Config::GetConfig($orderPaymentKey);
+  
+    wp_register_script(XPRCHECKOUT_CHECKOUT_APP_HANDLE, XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.js?v='. uniqid(), [], time(),['in_footer'=>true]);
+    wp_localize_script(XPRCHECKOUT_CHECKOUT_APP_HANDLE,'pluginConfig',$baseConfig);
     wp_enqueue_style('xprcheckout_public_style', XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.css?v='. uniqid(),[], time());
     
   }
@@ -266,7 +272,7 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
           $extendedConfig = array_merge($baseConfig,$adminConfig);
           
           ?>
-          window.pluginConfig = <?php echo wp_json_encode($extendedConfig); ?>;
+          //window.pluginConfig = <?php echo wp_json_encode($extendedConfig); ?>;
       </script>
       
     <tr valign="top">

@@ -30,6 +30,10 @@ define('XPRCHECKOUT_PRICE_RATE_API_KEY', 'fca_live_10WmLkCu6Xdz9WV8zmkXAuCAkrrbk
 define('XPRCHECKOUT_TABLE_TOKEN_RATES', 'token_rates');
 define('XPRCHECKOUT_TABLE_FIAT_RATES', 'fiat_rates');
 
+define('XPRCHECKOUT_CHECKOUT_APP_HANDLE', 'xprcheckout_public');
+define('XPRCHECKOUT_REFUND_APP_HANDLE', 'xprcheckout_admin_refund');
+define('XPRCHECKOUT_REGSTORE_APP_HANDLE', 'xprcheckout_admin_regstore');
+
 
 
 function xprcheckout_install(){
