@@ -1,16 +1,20 @@
 <?php
-
 /*
  * Plugin Name: XPRCheckout - WebAuth Gateway for e-commerce
  * Description: Allow user to pay securely with with multiple crypto currencies through WebAuth
  * Author: Metallicus Team
  * Author URI: https://www.metallicus.com/
  * Version: ##VERSION_TAG##
- * slug: xprcheckout-webauth-gateway
- * Text Domain: xprcheckout_webauth_gateway
+ * slug: xprcheckout-webauth-gateway-for-e-commerce
+ * Text Domain: xprcheckout-webauth-gateway-for-e-commerce 
  * Domain Path: /i18n/languages/
  * License: GPLv2 or later
+ * Requires at least: 6.0
+ * Requires PHP: 7.0
+ * Requires Plugins: woocommerce
  */
+
+ 
 
 define('XPRCHECKOUT_VERSION', '##VERSION_TAG##');
 define('XPRCHECKOUT_ROOT_DIR', plugin_dir_path(__FILE__));
@@ -29,6 +33,10 @@ define('XPRCHECKOUT_PRICE_RATE_API_ENDPOINT', 'https://api.freecurrencyapi.com/v
 define('XPRCHECKOUT_PRICE_RATE_API_KEY', 'fca_live_10WmLkCu6Xdz9WV8zmkXAuCAkrrbkEoMPG6gaMcu');
 define('XPRCHECKOUT_TABLE_TOKEN_RATES', 'token_rates');
 define('XPRCHECKOUT_TABLE_FIAT_RATES', 'fiat_rates');
+
+define('XPRCHECKOUT_CHECKOUT_APP_HANDLE', 'xprcheckout_public');
+define('XPRCHECKOUT_REFUND_APP_HANDLE', 'xprcheckout_admin_refund');
+define('XPRCHECKOUT_REGSTORE_APP_HANDLE', 'xprcheckout_admin_regstore');
 
 
 
@@ -68,22 +76,22 @@ function xprcheckout_install(){
 register_activation_hook( __FILE__, 'xprcheckout_install' );
 
 include_once XPRCHECKOUT_ROOT_DIR . '/includes/xprcheckout-gateway.core.php';
-function run_proton_wc_gateway()
+function xprcheckout_gateway_start()
 {
 
   if ( class_exists( 'WooCommerce' ) ) {
-    $plugin = new ProtonWcGateway();
+    $plugin = new XPRCheckout_WCGateway();
     $plugin->run();
   }else {
-    add_action( 'admin_notices', 'sample_admin_notice_success' );
+    add_action( 'admin_notices', 'xprcheckout_admin_notice_wc_required' );
     
   }
 }
 
-function sample_admin_notice_success() {
+function xprcheckout_admin_notice_wc_required() {
   ?>
   <div  class="notice notice-error">
-      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout_webauth_gateway' ); ?></b></p>
+      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout-webauth-gateway-for-e-commerce' ); ?></b></p>
       <a href="/wp-admin/plugin-install.php?s=woo&tab=search&type=term">Install Woocommerce </a>
       <p></p>
   </div>
@@ -170,7 +178,7 @@ function xprcheckout_webauth_gateway_block_support(){
 
 add_action( 'woocommerce_blocks_payment_method_type_registration', 'xprcheckout_webauth_gateway_block_method_type_registration');
 function xprcheckout_webauth_gateway_block_method_type_registration ($payment_method_registry){
-  $payment_method_registry->register( new WC_XPRCheckoutBlocksSupport() );
+  $payment_method_registry->register( new XPRCheckout_BlocksSupport() );
 }
 
-run_proton_wc_gateway();
+xprcheckout_gateway_start();

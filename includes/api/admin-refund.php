@@ -10,8 +10,8 @@ function xprcheckout_register_payments_with_orders_routes()
   
   register_rest_route('xprcheckout/v2/admin', '/refund', [
     'methods' => 'POST',
-    'callback' => 'handle_refund_request',
-    'permission_callback' => 'admin_only_permission_check',
+    'callback' => 'xprcheckout_refund_request_handler',
+    'permission_callback' => 'xprcheckout_admin_only_permission_check',
     'args' => [
         'paymentKey' => [
             'required' => true,
@@ -23,10 +23,10 @@ function xprcheckout_register_payments_with_orders_routes()
 ]);
 }
 
-function admin_only_permission_check($request) {
+function xprcheckout_admin_only_permission_check($request) {
   
   if (!is_user_logged_in()) {
-    return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
+    return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout-webauth-gateway-for-e-commerce'), ['status' => 403]);
 }
 
 // Get the current user
@@ -37,11 +37,11 @@ if (in_array('administrator', (array) $user->roles, true)) {
     return true;
 }
 
-return new WP_Error('rest_forbidden', __('You do not have permission to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
+return new WP_Error('rest_forbidden', __('You do not have permission to access this endpoint.','xprcheckout-webauth-gateway-for-e-commerce'), ['status' => 403]);
 }
 
 
-function handle_refund_request($request)
+function xprcheckout_refund_request_handler($request)
 {
 
 
@@ -51,7 +51,7 @@ function handle_refund_request($request)
     $baseResponse = new stdClass();
     $baseResponse->refunded=false;
     
-    $order = get_order_by_payment_key($paymentKey);
+    $order = xprcheckout_get_order_by_payment_key($paymentKey);
     if(!is_null($order)){
         $order->set_status('refunded');
         $order->save();

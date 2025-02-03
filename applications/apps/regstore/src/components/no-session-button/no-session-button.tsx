@@ -3,7 +3,7 @@ import {useXPRN} from "xprnkit";
 import {
   isValidStoreAccountConfig,
 } from "../../utils/account";
-import {useCallback, useEffect, useMemo} from "react";
+import React,{useCallback, useEffect, useMemo} from "react";
 import { RegStoreConfig } from "../../global";
 
 type PropsType = {

@@ -1,5 +1,8 @@
 <?php
-function symbolFromU64($value) {
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+  }
+function xprcheckout_u64_to_symbol($value) {
     
     $value = (string)$value;
     $precision = bcmod($value, '256');

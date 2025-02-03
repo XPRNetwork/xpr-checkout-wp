@@ -1,7 +1,9 @@
 <?php
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
-
-final class WC_XPRCheckoutBlocksSupport extends AbstractPaymentMethodType {
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
+final class XPRCheckout_BlocksSupport extends AbstractPaymentMethodType {
 	
 	private $gateway;
 	

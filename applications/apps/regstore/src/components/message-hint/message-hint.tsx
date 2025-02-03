@@ -1,6 +1,6 @@
 import {useXPRN} from "xprnkit";
 import {useRegstore} from "../../provider/regstore-provider";
-import {useMemo} from "react";
+import React,{useMemo} from "react";
 
 export const MessageHint = () => {
   const {session} = useXPRN();

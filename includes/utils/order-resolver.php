@@ -1,6 +1,8 @@
 <?php 
 namespace xprcheckout\utils;
-
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
 class OrderResolver {
 
   static function Process ($paymentKey,$convertedTokens,$network){
@@ -11,7 +13,7 @@ class OrderResolver {
     $baseResponse->payment = null;
 
     $rpcEndPoint = $network=='mainnet' ? XPRCHECKOUT_MAINNET_ENDPOINT : XPRCHECKOUT_TESTNET_ENDPOINT;
-  $rpc = new \ProtonRPC($rpcEndPoint);
+  $rpc = new \XPRCheckout_ProtonRPC($rpcEndPoint);
   $resolved = $rpc->verifyPaymentStatusByKey($paymentKey);
   if ($resolved){
 

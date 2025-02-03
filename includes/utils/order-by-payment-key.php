@@ -1,5 +1,8 @@
 <?php 
-function get_order_by_payment_key ($paymentKey){
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
+function xprcheckout_get_order_by_payment_key ($paymentKey){
   $args = array(
     'post_type'      => 'shop_order',
     'post_status'    => 'any',

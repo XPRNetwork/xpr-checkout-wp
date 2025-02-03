@@ -1,9 +1,16 @@
 <?php
-use xprcheckout\utils\OrderResolver;
+
+/*
+==================================================
+Public route that fetch public data in order to 
+check on-chain order settlement status.
+==================================================
+*/
+
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly.
 }
-
+use xprcheckout\utils\OrderResolver;
 add_action('rest_api_init', 'xprcheckout_register_transaction_verification_routes');
 
 function xprcheckout_register_transaction_verification_routes()
@@ -11,12 +18,20 @@ function xprcheckout_register_transaction_verification_routes()
   // register_rest_route() handles more arguments but we are going to stick to the basics for now.
   register_rest_route('xprcheckout/v1', '/verify-settlement', array(
     'methods'  => 'POST',
-    'callback' => 'handle_transaction_check',
-    'permission_callback' => '__return_true'
+    'callback' => 'xprcheckout_transaction_verification_handler',
+    'permission_callback' => 'xprcheckout_transaction_verification_permission_check'
   ));
 }
 
-function handle_transaction_check($request)
+function xprcheckout_transaction_verification_permission_check($request) {
+  // Convert __return_true to a true handler, but it remain a public route.
+  if (is_user_logged_in()) {
+      return true;
+  }
+  return true;
+}
+
+function xprcheckout_transaction_verification_handler($request)
 {
 
   global $wpdb;

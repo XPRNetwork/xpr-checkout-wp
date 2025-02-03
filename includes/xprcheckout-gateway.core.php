@@ -1,5 +1,8 @@
 <?php
-class ProtonWcGateway
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
+class XPRCheckout_WCGateway
 {
 
   function __construct()

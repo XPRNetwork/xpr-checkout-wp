@@ -1,5 +1,5 @@
 import classNames from "classnames"
-
+import React from 'react';
 type StoreNameFieldProps = React.HTMLAttributes<HTMLDivElement> & {step?:string,store?:string,network?:string}
 export const StoreNameField: React.FunctionComponent<StoreNameFieldProps> = ({children,store,network,step}) => {
   

@@ -52,8 +52,14 @@ class RegStore
    
     
     if (isset($current_screen) && $current_screen->id == 'woocommerce_page_wc-settings') {
-      wp_register_script_module('xprcheckout_admin_regstore', XPRCHECKOUT_ROOT_URL . 'dist/regstore/build/app.js?v=' . uniqid(), [], time());
-      wp_enqueue_script_module('xprcheckout_admin_regstore');
+      wp_register_script(XPRCHECKOUT_REGSTORE_APP_HANDLE, XPRCHECKOUT_ROOT_URL . 'dist/regstore/build/app.js?v=' . uniqid(), [], time(),['in_footer'=>true]);
+      $baseConfig = Config::GetBaseConfig();
+          $baseConfig['walletInputSelector']= "#woocommerce_xprcheckout_wallet";
+          $baseConfig['networkFieldSelector']= "#woocommerce_xprcheckout_network";
+          $adminConfig =Config::GetAdminConfig(); 
+          $extendedConfig = array_merge($baseConfig,$adminConfig);
+      wp_localize_script(XPRCHECKOUT_REGSTORE_APP_HANDLE,'pluginConfig',$extendedConfig);
+      wp_enqueue_script(XPRCHECKOUT_REGSTORE_APP_HANDLE);
       wp_enqueue_style('xprcheckout_admin_regstore_style', XPRCHECKOUT_ROOT_URL . 'dist/regstore/build/app.css?v=' . uniqid(),[], time());
     };
   }

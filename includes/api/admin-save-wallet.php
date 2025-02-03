@@ -10,8 +10,8 @@ function xprcheckout_register_save_wallet_config_routes()
   
   register_rest_route('xprcheckout/v2/admin', '/save-wallet-config', [
     'methods' => 'POST',
-    'callback' => 'handle_save_config_request',
-    'permission_callback' => 'admin_only_save_wallet_permission_check',
+    'callback' => 'xprcheckout_save_config_request_handler',
+    'permission_callback' => 'xprcheckout_admin_only_save_wallet_permission_check',
     'args' => [
         'wallets' => [
             'required' => true,
@@ -46,10 +46,10 @@ function xprcheckout_register_save_wallet_config_routes()
 
 }
 
-function admin_only_save_wallet_permission_check($request) {
+function xprcheckout_admin_only_save_wallet_permission_check($request) {
   
   if (!is_user_logged_in()) {
-    return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
+    return new WP_Error('rest_forbidden', __('You must be logged in to access this endpoint.','xprcheckout-webauth-gateway-for-e-commerce'), ['status' => 403]);
 }
 
 // Get the current user
@@ -60,11 +60,11 @@ if (in_array('administrator', (array) $user->roles, true)) {
     return true;
 }
 
-return new WP_Error('rest_forbidden', __('You do not have permission to access this endpoint.','xprcheckout_webauth_gateway'), ['status' => 403]);
+return new WP_Error('rest_forbidden', __('You do not have permission to access this endpoint.','xprcheckout-webauth-gateway-for-e-commerce'), ['status' => 403]);
 }
 
 
-function handle_save_config_request($request){
+function xprcheckout_save_config_request_handler($request){
 
   $walletsJson = $request->get_param('wallets');
   $baseResponse = new stdClass();

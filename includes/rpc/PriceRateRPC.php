@@ -1,6 +1,8 @@
 <?php
-
-class PriceRateRPC
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
+class XPRCheckout_PriceRateRPC
 {
 
   private $priceValidityInterval = 21600000;

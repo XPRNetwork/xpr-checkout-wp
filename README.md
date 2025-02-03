@@ -1,7 +1,5 @@
 === XPRCheckout - WebAuth Gateway for e-commerce ===
-Requires at least: 6.0
 Tested up to: 6.7
-Requires PHP: 7.0
 Stable tag: ##VERSION_TAG##
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -16,6 +14,45 @@ This plugin provides a payment gateway for WooCommerce that enables users to pay
 XPR Checkout, through a hassle-free configuration, provides additional features to help store owners manage payment reconciliation, withdrawal, and refund inside the WooCommerce regular flow also driven by Webauth authentication. 
 
 Overall, this plugin helps to expand the use of cryptocurrencies through the proton chain in e-commerce, making it easier and more convenient for users to use their digital assets for online shopping.
+
+## External Services
+
+This plugin connects to several external services to provide its functionality:
+
+1. **FreeCurrencyAPI**
+   - Service: Used to obtain real-time currency exchange rates
+   - Data sent: Your woocommerce config base currency for rate conversion against USD
+   - Endpoint: https://api.freecurrencyapi.com/v1/latest
+   - Terms of Service: https://www.iubenda.com/terms-and-conditions/37154403
+   - Privacy Policy: https://freecurrencyapi.com/privacy-policy/
+
+2. **Bloks.io API**
+   - Service: Used to fetch XPRNetwork tokens information and prices
+   - Data sent: None (GET request only)
+   - Endpoint: https://www.api.bloks.io/proton/tokens
+  
+
+3. **RockerOne API**
+   - Service: Used for Proton blockchain interaction
+   - Data sent: Anonymous Transaction data for payments and refunds
+   - Endpoints: 
+     - Mainnet: https://api.rockerone.io
+     - Testnet: https://testnet.rockerone.io
+
+4. **XPR Network Explorer**
+   - Service: Used to view transaction details
+   - Data sent: None (only used for viewing transaction data)
+   - Endpoints:
+     - Mainnet: https://explorer.xprnetwork.org
+     - Testnet: https://testnet.explorer.xprnetwork.org
+   - Terms of Service: https://xprnetwork.org/terms
+   - Privacy Policy: https://explorer.xprnetwork.org/privacy-policy
+
+All data transmission to these services is necessary for the proper functioning of the payment gateway. The plugin requires these services to:
+- Convert currencies and provide accurate pricing
+- Verify transactions on the blockchain
+- Enable secure payment processing
+- Provide transaction tracking and verification
 
 ## Code structure
 

@@ -1,6 +1,8 @@
 <?php
-
-class TokenPrices
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
+class XPRCheckout_TokenPrices
 {
   private $priceValidityInterval = 21600000;
 

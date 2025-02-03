@@ -1,5 +1,5 @@
 import {useXPRN} from "xprnkit";
-import {useCallback} from "react";
+import React,{useCallback} from "react";
 import {useRegstore} from "../../provider/regstore-provider";
 import {StoreNameField} from "../store-name-field/store-name-field";
 

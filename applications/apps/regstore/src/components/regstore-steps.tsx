@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import React,{ useMemo } from "react"
 import { RegStoreSteps, useRegstore } from "../provider/regstore-provider"
 import { MessageHint } from "./message-hint/message-hint"
 import { ConnectButton } from "./register-store-button/connect-button"

@@ -1,4 +1,4 @@
-
+import React from 'react';
 type ProcessingProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const Processing = (props: ProcessingProps) => {

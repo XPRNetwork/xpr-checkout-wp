@@ -1,4 +1,5 @@
-import {useXPRN} from "xprnkit";
+import { useXPRN } from "xprnkit";
+import React from 'react';
 
 
 type DisconnectButtonProps = React.HTMLAttributes<HTMLDivElement>;

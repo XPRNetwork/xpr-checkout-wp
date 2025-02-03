@@ -1,5 +1,8 @@
 <?php
-class ProtonRPC
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
+class XPRCheckout_ProtonRPC
 {
   private $endpoint;
 

@@ -28,7 +28,7 @@ jobs:
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
-        filename: 'xprcheckout_webauth_gateway.zip'
+        filename: 'xprcheckout-webauth-gateway-for-e-commerce.zip'
         directory: '.'
         exclusions: '*.git* /*node_modules/* .editorconfig /*applications/*'
     - name: Generate JSON manifest
@@ -37,5 +37,5 @@ jobs:
       uses: ncipollo/release-action@v1.12.0
       with:
         tag: '${{  github.ref_name }}'
-        artifacts: "xprcheckout_webauth_gateway.zip,info.json"
+        artifacts: "xprcheckout-webauth-gateway-for-e-commerce.zip,info.json"
         token: ${{ secrets.GITHUB_TOKEN }}

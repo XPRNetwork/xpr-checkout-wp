@@ -1,5 +1,8 @@
 <?php 
-function toPrecision($value, $precision, $mode = 'ceil', $forceDecimal = true) {
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+  }
+function xprcheckout_convert_to_precision($value, $precision, $mode = 'ceil', $forceDecimal = true) {
   $multiplier = pow(10, $precision);
   $powValue = $value * $multiplier;
 
