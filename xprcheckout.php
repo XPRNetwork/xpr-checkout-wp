@@ -1,12 +1,16 @@
 <?php
+
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly.
+}
 /*
- * Plugin Name: XPRCheckout - WebAuth Gateway for e-commerce
+ * Plugin Name: XPRCheckout - WebAuth Gateway for Woocommerce
  * Description: Allow user to pay securely with with multiple crypto currencies through WebAuth
  * Author: Metallicus Team
  * Author URI: https://www.metallicus.com/
  * Version: ##VERSION_TAG##
- * slug: xprcheckout-webauth-gateway-for-e-commerce
- * Text Domain: xprcheckout-webauth-gateway-for-e-commerce 
+ * slug: xprcheckout-webauth-gateway-for-woocommerce 
+ * Text Domain: xprcheckout-webauth-gateway-for-woocommerce 
  * Domain Path: /i18n/languages/
  * License: GPLv2 or later
  * Requires at least: 6.0
@@ -91,7 +95,7 @@ function xprcheckout_gateway_start()
 function xprcheckout_admin_notice_wc_required() {
   ?>
   <div  class="notice notice-error">
-      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout-webauth-gateway-for-e-commerce' ); ?></b></p>
+      <p><b><?php esc_html_e( 'XPRCheckout - Webauth Gateway for Woocommerce require WooCommerce to work!', 'xprcheckout-webauth-gateway-for-woocommerce' ); ?></b></p>
       <a href="/wp-admin/plugin-install.php?s=woo&tab=search&type=term">Install Woocommerce </a>
       <p></p>
   </div>

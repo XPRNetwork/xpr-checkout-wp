@@ -42,9 +42,9 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   {
     $this->id                 = 'xprcheckout';
     $this->icon               = apply_filters('woocommerce_cod_icon', '');
-    $this->title              = __('XPR Checkout', 'xprcheckout-webauth-gateway-for-e-commerce');
-    $this->method_title       = __('XPR Checkout', 'xprcheckout-webauth-gateway-for-e-commerce');
-    $this->method_description = __('Provides a Webauth wallet Payment Gateway for your customer.', 'xprcheckout-webauth-gateway-for-e-commerce');
+    $this->title              = __('XPR Checkout', 'xprcheckout-webauth-gateway-for-woocommerce');
+    $this->method_title       = __('XPR Checkout', 'xprcheckout-webauth-gateway-for-woocommerce');
+    $this->method_description = __('Provides a Webauth wallet Payment Gateway for your customer.', 'xprcheckout-webauth-gateway-for-woocommerce');
     $this->has_fields         = false;
   }
 
@@ -55,75 +55,75 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   {
     $this->form_fields = array(
       'enabled' => array(
-        'title' => __('Enable/Disable', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Enable/Disable', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'checkbox',
-        'label' => __('Enable Webauth Payment', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'label' => __('Enable Webauth Payment', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'default' => 'yes'
       ),
       'network' => array(
-        'title' => __('Select network', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Select network', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'select',
         'options' => [
           'mainnet' => 'Mainnet',
           'testnet' => 'Testnet',
         ],
-        'label' => __('Select network', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'label' => __('Select network', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'default' => 'testnet',
         'value'
       ),
       'registered' => array(
-        'title' => __('Register store ', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Register store ', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'xprcheckout_register',
-        'description' => __('Register you store nearby the smart contract', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'description' => __('Register you store nearby the smart contract', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       'title' => array(
-        'title' => __('Title', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Title', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
         'default' => 'Pay with WebAuth',
-        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       'description' => array(
-        'title' => __('Description', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Description', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'textarea',
-        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout-webauth-gateway-for-e-commerce'),
-        'default' => __('Pay securely with with multiple crypto currencies through WebAuth with zero gas fee', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'description' => __('This controls the title which the user sees during checkout.', 'xprcheckout-webauth-gateway-for-woocommerce'),
+        'default' => __('Pay securely with with multiple crypto currencies through WebAuth with zero gas fee', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
 
       'wallet' => array(
-        'title' => __('Mainnet account', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Mainnet account', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'hidden',
-        'description' => __('Set the destination account on mainnet where pay token will be paid. <b>Used only when "Use testnet" option is disabled</b>', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'description' => __('Set the destination account on mainnet where pay token will be paid. <b>Used only when "Use testnet" option is disabled</b>', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       
       'appName' => array(
-        'title' => __('dApp Name', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('dApp Name', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
-        'description' => __('The application name displayed in the webauth modal', 'xprcheckout-webauth-gateway-for-e-commerce'),
-        'default' => __('My awesome store', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'description' => __('The application name displayed in the webauth modal', 'xprcheckout-webauth-gateway-for-woocommerce'),
+        'default' => __('My awesome store', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       /*'appLogo' => array(
-          'title' => __('dApp Logo', 'xprcheckout-webauth-gateway-for-e-commerce'),
+          'title' => __('dApp Logo', 'xprcheckout-webauth-gateway-for-woocommerce'),
           'type' => 'text',
-          'description' => __('The application logo displayed in the webauth modal', 'xprcheckout-webauth-gateway-for-e-commerce'),
+          'description' => __('The application logo displayed in the webauth modal', 'xprcheckout-webauth-gateway-for-woocommerce'),
           
           'desc_tip'      => true,
         ),*/
       'allowedTokens' => array(
-        'title' => __('Allowed Tokens', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Allowed Tokens', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
-        'description' => __('Accepted tokens as payment for transfer, will be displayed in the payments process flow. Specify a uppercase only, coma separated, tokens list', 'xprcheckout-webauth-gateway-for-e-commerce'),
-        'default' => __('XPR,XUSDC', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'description' => __('Accepted tokens as payment for transfer, will be displayed in the payments process flow. Specify a uppercase only, coma separated, tokens list', 'xprcheckout-webauth-gateway-for-woocommerce'),
+        'default' => __('XPR,XUSDC', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'desc_tip'      => true,
       ),
       'currencyApi' => array(
-        'title' => __('Free api key ', 'xprcheckout-webauth-gateway-for-e-commerce'),
+        'title' => __('Free api key ', 'xprcheckout-webauth-gateway-for-woocommerce'),
         'type' => 'text',
-        'description' => __('We provide limited one. You can register yours for free <a target="_blank" style="text-decoration:underline" href="https://app.freecurrencyapi.com/register">here</a>.', 'xprcheckout-webauth-gateway-for-e-commerce'), 
+        'description' => __('We provide limited one. You can register yours for free <a target="_blank" style="text-decoration:underline" href="https://app.freecurrencyapi.com/register">here</a>.', 'xprcheckout-webauth-gateway-for-woocommerce'), 
         'desc_tip'      => false,
       ),
     );
@@ -210,11 +210,11 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
 
     if (!$this->is_available()) return;
     global $wp_query;
+    if (!isset($wp_query->query_vars['paymentKey'])) return;
     $orderPaymentKey = $wp_query->query_vars['paymentKey'];
     $baseConfig = Config::GetConfig($orderPaymentKey);
     wp_register_script(XPRCHECKOUT_CHECKOUT_APP_HANDLE, XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.js?v='. uniqid(), [], time(),['in_footer'=>true]);
     wp_localize_script(XPRCHECKOUT_CHECKOUT_APP_HANDLE,'pluginConfig',$baseConfig);
-    
     wp_enqueue_style('xprcheckout_public_style', XPRCHECKOUT_ROOT_URL . 'dist/checkout/build/app.css?v='. uniqid(),[], time());
     
   }
@@ -260,19 +260,6 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     $data = wp_parse_args($data, $defaults);
     ob_start();
 ?>
-
-<script>
-        <?php 
-          
-          $baseConfig = Config::GetBaseConfig();
-          $baseConfig['walletInputSelector']= "#woocommerce_xprcheckout_wallet";
-          $baseConfig['networkFieldSelector']= "#woocommerce_xprcheckout_network";
-          $adminConfig =Config::GetAdminConfig(); 
-          $extendedConfig = array_merge($baseConfig,$adminConfig);
-          
-          ?>
-          //window.pluginConfig = <?php echo wp_json_encode($extendedConfig); ?>;
-      </script>
       
     <tr valign="top">
       
@@ -323,14 +310,12 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   ?>
     <tr valign="top" class="hidden">
       <th scope="row" class="titledesc">
-        <label for="<?php echo esc_attr($field_key); ?>"><?php echo esc_attr($data['title']); ?> <?php echo esc_attr($this->get_tooltip_html($data)); // WPCS: XSS ok.                                                                                              
-                                                                                                      ?></label>
+        <label for="<?php echo esc_attr($field_key); ?>"><?php echo esc_attr($data['title']); ?> <?php echo esc_attr($this->get_tooltip_html($data)); // WPCS: XSS ok.                                                                                                                                                                                            ?></label>
       </th>
       <td class="forminp">
         <fieldset>
           <legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
-          <input class="input-text regular-input <?php echo esc_attr($data['class']); ?>" type="<?php echo esc_attr($data['type']); ?>" name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" style="<?php echo esc_attr($data['css']); ?>" value="<?php echo esc_attr($this->get_option($key)); ?>" placeholder="<?php echo esc_attr($data['placeholder']); ?>" <?php disabled($data['disabled'], true); ?> <?php echo esc_attr($this->get_custom_attribute_html($data)); // WPCS: XSS ok.                                                                                                                                                                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                                                                                                                                                            ?> />
+          <input class="input-text regular-input <?php echo esc_attr($data['class']); ?>" type="<?php echo esc_attr($data['type']); ?>" name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" style="<?php echo esc_attr($data['css']); ?>" value="<?php echo esc_attr($this->get_option($key)); ?>" placeholder="<?php echo esc_attr($data['placeholder']); ?>" <?php disabled($data['disabled'], true); ?> <?php echo esc_attr($this->get_custom_attribute_html($data)); // WPCS: XSS ok.                                                                                                                                                                                                                                                                                                                                                                                                                                  ?> />
           <?php echo esc_attr($this->get_description_html($data)); // WPCS: XSS ok.
           ?>
         </fieldset>

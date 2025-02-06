@@ -75,7 +75,7 @@ class Refund
   {
     add_meta_box(
       'woocommerce-xprcheckout-payment',
-      __('XPRCheckout payment', 'xprcheckout-webauth-gateway-for-e-commerce'),
+      __('XPRCheckout payment', 'xprcheckout-webauth-gateway-for-woocommerce'),
       [$this, 'renderMetabox'],
       'woocommerce_page_wc-orders',
       'advanced',
@@ -84,7 +84,7 @@ class Refund
     );
     add_meta_box(
       'woocommerce-xprcheckout-payment',
-      __('XPRCheckout payment', 'xprcheckout-webauth-gateway-for-e-commerce'),
+      __('XPRCheckout payment', 'xprcheckout-webauth-gateway-for-woocommerce'),
       [$this, 'renderMetabox'],
       'shop_order',
       'advanced',

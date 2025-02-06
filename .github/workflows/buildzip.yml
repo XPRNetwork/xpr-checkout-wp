@@ -28,14 +28,14 @@ jobs:
       uses: thedoctor0/zip-release@0.7.1
       with:
         type: 'zip'
-        filename: 'xprcheckout-webauth-gateway-for-e-commerce.zip'
+        filename: 'xprcheckout-webauth-gateway-for-woocommerce.zip'
         directory: '.'
-        exclusions: '*.git* /*node_modules/* .editorconfig /*applications/*'
+        exclusions: '*.git* /*node_modules/* .editorconfig'
     - name: Generate JSON manifest
       run: 'VERSION=${{  github.ref_name }} make generate_manifest'
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
         tag: '${{  github.ref_name }}'
-        artifacts: "xprcheckout-webauth-gateway-for-e-commerce.zip,info.json"
+        artifacts: "xprcheckout-webauth-gateway-for-woocommerce.zip,info.json"
         token: ${{ secrets.GITHUB_TOKEN }}
