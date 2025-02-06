@@ -3,6 +3,14 @@ import React from "react";
 
 type ProcessingPropsType = React.HTMLAttributes<HTMLDivElement> & {label?:string};
 
+/**
+ * @component Processing
+ * @description Displays an animated loading spinner with optional label
+ * @param {Object} props - Component properties
+ * @param {string} [props.className] - Additional CSS classes to apply
+ * @param {string} [props.label] - Optional text to display below the spinner
+ * @returns {JSX.Element} Animated loading spinner with optional label
+ */
 export const Processing: React.FunctionComponent<ProcessingPropsType> = ({ className,label }) => {
   
   const classes = classNames({

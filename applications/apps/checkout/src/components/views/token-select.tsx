@@ -6,6 +6,12 @@ import { Processing } from "../processing";
 import { TokenSelectRenderItem } from "../token-select-render-items";
 
 type CheckoutTokenSelectProps = React.HTMLAttributes<HTMLDivElement> & {};
+/**
+ * @component CheckoutTokenSelect
+ * @description Component for selecting the token to use for payment
+ * Displays available tokens with balances and allows user to select one for payment
+ * @returns {JSX.Element} Token selection interface with balance information and payment options
+ */
 export const CheckoutTokenSelect: React.FunctionComponent<
   CheckoutTokenSelectProps
 > = () => {

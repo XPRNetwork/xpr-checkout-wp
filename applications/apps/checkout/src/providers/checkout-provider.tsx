@@ -48,6 +48,14 @@ const checkoutContext = createContext<CheckoutProviderTypes>({
 type CheckoutProviderProps = React.HTMLAttributes<HTMLDivElement> & {
   config: CheckoutConfig;
 };
+/**
+ * @component CheckoutProvider
+ * @description Context provider for managing checkout state and payment processing
+ * @param {Object} props - Component properties
+ * @param {ReactNode} props.children - Child components
+ * @param {CheckoutConfig} props.config - Checkout configuration
+ * @returns {JSX.Element} Provider component wrapping children with checkout context
+ */
 export const CheckoutProvider: React.FunctionComponent<
   CheckoutProviderProps
 > = ({children, config}) => {
@@ -58,6 +66,11 @@ export const CheckoutProvider: React.FunctionComponent<
   const [orderPayment, setOrderPayment] = useState<OrderPayment>();
   const [lastError,setLastError] = useState<string>();
 
+  /**
+   * @function refreshTokensList
+   * @description Refreshes the list of user token balances and payment order status
+   * @param {string} [txId] - Optional transaction ID to verify payment
+   */
   const refreshTokensList = useCallback((txId?:string) => {
     if (!session) return;
     setAsyncStatus("pending");
@@ -79,6 +92,12 @@ export const CheckoutProvider: React.FunctionComponent<
     });
   }, [config, session,setViewState,setAsyncStatus]);
 
+  /**
+   * @function processPayment
+   * @description Processes a payment transaction with the specified amount and token
+   * @param {string} amount - Payment amount with token symbol (e.g., "1.0000 XPR")
+   * @param {string} tokenContract - Contract name of the token being used
+   */
   const processPayment = useCallback((amount:string,tokenContract:string) => {
     if (!session) return;
     const regPaymentAction = xprcheckout.pay_reg(
@@ -143,6 +162,11 @@ export const CheckoutProvider: React.FunctionComponent<
   );
 };
 
+/**
+ * @hook useCheckout
+ * @description Custom hook to access the checkout context
+ * @returns {CheckoutProviderTypes} Checkout context value containing state and methods
+ */
 export function useCheckout() {
   return useContext(checkoutContext);
 }

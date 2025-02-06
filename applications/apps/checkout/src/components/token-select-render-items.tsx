@@ -4,6 +4,14 @@ import { useCheckout } from "../providers/checkout-provider";
 import classNames from "classnames";
 
 type TokenSelectRenderItemProps = React.HTMLAttributes<HTMLDivElement> & {token:UserBalanceConversion}
+/**
+ * @component TokenSelectRenderItem
+ * @description Renders a single token selection item with balance information
+ * @param {Object} props - Component properties
+ * @param {UserBalanceConversion} props.token - Token information including balance and conversion details
+ * @param {Object} props.rest - Additional HTML div properties
+ * @returns {JSX.Element} Token selection item with logo, amount, balance, and selection indicator
+ */
 export const TokenSelectRenderItem: React.FunctionComponent<TokenSelectRenderItemProps> = ({ token,...rest }) => {
   
   const { userBalances } = useCheckout()

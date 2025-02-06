@@ -9,6 +9,11 @@ import { AppFooter } from "./components/app-footer";
 
 const pluginConfig = window.pluginConfig;
 
+/**
+ * @component App
+ * @description Main application component that sets up the XPRNetwork provider and checkout context
+ * @returns {JSX.Element} Root application component with header, stepper, main view flow, and footer
+ */
 function App() {
   return (
     <XPRNProvider
