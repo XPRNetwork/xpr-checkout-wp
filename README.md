@@ -31,6 +31,8 @@ This plugin connects to several external services to provide its functionality:
    - Service: Used to fetch XPRNetwork tokens information and prices
    - Data sent: None (GET request only)
    - Endpoint: https://www.api.bloks.io/proton/tokens
+   - Terms of Service: https://xprnetwork.org/terms
+   - Privacy Policy: https://explorer.xprnetwork.org/privacy-policy
 
 3. **RockerOne API**
    - Service: Used for Proton blockchain interaction
@@ -38,6 +40,8 @@ This plugin connects to several external services to provide its functionality:
    - Endpoints: 
      - Mainnet: https://api.rockerone.io
      - Testnet: https://testnet.rockerone.io
+   - Terms of Service: https://rockerone.io/tos
+   - Privacy Policy: https://rockerone.io/privacy
 
 4. **XPR Network Explorer**
    - Service: Used to view transaction details
