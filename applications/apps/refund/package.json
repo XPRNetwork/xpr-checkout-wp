@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "GENERATE_SOURCEMAP=false craco build",
     "test": "craco test",
     "eject": "craco eject",
     "types:bc": "bunx abi2ts xtokens > ./src/interfaces/xtokens.ts && bunx abi2ts xprcheckout -t > ./src/interfaces/xprcheckout.ts"
