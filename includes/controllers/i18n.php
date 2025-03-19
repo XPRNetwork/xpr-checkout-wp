@@ -35,19 +35,8 @@ class Translations
    */
   private function registerActions()
   {
-    add_action('plugins_loaded', [$this, 'initTextDomain']);
+    
   }
-
-  /**
-   * Initializes the plugin's text domain for translations.
-   * 
-   * Loads the MO file for the text domain based on the site's locale.
-   */
-  function initTextDomain()
-  {
-    load_plugin_textdomain('xprcheckout-webauth-gateway-for-woocommerce');
-  }
-
   /**
    * Retrieves public-facing translated strings.
    * 

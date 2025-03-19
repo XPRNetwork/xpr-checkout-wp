@@ -19,15 +19,17 @@ class XPRCheckout_WCGateway
   private function loadDependencies()
   {
 
-    require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Cart.php';
-    require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Config.php';
     
+    require_once XPRCHECKOUT_ROOT_DIR . 'includes/woocommerce/gateway/xprcheckout-gateway.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Gateway.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/i18n.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Notices.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Orders.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Refund.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/RegStore.php';
+    
+    require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Cart.php';
+    require_once XPRCHECKOUT_ROOT_DIR . 'includes/controllers/Config.php';
 
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/ProtonRPC.php';
     require_once XPRCHECKOUT_ROOT_DIR . 'includes/rpc/PriceRateRPC.php';
@@ -53,9 +55,10 @@ class XPRCheckout_WCGateway
     
     $refund     = new \xprcheckout\admin\Refund();
     $regStore     = new \xprcheckout\admin\RegStore();
+    /*
     
     $orders     = new \xprcheckout\admin\Orders();
-    $notices    = new \xprcheckout\admin\Notices();
+    $notices    = new \xprcheckout\admin\Notices();*/
     
     
   }

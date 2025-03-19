@@ -11,6 +11,7 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
   public function __construct()
   {
 
+    
     $this->setup_properties();
     $this->init_form_fields();
     $this->init_settings();
@@ -30,9 +31,6 @@ class XPRCheckoutGateway extends WC_Payment_Gateway
     add_action('wp_enqueue_scripts', array($this, 'payment_scripts'));
     add_action('woocommerce_email_before_order_table', array($this, 'xprcheckout_email_instructions'), 10, 3);
     add_filter( 'wc_order_statuses', array($this,'xprcheckout_add_partial_fill_order_status') );
-    
-    
-
   }
 
   /**

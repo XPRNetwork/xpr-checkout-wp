@@ -1,7 +1,6 @@
 {
   "files": {
-    "main.js": "/app.js",
-    "app.js.map": "/app.js.map"
+    "main.js": "/app.js"
   },
   "entrypoints": [
     "app.js"

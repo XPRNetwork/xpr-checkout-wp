@@ -142,6 +142,7 @@ class Config
 
   private static function GetWalletConfig (){
 
+    
     $xprcheckoutGateway = WC()->payment_gateways->payment_gateways()['xprcheckout'];
     $rawWallets = $xprcheckoutGateway->get_option('wallets');
     

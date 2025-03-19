@@ -83,6 +83,7 @@ include_once XPRCHECKOUT_ROOT_DIR . '/includes/xprcheckout-gateway.core.php';
 function xprcheckout_gateway_start()
 {
 
+  
   if ( class_exists( 'WooCommerce' ) ) {
     $plugin = new XPRCheckout_WCGateway();
     $plugin->run();
@@ -185,4 +186,7 @@ function xprcheckout_webauth_gateway_block_method_type_registration ($payment_me
   $payment_method_registry->register( new XPRCheckout_BlocksSupport() );
 }
 
-xprcheckout_gateway_start();
+
+
+
+add_action( 'plugins_loaded', 'xprcheckout_gateway_start' ); 

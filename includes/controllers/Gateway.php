@@ -24,6 +24,7 @@ class GatewayWrapper
   public function __construct()
   {
 
+    
     $this->registerFilters();
     $this->registerActions();
   }
