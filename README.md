@@ -1,12 +1,12 @@
-=== XPRCheckout - WebAuth Gateway for e-commerce ===
+=== XPRCheckout - WebAuth Gateway for Woocommerce ===
 Requires at least: 6.5
 Tested up to: 6.7
 Stable tag: ##VERSION_TAG##
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-# XPRCheckout - WebAuth Gateway for e-commerce
-*A WebAuth-Enabled Gateway for e-commerce*
+# XPRCheckout - WebAuth Gateway for Woocommerce
+*A WebAuth-Enabled Gateway for Woocommerce*
 
 ## The basic scope
 
