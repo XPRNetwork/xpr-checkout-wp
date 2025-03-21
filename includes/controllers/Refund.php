@@ -49,8 +49,11 @@ class Refund
   {
 
     if($this->isCurrentScreenIsOrderEdit()){
-      global $post;
-      $order = wc_get_order($post->ID);
+      $postId = $this->getPostId();
+        $order = wc_get_order($postId);
+		var_dump($postId);
+      if (is_null($order)) return ;
+      
       wp_register_script(XPRCHECKOUT_REFUND_APP_HANDLE, XPRCHECKOUT_ROOT_URL . 'dist/refund/build/app.js?v=' . uniqid(), [], time(),['in_footer'=>true]);
       $adminConfig =Config::GetAdminConfig(); 
       $baseConfig = Config::GetBaseConfig();
@@ -171,14 +174,16 @@ class Refund
 
   public function isCurrentScreenIsOrderEdit (){
 
-    global $current_screen;
-    if (!isset($current_screen)) return false;
-    switch ($current_screen->id) {
-      case 'woocommerce_page_wc-orders':
-        return true;
-      case 'shop_order':
-        return true;
-    }
+    $screen = get_current_screen();
+    
+    if (isset($_GET['page']) && $_GET['page'] == 'wc-orders' && isset($_GET['action']) && $_GET['action'] == 'edit') return true;
+    if ($screen->post_type == 'shop_order' && isset($_GET['action']) && $_GET['action'] == 'edit') return true;
+    return false;
    
   }
+
+  public function getPostId (){
+		if (isset($_GET['id']) && $_GET['id'] ) return $_GET['id'];
+		if (isset($_GET['post']) && $_GET['post'] ) return $_GET['post'];
+	}
 }
